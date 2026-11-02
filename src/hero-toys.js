@@ -190,7 +190,8 @@ export function initToys(stage) {
   // Positions in a loose ring, normalised to the visible frustum each resize.
   // Desktop keeps the left of the stage clear where the H1 runs long.
   const layoutDesktop = [[0.02, 0.62], [0.55, 0.55], [-0.05, -0.28], [0.68, 0.12], [0.22, -0.05], [-0.42, -0.45], [0.12, -0.58], [0.62, -0.45]];
-  const layoutMobile = [[-0.62, 0.35], [0.0, 0.5], [0.6, 0.3], [-0.35, -0.38], [0.35, -0.42]];
+  // Phones: one row in the left two-thirds of a short strip (badge on the right).
+  const layoutMobile = [[-0.84, 0.12], [-0.5, -0.18], [-0.16, 0.16], [0.16, -0.16]];
   let halfW = 1;
   let halfH = 1;
   function resize() {
@@ -203,7 +204,7 @@ export function initToys(stage) {
     halfW = halfH * camera.aspect;
     const mobile = isMobile();
     const layout = mobile ? layoutMobile : layoutDesktop;
-    const scale = mobile ? Math.min(1.25, halfW / 2.2) : Math.min(1.55, halfW / 3.2);
+    const scale = mobile ? halfH * 0.72 : Math.min(1.55, halfW / 3.2);
     toys.forEach((toy, i) => {
       const spot = layout[i];
       toy.visible = !!spot;

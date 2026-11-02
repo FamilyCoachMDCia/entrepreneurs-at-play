@@ -260,7 +260,11 @@ h1 em, h2 em, .h2 em, .foot-word em, .nav-word em {
 .scroll-cue { display: none; }
 
 @media (max-width: 767px) {
-  .badge { top: auto; bottom: calc(46svh - 30px); width: 88px; height: 88px; }
+  /* Phones: no full-height stage. Toys sit in a short strip under the copy,
+     with the badge at its right end. */
+  .hero { min-height: 0; padding-bottom: 20px; }
+  .hero-stage { height: 150px; min-height: 0; margin-top: 4px; }
+  .badge { top: auto; bottom: 22px; right: var(--gutter); width: 104px; height: 104px; }
   .badge text { font-size: 18px; }
 }
 @media (min-width: 1024px) {

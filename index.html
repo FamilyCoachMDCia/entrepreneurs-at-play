@@ -7,6 +7,8 @@
 <meta name="description" content="A physician-founded, multi-age program in Omaha for ages 2–12, in two pathways (The Hatch, 2–6, and The Studio, 7–12): advanced academics, real-world entrepreneurship and joyful play. Opening January 4, 2027. Only 5 spots to start.">
 <meta name="theme-color" content="#F6F2EA">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Entrepreneurs at Play · Play'sWork">
 <meta property="og:description" content="A physician-founded, multi-age program in Omaha for ages 2–12: The Hatch (2–6) and The Studio (7–12). Opening January 4, 2027. Only 5 spots to start.">
@@ -89,7 +91,7 @@
   </div>
   <nav class="nav" aria-label="Main">
     <a href="#top" class="nav-brand" aria-label="Entrepreneurs at Play, home">
-      <img class="nav-symbol" src="/logo/familycoachmd-symbol.svg" alt="" width="72" height="24">
+      <img class="nav-symbol" src="/logo/familycoachmd-logo.svg" alt="FamilyCoachMD" width="120" height="40">
       <span class="nav-word">Entrepreneurs <em>at Play</em></span>
     </a>
     <ul class="nav-links">
@@ -190,10 +192,16 @@
         </div>
       </article>
     </div>
-    <div class="age-helper">
-      <label for="age-range">How old is your child? <output id="age-out" for="age-range">4</output></label>
-      <input id="age-range" type="range" min="2" max="12" step="1" value="4">
-      <div class="age-scale" aria-hidden="true"><span>2</span><span>6</span><span>7</span><span>12</span></div>
+    <div class="age-helper" data-path="hatch">
+      <div class="age-q">
+        <label for="age-range">How old is your child?</label>
+        <p class="age-value"><output id="age-out" for="age-range">4</output><span>years old</span></p>
+      </div>
+      <div class="age-track">
+        <input id="age-range" type="range" min="2" max="12" step="1" value="4">
+        <div class="age-ticks" aria-hidden="true"><span style="--p:0">2</span><span style="--p:.1">3</span><span style="--p:.2">4</span><span style="--p:.3">5</span><span style="--p:.4">6</span><span style="--p:.5">7</span><span style="--p:.6">8</span><span style="--p:.7">9</span><span style="--p:.8">10</span><span style="--p:.9">11</span><span style="--p:1">12</span></div>
+        <div class="age-zones" aria-hidden="true"><span class="zone-hatch">The Hatch · 2–6</span><span class="zone-studio">The Studio · 7–12</span></div>
+      </div>
       <p class="age-note" role="status" aria-live="polite">Your child would join <strong>The Hatch</strong>.</p>
     </div>
   </div>

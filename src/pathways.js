@@ -15,12 +15,14 @@ export function initPathways({ gsap, reduce }) {
   const range = document.getElementById('age-range');
   const out = document.getElementById('age-out');
   const note = document.querySelector('.age-note');
+  const helper = document.querySelector('.age-helper');
   let current = null;
 
   const setActive = (key, { remember = true } = {}) => {
     if (key === current) return;
     current = key;
     grid.dataset.active = key;
+    helper?.setAttribute('data-path', key);
     document.documentElement.dataset.path = key;
     panels.forEach((p) => {
       const on = p.dataset.path === key;

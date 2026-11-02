@@ -70,23 +70,22 @@ export function runLoader({ gsap, reduce }) {
 
   return tl.then(() => ready).then(() => {
     const elapsed = performance.now() - started;
-    const exit = exitTimeline(gsap, { loader, wrap, line, glyphs, navSymbol });
+    const exit = exitTimeline(gsap, { loader, wrap, line, navSymbol });
     if (elapsed > HARD_CAP) exit.timeScale(1.4);
     // Resolve as the curtain starts lifting so the page can come alive under it.
     return wait(250);
   });
 }
 
-function exitTimeline(gsap, { loader, wrap, line, glyphs, navSymbol }) {
+function exitTimeline(gsap, { loader, wrap, line, navSymbol }) {
   const tl = gsap.timeline({ onComplete: () => loader.remove() });
   if (navSymbol) {
-    // Fly the logo onto the nav symbol (same viewBox, so the leaves line up).
+    // Fly the whole logo, wordmark included, onto the nav logo (same viewBox).
     const from = wrap.getBoundingClientRect();
     const to = navSymbol.getBoundingClientRect();
     const scale = to.width / from.width;
     gsap.set(navSymbol, { opacity: 0 });
-    tl.to(glyphs, { opacity: 0, duration: 0.3, stagger: 0.01 }, 0)
-      .to(line, { opacity: 0, duration: 0.25 }, 0)
+    tl.to(line, { opacity: 0, duration: 0.25 }, 0)
       .to(wrap, {
         x: to.left + to.width / 2 - (from.left + from.width / 2),
         y: to.top + to.height / 2 - (from.top + from.height / 2),

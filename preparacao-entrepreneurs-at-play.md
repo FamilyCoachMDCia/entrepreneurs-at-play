@@ -550,3 +550,67 @@ All photos are in `entregas/site/img/` (identical to `entregas/instagram/src/img
 8. Device testing (iPhone Safari, Android Chrome, desktop Chrome/Safari/Firefox), then a Vercel preview link for Larisa.
 
 > **Next step:** review this plan, then give the go-ahead to start step 1. Nothing will be built before that confirmation.
+
+---
+
+## 13. Addendum (2026-11-02): two pathways, The Hatch and The Studio
+
+Larisa, on WhatsApp (02/11, 7:33 PM): *"I want the website to have a division of 2 pathways: 2–6 The Hatch, 7–12 The Studio."* This also settles the age range: **2–12**, not 2–11.
+
+### 13.1 Concept: one family, two leaves
+
+The FamilyCoachMD logo already has the answer: **a small leaf and a big leaf growing from the same stem.**
+- **The Hatch (2–6) = the small leaf.** Softer, rounder, warmer: tan `#BDAF90` + marigold `#F2B33D`. Motifs: sprout, sun, nest, egg shapes. Tone: gentle, sensory, play-first.
+- **The Studio (7–12) = the big leaf.** Sharper, a workshop/maker feel: olive `#6E7157` + forest `#3B5E1A` + ochre. Motifs: notebook grid (already in the background), blueprint lines, tools, microphone. Tone: ambitious, real projects.
+- **Shared:** the stem (Growth Line), the cream paper, the fonts and motion. Each pathway gets an **accent token** (`--path-accent`) that re-themes buttons, chips, the sun and the leaves when that pathway is active.
+
+### 13.2 Structure (recommended: hybrid)
+
+| Option | What it is | Verdict |
+|---|---|---|
+| A. Toggle only | One page; a Hatch/Studio switch swaps content in place | Elegant but hides content from Google and from parents who skim |
+| B. Separate pages only | `/the-hatch` and `/the-studio`, home just links | Clear, but the home loses its story |
+| **C. Hybrid (recommended)** | Home keeps the shared story + a big **pathway chooser**; each pathway has its own page; a **pathway switch** also re-tunes key home sections | Best for SEO, for skimming parents and for the "wow" |
+
+**Pages:**
+- `/` (home): the current landing, with the changes in 13.3.
+- `/the-hatch`: hero, "a day in The Hatch", what they learn (domains at Hatch depth), the guides, FAQ for toddler parents, Book a visit.
+- `/the-studio`: hero, "a day in The Studio" (the current Wednesday schedule), the eight differentiators, projects/podcast/business, MAP Growth and academics, FAQ, Book a visit.
+- Vite multi-page build (`index.html`, `the-hatch/index.html`, `the-studio/index.html`) sharing the same CSS/JS modules. Page transition: a leaf-wipe (the small or big leaf grows to fill the screen, then the new page appears).
+
+### 13.3 Changes on the home page
+
+1. **Hero:** chips become `Opens Jan 4, 2027 · Ages 2–12 · 2 adults, always`. The badge stays.
+2. **New section right after the hero, "Choose a pathway"** (the signature moment):
+   - Two large split panels side by side (stacked on mobile). Left: **The Hatch · Ages 2–6**, with a small leaf. Right: **The Studio · Ages 7–12**, with a big leaf.
+   - On hover/tap, the active panel widens (flex 1 → 1.6), its leaf unfurls, its photo comes into color, and its 3 key words animate in. Hatch: *Play · Wonder · Grow*. Studio: *Build · Speak · Lead*.
+   - CTA in each: **Explore The Hatch →** / **Explore The Studio →**.
+   - A small age helper underneath: "How old is your child?" with a slider (2–12). Moving it highlights the right pathway (the leaf grows), and at 6–7 shows the note "*Turning 7 this year? Talk to us. We'll find the right fit.*"
+3. **Pathway switch (global, sticky):** a two-state pill under the nav (`The Hatch | The Studio`) appears after the chooser and remembers the choice (localStorage). It re-tunes:
+   - **Learner chips (04):** Hatch shows *The cuddler, The explorer, The little builder, The singer…*; Studio shows the current set.
+   - **A day at EP (06):** two schedules, the same sun-dial. Hatch: a gentler rhythm (circle time, sensory play, nap/rest, outdoor play). Studio: the current Wednesday. **Needs Larisa's Hatch schedule.**
+   - **Eight things (05):** each card gets a tag (`Hatch`, `Studio` or `Both`); the switch re-orders cards so the relevant ones come first, and dims (does not hide) the others.
+   - **FAQ (14):** a few answers change per pathway (screen time, academics, naps, potty training).
+4. **Section 08 "Ages 2 to 11"** becomes **"Two pathways, one family"**: Axial Mentorship explained as the bridge (Studio kids mentor Hatch kids), the logo's two leaves animated on the stem.
+5. **Visit form:** after picking the child's age (2–12), a line appears: "*Your child would join **The Hatch***" (or Studio), and the email subject includes the pathway.
+6. Copy everywhere: **2–11 → 2–12**, plus SEO/JSON-LD and the OG image text.
+
+### 13.4 Motion for the pathways
+- Choosing a pathway: the matching leaf on the Growth Line grows bigger for the rest of the page (a subtle "you are here").
+- Switching pathway: a 0.6 s color morph of `--path-accent` (GSAP on CSS variables) plus a leaf "flip" icon in the pill.
+- Reduced motion: no morph, instant swap.
+
+### 13.5 Content needed from Larisa (bring to the Thursday 05/11 call)
+1. One paragraph describing each pathway, in her words.
+2. **A typical day for The Hatch** (times + blocks), and confirmation that The Studio day = the current Wednesday schedule.
+3. Hours for The Hatch (also 9–4? half-day option? naps?).
+4. Spots per pathway (still 5 total to start? per pathway?).
+5. Which of the 8 differentiators apply to The Hatch (golf? podcast? at what level?).
+6. Photos per pathway (she is already gathering new photos): ideally 5+ for each, plus 1 hero photo each.
+7. Whether pricing differs by pathway (the site can still say "email us").
+8. Name check: confirm "The Hatch" and "The Studio" are final (trademark search before printing).
+
+### 13.6 Build estimate
+- Home changes (chooser, switch, re-tuned sections, copy 2–12): ~1.5 days.
+- Two pathway pages from shared components: ~2 days once her content arrives.
+- New photos swap + re-export: ~0.5 day.

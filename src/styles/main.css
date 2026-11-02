@@ -231,7 +231,9 @@ h1 em, h2 em, .h2 em, .foot-word em, .nav-word em {
 .hero-lede { margin-top: 18px; max-width: 36ch; font-size: clamp(1.05rem, 1rem + .3vw, 1.2rem); color: var(--ink-soft); }
 .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
 .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
-.hero-chips li { padding: 6px 14px; border-radius: 999px; background: var(--paper-2); font-size: .88rem; font-weight: 500; }
+.hero-chips li { padding: 6px 14px; border-radius: 999px; background: var(--paper-2); font-size: .88rem; font-weight: 600; }
+.hero-chips small { margin-right: 4px; font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--olive); }
+.hero-toyslot { display: none; }
 
 .hero-stage { position: relative; height: 46svh; min-height: 300px; margin: 8px calc(var(--gutter) * -1) 0; }
 .hero-stage canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; touch-action: pan-y; }
@@ -260,12 +262,21 @@ h1 em, h2 em, .h2 em, .foot-word em, .nav-word em {
 .scroll-cue { display: none; }
 
 @media (max-width: 767px) {
-  /* Phones: no full-height stage. Toys sit in a short strip under the copy,
-     with the badge at its right end. */
-  .hero { min-height: 0; padding-bottom: 20px; }
-  .hero-stage { height: 150px; min-height: 0; margin-top: 4px; }
-  .badge { top: auto; bottom: 22px; right: var(--gutter); width: 104px; height: 104px; }
-  .badge text { font-size: 18px; }
+  /* Phones: no stage and no badge. Two toys live beside the buttons, and the
+     facts become a tidy three-column strip. */
+  .hero { min-height: 0; padding-bottom: 8px; }
+  .hero-stage, .badge { display: none; }
+  .hero-cta { display: grid; grid-template-columns: minmax(0, 1fr) 132px; gap: 10px 8px; }
+  .hero-cta .btn { grid-column: 1; justify-content: center; }
+  .hero-toyslot { display: block; position: relative; grid-column: 2; grid-row: 1 / span 2; }
+  .hero-toyslot canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; touch-action: pan-y; }
+  .hero-toyslot .fb { position: absolute; animation: float 6s ease-in-out infinite; }
+  .fb-slot-1 { width: 54px; height: 54px; left: 10px; top: 14px; color: var(--marigold); }
+  .fb-slot-2 { width: 50px; height: 50px; right: 8px; bottom: 10px; color: var(--olive); animation-delay: -2s !important; }
+  .has-webgl .hero-toyslot .fb { display: none; }
+  .hero-chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; }
+  .hero-chips li { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 16px; font-size: .9rem; line-height: 1.25; }
+  .hero-chips small { margin: 0; }
 }
 @media (min-width: 1024px) {
   .hero { grid-template-rows: 1fr; align-items: center; padding-top: calc(var(--head-h) + 40px); }

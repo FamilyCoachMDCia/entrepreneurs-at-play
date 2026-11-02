@@ -151,8 +151,8 @@ function buildToy(key) {
   return g;
 }
 
-export function initToys(stage) {
-  const isMobile = () => window.innerWidth < 768;
+// compact: the small phone slot beside the hero buttons (two toys only).
+export function initToys(stage, { compact = false } = {}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -173,6 +173,7 @@ export function initToys(stage) {
   rim.position.set(-5, -2, 3);
   scene.add(rim);
 
+  // The phone slot has no tooltip of its own; the toys there are decorative.
   const tip = stage.querySelector('.toy-tip');
   const toys = TOYS.map((t, i) => {
     const holder = new THREE.Group();
@@ -190,8 +191,8 @@ export function initToys(stage) {
   // Positions in a loose ring, normalised to the visible frustum each resize.
   // Desktop keeps the left of the stage clear where the H1 runs long.
   const layoutDesktop = [[0.02, 0.62], [0.55, 0.55], [-0.05, -0.28], [0.68, 0.12], [0.22, -0.05], [-0.42, -0.45], [0.12, -0.58], [0.62, -0.45]];
-  // Phones: one row in the left two-thirds of a short strip (badge on the right).
-  const layoutMobile = [[-0.84, 0.12], [-0.5, -0.18], [-0.16, 0.16], [0.16, -0.16]];
+  // Phone slot: golf ball and microphone, side by side.
+  const layoutCompact = [[-0.46, -0.04], [0.5, 0.02]];
   let halfW = 1;
   let halfH = 1;
   function resize() {
@@ -202,9 +203,8 @@ export function initToys(stage) {
     camera.updateProjectionMatrix();
     halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
     halfW = halfH * camera.aspect;
-    const mobile = isMobile();
-    const layout = mobile ? layoutMobile : layoutDesktop;
-    const scale = mobile ? halfH * 0.72 : Math.min(1.55, halfW / 3.2);
+    const layout = compact ? layoutCompact : layoutDesktop;
+    const scale = compact ? halfH * 1.05 : Math.min(1.55, halfW / 3.2);
     toys.forEach((toy, i) => {
       const spot = layout[i];
       toy.visible = !!spot;
@@ -237,6 +237,7 @@ export function initToys(stage) {
     let toy = hit.object;
     while (toy.parent && !toys.includes(toy)) toy = toy.parent;
     toy.userData.bounce = 1;
+    if (!tip) return;
     const r = stage.getBoundingClientRect();
     tip.innerHTML = `<strong>${toy.userData.name}</strong>${toy.userData.line}`;
     tip.style.left = `${e.clientX - r.left}px`;

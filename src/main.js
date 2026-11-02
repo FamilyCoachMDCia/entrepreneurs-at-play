@@ -71,10 +71,12 @@ function heroIntro() {
 // Three.js is the heaviest dependency: load it after first paint and only
 // when WebGL works. The SVG doodles stay as the fallback otherwise.
 function loadToys() {
-  const stage = document.getElementById('hero-stage');
+  // Phones get a compact slot beside the hero buttons with just two toys.
+  const compact = window.innerWidth < 768;
+  const stage = document.querySelector(compact ? '.hero-toyslot' : '#hero-stage');
   if (reduce || !stage || !hasWebGL()) return;
   import('./hero-toys.js').then(({ initToys }) => {
-    initToys(stage);
+    initToys(stage, { compact });
     document.documentElement.classList.add('has-webgl');
   }).catch(() => {});
 }

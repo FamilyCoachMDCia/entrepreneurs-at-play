@@ -1,3 +1,5 @@
+import { PATHS, pathFor } from './pathways.js';
+
 // Chrome around the content: ticker, nav, menu, cursor, magnetic buttons,
 // anchor scrolling, the visit form and copy-to-clipboard.
 export const motionState = { paused: false };
@@ -166,9 +168,10 @@ function form() {
       } else {
         const body = [
           `Parent: ${data.name}`, `Email: ${data.email}`, `Child's age: ${data.age}`,
+          `Pathway: ${PATHS[pathFor(data.age)].name}`,
           `Best week to visit: ${data.week || 'Any week'}`, '', data.message || '',
         ].join('\n');
-        window.location.href = `mailto:Grow@familycoachmd.com?subject=${encodeURIComponent('Visit request: Entrepreneurs at Play')}&body=${encodeURIComponent(body)}`;
+        window.location.href = `mailto:Grow@familycoachmd.com?subject=${encodeURIComponent(`Visit request: ${PATHS[pathFor(data.age)].name} at Entrepreneurs at Play`)}&body=${encodeURIComponent(body)}`;
       }
       f.classList.add('is-sent');
       btnLabel.textContent = 'Request sent ✓';

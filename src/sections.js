@@ -1,4 +1,5 @@
 import { motionState } from './ui.js';
+import { initPathways } from './pathways.js';
 
 // Section-by-section interactions. Each init is independent; under reduced
 // motion they keep their interactivity but skip decorative movement.
@@ -6,6 +7,7 @@ export function initSections(ctx) {
   alignGrids(ctx);
   reveals(ctx);
   heroRotator(ctx);
+  initPathways(ctx);
   learner(ctx);
   carousel(ctx);
   sundial(ctx);
@@ -95,7 +97,7 @@ const LEARNERS = {
   explorer: { title: 'The explorer', photo: 'horse', alt: 'A young child beside a white horse', text: 'Afternoons out in Omaha: farms, college campuses, flight decks and nature, rain or shine.' },
   artist: { title: 'The artist', photo: 'guitar', alt: 'A smiling child holding a guitar', text: 'Music, choir, theater and art with local studios, plus world cuisines in the kitchen.' },
   thinker: { title: 'The deep thinker', photo: 'typewriter', alt: 'A child learning on an antique typewriter', text: 'Socratic reading groups, advanced academics at their own pace, and MAP Growth testing to prove it.' },
-  littlest: { title: 'The littlest one', photo: 'mentoring', alt: 'An older child helping a younger child', text: 'From age 2: free play, sign language, gentle routines, and big kids who mentor them every day.' },
+  littlest: { title: 'The littlest one', photo: 'mentoring', alt: 'An older child helping a younger child', text: 'The Hatch, from age 2: free play, sign language, gentle routines, and big kids from The Studio who mentor them every day.' },
 };
 
 function learner({ gsap, reduce, ScrollTrigger }) {

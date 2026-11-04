@@ -786,3 +786,16 @@ details[open] summary::after { transform: rotate(45deg); background: var(--marig
 
 /* Manifesto highlight: a marigold underline that draws in on scroll. */
 .mark { background: linear-gradient(var(--marigold), var(--marigold)) no-repeat 0 92% / var(--mark, 100%) .1em; }
+
+/* Pinned day: every part is sized by the viewport height too, so the whole
+   step (heading, arc, clock, photo, text) fits on any screen tall enough to
+   pin (see PIN_QUERY in sections.js). */
+.day.is-pinned .day-pin { height: 100svh; padding-top: calc(var(--head-h) + 4px); padding-bottom: 16px; }
+.day.is-pinned .day-inner { gap: min(12px, 1.2vh); }
+.day.is-pinned .day-head .h2 { font-size: min(clamp(2.1rem, 1.4rem + 3.2vw, 4.25rem), 6.5vh); max-width: none; }
+.day.is-pinned .day-note { margin-top: 6px; }
+.day.is-pinned .sundial { height: min(20vh, 220px); width: 100%; margin-top: 0; }
+.day.is-pinned .day-times { font-size: min(clamp(4.5rem, 18vw, 11rem), 15vh); }
+.day.is-pinned .day-stage { min-height: 0; }
+.day.is-pinned .day-photos { width: auto; height: min(28vh, 315px); max-width: 100%; aspect-ratio: 4 / 3; }
+.day.is-pinned .day-steps { min-height: 7em; }

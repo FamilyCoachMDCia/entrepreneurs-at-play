@@ -152,7 +152,10 @@ function buildToy(key) {
 }
 
 // compact: the small phone slot beside the hero buttons (two toys only).
-export function initToys(stage, { compact = false } = {}) {
+// isPaused: the page-wide "pause motion" switch; the scene freezes while true.
+// Returns dispose(), which stops rendering, frees GPU memory and removes the
+// canvas and listeners (used when the layout crosses the phone breakpoint).
+export function initToys(stage, { compact = false, isPaused = () => false } = {}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -214,7 +217,8 @@ export function initToys(stage, { compact = false } = {}) {
     });
   }
   resize();
-  new ResizeObserver(resize).observe(stage);
+  const resizeObs = new ResizeObserver(resize);
+  resizeObs.observe(stage);
 
   // Pointer → world position on the z=0 plane.
   const pointer = new THREE.Vector2(9, 9);
@@ -225,11 +229,12 @@ export function initToys(stage, { compact = false } = {}) {
     pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     world.set(pointer.x * halfW, pointer.y * halfH, 0);
   };
+  const onLeave = () => { pointer.set(9, 9); world.set(99, 99, 0); };
   stage.addEventListener('pointermove', toWorld);
-  stage.addEventListener('pointerleave', () => { pointer.set(9, 9); world.set(99, 99, 0); });
+  stage.addEventListener('pointerleave', onLeave);
 
   let tipTimer;
-  stage.addEventListener('click', (e) => {
+  const onClick = (e) => {
     toWorld(e);
     raycaster.setFromCamera(pointer, camera);
     const hit = raycaster.intersectObjects(toys.filter((t) => t.visible), true)[0];
@@ -246,7 +251,8 @@ export function initToys(stage, { compact = false } = {}) {
     tip.style.opacity = '1';
     clearTimeout(tipTimer);
     tipTimer = setTimeout(() => { tip.style.opacity = '0'; }, 2600);
-  });
+  };
+  stage.addEventListener('click', onClick);
 
   // Scroll scatter: toys rise at different speeds as the hero leaves.
   let scrollP = 0;
@@ -258,13 +264,25 @@ export function initToys(stage, { compact = false } = {}) {
 
   // Only render while visible and the tab is active.
   let visible = true;
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { threshold: 0 }).observe(stage);
+  const visObs = new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { threshold: 0 });
+  visObs.observe(stage);
 
-  const clock = new THREE.Clock();
+  // Scene time only advances while running, so pausing freezes the toys in
+  // place and resuming continues smoothly.
+  let t = 0;
+  let last = performance.now();
+  let drawn = false;
   const tmp = new THREE.Vector3();
   renderer.setAnimationLoop(() => {
+    const now = performance.now();
+    const dt = Math.min(0.1, (now - last) / 1000);
+    last = now;
     if (!visible || document.hidden) return;
-    const t = clock.getElapsedTime();
+    if (isPaused()) {
+      if (!drawn) { renderer.render(scene, camera); drawn = true; }
+      return;
+    }
+    t += dt;
     toys.forEach((toy) => {
       if (!toy.visible) return;
       const u = toy.userData;
@@ -292,5 +310,24 @@ export function initToys(stage, { compact = false } = {}) {
       }
     });
     renderer.render(scene, camera);
+    drawn = true;
   });
+
+  return function dispose() {
+    renderer.setAnimationLoop(null);
+    resizeObs.disconnect();
+    visObs.disconnect();
+    window.removeEventListener('scroll', onScroll);
+    stage.removeEventListener('pointermove', toWorld);
+    stage.removeEventListener('pointerleave', onLeave);
+    stage.removeEventListener('click', onClick);
+    clearTimeout(tipTimer);
+    scene.traverse((o) => {
+      o.geometry?.dispose();
+      const mats = Array.isArray(o.material) ? o.material : o.material ? [o.material] : [];
+      mats.forEach((m) => { m.map?.dispose(); m.bumpMap?.dispose(); m.dispose(); });
+    });
+    renderer.dispose();
+    renderer.domElement.remove();
+  };
 }

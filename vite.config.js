@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import { readFileSync } from 'node:fs';
+import { SITE } from './src/site-config.js';
 
 // Width x height of each exported -lg photo (see tools/images.py).
 const PHOTOS = {
@@ -10,15 +11,35 @@ const PHOTOS = {
   speaking: [887, 876], surprise: [1100, 855], typewriter: [600, 450],
 };
 
-// Expands <img data-photo="name" ...> into src/srcset/size attributes, and
-// inlines the animated logo where <!--logo-anim--> appears.
+const TOKENS = {
+  url: SITE.url,
+  opening_long: SITE.openingLong,
+  opening_short: SITE.openingShort,
+  opening_month_year: SITE.openingMonthYear.toUpperCase(),
+  spots: String(SITE.spotsToStart),
+  max_children: String(SITE.maxChildren),
+  year: String(SITE.copyrightYear),
+  email: SITE.email,
+};
+
+// Expands <img data-photo="name" ...> into src/srcset/size attributes,
+// inlines the animated logo where <!--logo-anim--> appears, fills {{tokens}}
+// from src/site-config.js and writes the visit-week <option>s.
 function sitePartials() {
   return {
     name: 'site-partials',
     transformIndexHtml(html) {
       const logo = readFileSync(new URL('./src/partials/logo-anim.svg', import.meta.url), 'utf8');
+      const weeks = SITE.visitWeeks
+        .map((w) => `<option value="${w.label}" data-start="${w.start}">${w.label}</option>`)
+        .join('');
       return html
         .replace('<!--logo-anim-->', logo)
+        .replace('<!--visit-weeks-->', weeks)
+        .replace(/\{\{(\w+)\}\}/g, (m, key) => {
+          if (!(key in TOKENS)) throw new Error(`Unknown token: ${m}`);
+          return TOKENS[key];
+        })
         .replace(/<img data-photo="([\w-]+)"/g, (m, name) => {
           const dims = PHOTOS[name];
           if (!dims) throw new Error(`Unknown photo: ${name}`);

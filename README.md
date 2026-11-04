@@ -18,11 +18,26 @@ npx vercel --prod    # publish to production
 
 Vercel detects Vite automatically (build `npm run build`, output `dist`).
 
+## Dates, spots and visit weeks
+
+Opening date, spots, max children, email, site URL and the preferred visit
+weeks live in `src/site-config.js`. `index.html` uses them as `{{tokens}}`
+(filled at build by `vite.config.js`), so change them there, not in the HTML.
+Visit weeks that have already started are hidden automatically.
+
 ## Visit form
 
-Without setup, "Request a visit" opens the visitor's email app with a pre-filled
-message to Grow@familycoachmd.com. To receive submissions directly, create a
-Formspree form and add its URL to the form: `<form ... data-endpoint="https://formspree.io/f/XXXX">`.
+Without an endpoint the button reads "Prepare my email": it opens the visitor's
+email app with the request filled in and says clearly that nothing is sent until
+they press Send. To receive requests directly, create a Formspree form and add
+its URL: `<form ... data-endpoint="https://formspree.io/f/XXXX">`. The form then
+sends, blocks double clicks, and only confirms after the server answers.
+
+## Publishing extras
+
+`public/robots.txt`, `public/sitemap.xml` and `public/404.html` assume the
+current domain (https://entrepreneurs-at-play.vercel.app). Update them and
+`url` in `src/site-config.js` when the final domain is chosen.
 
 ## Assets and tools
 

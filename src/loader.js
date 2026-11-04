@@ -18,7 +18,11 @@ export function runLoader({ gsap, reduce }) {
   let seen = false;
   try { seen = sessionStorage.getItem(SEEN_KEY) === '1'; sessionStorage.setItem(SEEN_KEY, '1'); } catch { /* private mode */ }
 
-  const ready = Promise.race([assetsReady(), wait(HARD_CAP - 600)]);
+  // 'Skip intro' ends the animation and the wait at once.
+  const skipBtn = loader.querySelector('.loader-skip');
+  let onSkip = () => {};
+  const skipped = new Promise((r) => skipBtn?.addEventListener('click', () => { onSkip(); r(); }, { once: true }));
+  const ready = Promise.race([assetsReady(), wait(HARD_CAP - 600), skipped]);
 
   if (reduce) {
     gsap.set(line, { opacity: 1 });
@@ -67,6 +71,7 @@ export function runLoader({ gsap, reduce }) {
     .to([leafSmall, leafBig], { rotation: 3, duration: 0.15, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 2.2);
 
   if (seen) tl.timeScale(2.8);
+  onSkip = () => tl.progress(1);
 
   return tl.then(() => ready).then(() => {
     const elapsed = performance.now() - started;

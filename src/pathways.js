@@ -1,12 +1,26 @@
 // Two pathways: The Hatch (ages 2–6) and The Studio (ages 7–12).
-// The chooser panels, the age slider and the visit form all agree on one
-// "current pathway", remembered for the visit.
+//
+// Three separate things, kept separate on purpose:
+// - preview:  the panel a mouse is over (visual only, never saved)
+// - selected: the pathway a family chose (click, CTA or age slider; saved)
+// - age:      only what the family entered on the slider (never invented)
+// All visible text (slider note, form line) is derived from these in one
+// render(), so nothing can disagree.
 const STORE_KEY = 'ep-pathway';
+const AGE_KEY = 'ep-child-age';
 export const PATHS = {
   hatch: { name: 'The Hatch', ages: '2–6' },
   studio: { name: 'The Studio', ages: '7–12' },
 };
 export const pathFor = (age) => (Number(age) <= 6 ? 'hatch' : 'studio');
+
+const state = { preview: null, selected: null, age: null };
+let render = () => {};
+
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch { /* private mode */ } },
+};
 
 export function initPathways({ gsap, reduce }) {
   const grid = document.querySelector('.paths-grid');
@@ -16,68 +30,102 @@ export function initPathways({ gsap, reduce }) {
   const out = document.getElementById('age-out');
   const note = document.querySelector('.age-note');
   const helper = document.querySelector('.age-helper');
-  let current = null;
+  let shown = null;
 
-  const setActive = (key, { remember = true } = {}) => {
-    if (key === current) return;
-    current = key;
-    grid.dataset.active = key;
-    helper?.setAttribute('data-path', key);
-    document.documentElement.dataset.path = key;
-    panels.forEach((p) => {
-      const on = p.dataset.path === key;
-      p.classList.toggle('is-active', on);
-      if (on && !reduce) {
-        gsap.fromTo(p.querySelector('.path-leaf'), { scale: 0.4, rotation: -30 }, { scale: 1, rotation: 0, duration: 0.9, ease: 'elastic.out(1, 0.5)' });
-        gsap.fromTo(p.querySelectorAll('.path-words li'), { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.07, ease: 'power3.out' });
-      }
-    });
-    if (remember) { try { localStorage.setItem(STORE_KEY, key); } catch { /* private mode */ } }
+  render = () => {
+    const visual = state.preview || state.selected;
+    if (visual !== shown) {
+      shown = visual;
+      panels.forEach((p) => {
+        const on = p.dataset.path === visual;
+        p.classList.toggle('is-active', on);
+        if (on && !reduce) {
+          gsap.fromTo(p.querySelector('.path-leaf'), { scale: 0.4, rotation: -30 }, { scale: 1, rotation: 0, duration: 0.9, ease: 'elastic.out(1, 0.5)' });
+          gsap.fromTo(p.querySelectorAll('.path-words li'), { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.07, ease: 'power3.out' });
+        }
+      });
+    }
+    if (state.age) {
+      const key = pathFor(state.age);
+      const edge = { 6: ' Turning 7 this year?', 7: ' Just turned 7?' }[state.age];
+      out.textContent = state.age;
+      helper.dataset.path = key;
+      note.innerHTML = `Your child would join <strong>${PATHS[key].name}</strong>.${edge ? `${edge} Talk to us, and we’ll find the right fit.` : ''}`;
+    } else {
+      out.textContent = '–';
+      delete helper.dataset.path;
+      note.textContent = 'Slide to your child’s age to see which pathway fits.';
+    }
+    renderForm();
+  };
+
+  const select = (key) => {
+    state.selected = key;
+    store.set(STORE_KEY, key);
+    render();
   };
 
   panels.forEach((p) => {
     const key = p.dataset.path;
-    p.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') setActive(key); });
-    p.addEventListener('focusin', () => setActive(key));
-    p.addEventListener('click', () => setActive(key));
+    p.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { state.preview = key; render(); } });
+    p.addEventListener('pointerleave', () => { state.preview = null; render(); });
+    p.addEventListener('click', () => select(key));
   });
 
-  const showAge = (age) => {
-    out.textContent = age;
-    const key = pathFor(age);
-    const { name } = PATHS[key];
-    // At the boundary, invite a conversation instead of a hard rule.
-    const edge = { 6: ' Turning 7 this year?', 7: ' Just turned 7?' }[age];
-    note.innerHTML = `Your child would join <strong>${name}</strong>.${edge ? `${edge} Talk to us, and we’ll find the right fit.` : ''}`;
-    setActive(key);
-  };
-  range.addEventListener('input', () => showAge(Number(range.value)));
+  range.addEventListener('input', () => {
+    state.age = Number(range.value);
+    store.set(AGE_KEY, String(state.age));
+    state.selected = pathFor(state.age);
+    store.set(STORE_KEY, state.selected);
+    render();
+  });
 
-  // Restore a remembered choice, otherwise start on The Hatch.
-  let saved = null;
-  try { saved = localStorage.getItem(STORE_KEY); } catch { /* private mode */ }
-  if (saved === 'studio') { range.value = 8; showAge(8); } else { showAge(Number(range.value)); }
-
-  // "Book a … visit" pre-fills the form's age from the slider.
+  // "Book a … visit" records the interest. It fills the form's age only when
+  // the family already told us the age and it belongs to that pathway.
+  // A CTA for the other pathway than the slider's age means the family is
+  // asking about a different child: the slider age is cleared, not kept in
+  // contradiction with the choice.
   document.querySelectorAll('[data-path-cta]').forEach((a) => a.addEventListener('click', () => {
     const key = a.dataset.pathCta;
-    const age = pathFor(range.value) === key ? range.value : (key === 'hatch' ? 4 : 8);
-    const select = document.getElementById('f-age');
-    if (select) { select.value = String(age); select.dispatchEvent(new Event('change')); }
+    if (state.age && pathFor(state.age) !== key) { state.age = null; store.set(AGE_KEY, ''); }
+    const ageSelect = document.getElementById('f-age');
+    if (ageSelect && state.age) ageSelect.value = String(state.age);
+    select(key);
   }));
 
+  // Restore what the family actually chose last time.
+  const savedPath = store.get(STORE_KEY);
+  const savedAge = Number(store.get(AGE_KEY));
+  if (savedAge >= 2 && savedAge <= 12) { state.age = savedAge; range.value = savedAge; }
+  if (savedPath === 'hatch' || savedPath === 'studio') state.selected = savedPath;
+  if (state.age) state.selected = pathFor(state.age);
+
   initFormPath();
+  render();
 }
 
-// Visit form: tell parents which pathway their child's age belongs to.
-function initFormPath() {
-  const select = document.getElementById('f-age');
+// Visit form: the child's age in the form is the truth; otherwise the chosen
+// pathway is sent as the family's interest.
+function renderForm() {
+  const ageSelect = document.getElementById('f-age');
   const line = document.getElementById('f-path');
-  if (!select || !line) return;
-  select.addEventListener('change', () => {
-    if (!select.value) { line.hidden = true; return; }
-    const { name, ages } = PATHS[pathFor(select.value)];
-    line.innerHTML = `Your child would join <strong>${name}</strong> (ages ${ages}).`;
-    line.hidden = false;
-  });
+  const hidden = document.getElementById('f-pathway');
+  if (!ageSelect || !line) return;
+  const key = ageSelect.value ? pathFor(ageSelect.value) : state.selected;
+  if (hidden) hidden.value = key ? PATHS[key].name : '';
+  if (!key) { line.hidden = true; return; }
+  line.innerHTML = ageSelect.value
+    ? `Your child would join <strong>${PATHS[key].name}</strong> (ages ${PATHS[key].ages}).`
+    : `You’re interested in <strong>${PATHS[key].name}</strong> (ages ${PATHS[key].ages}).`;
+  line.hidden = false;
 }
+
+function initFormPath() {
+  document.getElementById('f-age')?.addEventListener('change', () => renderForm());
+}
+
+export const currentPathway = () => {
+  const ageSelect = document.getElementById('f-age');
+  const key = ageSelect?.value ? pathFor(ageSelect.value) : state.selected;
+  return key ? PATHS[key].name : '';
+};

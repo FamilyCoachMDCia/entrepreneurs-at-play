@@ -59,14 +59,24 @@ function reveals({ gsap, SplitText, reduce }) {
     });
   });
 
-  // Manifesto: words turn from faint to ink as you scroll through.
+  // Manifesto: words deepen from a readable soft ink to full ink as you
+  // scroll (never faint), and the highlighted phrase gets a marigold underline.
   const scrub = document.querySelector('[data-scrub-words]');
   if (scrub) {
     const split = SplitText.create(scrub, { type: 'words' });
-    gsap.fromTo(split.words, { opacity: 0.15 }, {
-      opacity: 1, stagger: 0.1, ease: 'none',
+    const plain = split.words.filter((w) => !w.closest('em'));
+    gsap.fromTo(plain, { color: '#5F625A' }, {
+      color: '#23261F', stagger: 0.1, ease: 'none',
       scrollTrigger: { trigger: scrub, start: 'top 80%', end: 'bottom 45%', scrub: true },
     });
+    const em = scrub.querySelector('em');
+    if (em) {
+      em.classList.add('mark');
+      gsap.fromTo(em, { '--mark': '0%' }, {
+        '--mark': '100%', ease: 'none',
+        scrollTrigger: { trigger: scrub, start: 'top 75%', end: 'center 50%', scrub: true },
+      });
+    }
   }
 
   // Promise icons and FAQ rows.
@@ -120,32 +130,56 @@ function learner({ gsap, reduce, ScrollTrigger }) {
     });
   }
 
+  // One source of truth: `current`. Every click cancels pending tweens and
+  // their callbacks, so fast open/close/open sequences can't leave the panel
+  // hidden while a chip says it's expanded.
+  const fill = (key) => {
+    const d = LEARNERS[key];
+    const chip = chips.find((c) => c.dataset.learner === key);
+    img.src = `/img/${d.photo}-sm.webp`;
+    img.alt = d.alt;
+    kicker.textContent = d.title;
+    text.textContent = d.text;
+    card.style.setProperty('--tint', getComputedStyle(chip).getPropertyValue('--tint'));
+  };
+  const settle = () => {
+    gsap.killTweensOf([panel, card]);
+    gsap.set(card, { clearProps: 'opacity,transform' });
+  };
+
   chips.forEach((chip) => chip.addEventListener('click', () => {
     const key = chip.dataset.learner;
-    const closing = current === key;
-    chips.forEach((c) => c.setAttribute('aria-expanded', String(!closing && c === chip)));
-    if (closing) {
-      current = null;
-      gsap.to(panel, { height: 0, duration: reduce ? 0 : 0.45, ease: 'power3.inOut', onComplete: () => { panel.hidden = true; ScrollTrigger.refresh(); } });
+    const next = current === key ? null : key;
+    const wasOpen = current !== null;
+    current = next;
+    chips.forEach((c) => c.setAttribute('aria-expanded', String(c.dataset.learner === next)));
+    settle();
+
+    if (!next) {
+      if (reduce) { panel.hidden = true; panel.style.height = ''; return; }
+      gsap.to(panel, {
+        height: 0, duration: 0.45, ease: 'power3.inOut',
+        onComplete: () => {
+          if (current !== null) return; // reopened meanwhile
+          panel.hidden = true;
+          gsap.set(panel, { clearProps: 'height' });
+          ScrollTrigger.refresh();
+        },
+      });
       return;
     }
-    const d = LEARNERS[key];
-    const fill = () => {
-      img.src = `/img/${d.photo}-sm.webp`;
-      img.alt = d.alt;
-      kicker.textContent = d.title;
-      text.textContent = d.text;
-      card.style.setProperty('--tint', getComputedStyle(chip).getPropertyValue('--tint'));
-    };
-    const wasOpen = current !== null;
-    current = key;
-    if (reduce) { fill(); panel.hidden = false; panel.style.height = 'auto'; return; }
+
+    fill(next);
+    panel.hidden = false;
+    if (reduce) { panel.style.height = ''; return; }
     if (wasOpen) {
-      gsap.to(card, { opacity: 0, y: 10, duration: 0.2, onComplete: () => { fill(); gsap.to(card, { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' }); } });
+      gsap.set(panel, { height: 'auto' });
+      gsap.fromTo(card, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power3.out' });
     } else {
-      fill();
-      panel.hidden = false;
-      gsap.fromTo(panel, { height: 0 }, { height: 'auto', duration: 0.55, ease: 'power3.out', onComplete: () => ScrollTrigger.refresh() });
+      gsap.fromTo(panel, { height: 0 }, {
+        height: 'auto', duration: 0.55, ease: 'power3.out',
+        onComplete: () => { if (current) gsap.set(panel, { clearProps: 'height' }); ScrollTrigger.refresh(); },
+      });
       gsap.fromTo(card, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, delay: 0.1, ease: 'power3.out' });
     }
   }));
@@ -159,10 +193,16 @@ function carousel({ gsap, reduce }) {
   const cards = gsap.utils.toArray('.card');
   const stepSize = () => cards[0].getBoundingClientRect().width + parseFloat(getComputedStyle(scroller.firstElementChild).columnGap || 24);
 
+  const now = document.querySelector('.cc-now');
   const update = () => {
     const max = scroller.scrollWidth - scroller.clientWidth;
     const p = max > 0 ? scroller.scrollLeft / max : 0;
     bar.style.transform = `scaleX(${0.12 + p * 0.88})`;
+    // "n of 8": the first card whose left edge is at or past the scroll start.
+    const left = scroller.getBoundingClientRect().left + parseFloat(getComputedStyle(scroller).paddingLeft);
+    let idx = cards.findIndex((c) => c.getBoundingClientRect().left >= left - 8);
+    if (idx < 0 || p > 0.98) idx = cards.length - 1;
+    if (now) now.textContent = String(idx + 1);
   };
   scroller.addEventListener('scroll', update, { passive: true });
   update();
@@ -194,15 +234,19 @@ function carousel({ gsap, reduce }) {
     scroller.classList.remove('is-dragging');
   });
 
-  // Camera button flips a photo to its story (Patagonia-style captions).
+  // Camera button flips a photo to its story (Patagonia-style captions). The
+  // story is a disclosure: hidden from assistive tech and focus until shown.
   cards.forEach((card) => {
     const cam = card.querySelector('.cam');
     const use = cam.querySelector('use');
+    const back = card.querySelector('.card-back');
     cam.addEventListener('click', () => {
       const on = card.classList.toggle('is-story');
-      cam.setAttribute('aria-pressed', String(on));
+      cam.setAttribute('aria-expanded', String(on));
       cam.setAttribute('aria-label', on ? 'Show the photo' : 'Show the story behind this photo');
       use.setAttribute('href', on ? '#d-close' : '#d-camera');
+      back.setAttribute('aria-hidden', String(!on));
+      back.inert = !on;
     });
 
     if (reduce) return;
@@ -237,57 +281,81 @@ function carousel({ gsap, reduce }) {
 }
 
 /* ---------- 06 · A day at EP: the sun-dial ---------- */
+// Pinned only where the whole step fits on screen (wide and tall enough);
+// phones, short laptops and landscape phones get the plain chronological list.
+// gsap.matchMedia reverts the pin and the DOM changes when the size changes.
+const PIN_QUERY = '(min-width: 768px) and (min-height: 720px)';
+
 function sundial({ gsap, reduce }) {
   const section = document.querySelector('.day');
   if (!section) return;
   const steps = gsap.utils.toArray('.day-steps li');
   if (reduce || steps.length < 2) return; // plain timeline stays
 
-  section.classList.add('is-pinned');
-  const timesBox = section.querySelector('.day-times');
-  const photosBox = section.querySelector('.day-photos');
-  const times = steps.map((li) => {
-    const span = document.createElement('span');
-    span.textContent = li.querySelector('time').textContent;
-    timesBox.append(span);
-    return span;
-  });
-  const photos = steps.map((li) => {
-    const img = li.querySelector('img').cloneNode();
-    img.loading = 'eager';
-    photosBox.append(img);
-    return img;
-  });
-  const n = steps.length;
-  gsap.set([...steps.slice(1), ...photos.slice(1)], { opacity: 0 });
-  gsap.set(times.slice(1), { yPercent: 100 });
+  gsap.matchMedia().add(PIN_QUERY, () => {
+    section.classList.add('is-pinned');
+    const timesBox = section.querySelector('.day-times');
+    const photosBox = section.querySelector('.day-photos');
+    // The list keeps its <time>s (visually hidden in this mode) so assistive
+    // tech still reads every time once; the big clock is decoration only.
+    const times = steps.map((li) => {
+      const span = document.createElement('span');
+      span.textContent = li.querySelector('time').textContent;
+      timesBox.append(span);
+      return span;
+    });
+    // Photos move (not clone) into the stage, so there is one copy of each.
+    const photos = steps.map((li) => {
+      const img = li.querySelector('img');
+      img.loading = 'eager';
+      photosBox.append(img);
+      return img;
+    });
+    photosBox.setAttribute('aria-hidden', 'true');
 
-  const mobile = window.innerWidth < 768;
-  const tl = gsap.timeline({
-    defaults: { ease: 'none' },
-    scrollTrigger: {
-      trigger: section, pin: '.day-pin', start: 'top top',
-      end: () => `+=${window.innerHeight * (mobile ? 1.8 : 2.5)}`,
-      scrub: 0.8, anticipatePin: 1, invalidateOnRefresh: true,
-      snap: { snapTo: 1 / (n - 1), duration: { min: 0.2, max: 0.6 }, delay: 0.1, ease: 'power2.inOut' },
-    },
+    const n = steps.length;
+    gsap.set([...steps.slice(1), ...photos.slice(1)], { opacity: 0 });
+    gsap.set(times.slice(1), { yPercent: 100 });
+    buildTimeline(n, steps, times, photos);
+
+    return () => {
+      // Back to the plain list: return photos to their steps, drop the clock.
+      photos.forEach((img, i) => steps[i].append(img));
+      timesBox.replaceChildren();
+      photosBox.removeAttribute('aria-hidden');
+      gsap.set([...steps, ...photos], { clearProps: 'opacity,transform' });
+      section.classList.remove('is-pinned');
+      gsap.set(section, { clearProps: 'backgroundColor' });
+    };
   });
 
-  tl.to('.sun', { motionPath: { path: '.sun-arc', align: '.sun-arc', alignOrigin: [0.5, 0.5] }, duration: n - 1 }, 0)
-    .to('.sun-rays', { rotation: 180, svgOrigin: '0 0', duration: n - 1 }, 0)
-    .to(section, {
-      keyframes: { backgroundColor: ['#F6F2EA', '#FBF3DC', '#FBF3DC', '#CFE0DF', '#F3E2C4'] },
-      duration: n - 1,
-    }, 0);
+  function buildTimeline(n, steps, times, photos) {
+    const tl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: {
+        trigger: section, pin: '.day-pin', start: 'top top',
+        end: () => `+=${window.innerHeight * 2.5}`,
+        scrub: 0.8, anticipatePin: 1, invalidateOnRefresh: true,
+        snap: { snapTo: 1 / (n - 1), duration: { min: 0.2, max: 0.6 }, delay: 0.1, ease: 'power2.inOut' },
+      },
+    });
 
-  for (let k = 1; k < n; k++) {
-    const at = k - 0.5;
-    tl.to(steps[k - 1], { y: -24, opacity: 0, duration: 0.3 }, at)
-      .fromTo(steps[k], { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3 }, at + 0.2)
-      .to(times[k - 1], { yPercent: -100, duration: 0.4 }, at)
-      .fromTo(times[k], { yPercent: 100 }, { yPercent: 0, duration: 0.4 }, at + 0.1)
-      .to(photos[k - 1], { opacity: 0, scale: 0.96, duration: 0.35 }, at)
-      .fromTo(photos[k], { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.35 }, at + 0.1);
+    tl.to('.sun', { motionPath: { path: '.sun-arc', align: '.sun-arc', alignOrigin: [0.5, 0.5] }, duration: n - 1 }, 0)
+      .to('.sun-rays', { rotation: 180, svgOrigin: '0 0', duration: n - 1 }, 0)
+      .to(section, {
+        keyframes: { backgroundColor: ['#F6F2EA', '#FBF3DC', '#FBF3DC', '#CFE0DF', '#F3E2C4'] },
+        duration: n - 1,
+      }, 0);
+
+    for (let k = 1; k < n; k++) {
+      const at = k - 0.5;
+      tl.to(steps[k - 1], { y: -24, opacity: 0, duration: 0.3 }, at)
+        .fromTo(steps[k], { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3 }, at + 0.2)
+        .to(times[k - 1], { yPercent: -100, duration: 0.4 }, at)
+        .fromTo(times[k], { yPercent: 100 }, { yPercent: 0, duration: 0.4 }, at + 0.1)
+        .to(photos[k - 1], { opacity: 0, scale: 0.96, duration: 0.35 }, at)
+        .fromTo(photos[k], { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.35 }, at + 0.1);
+    }
   }
 }
 
@@ -321,13 +389,27 @@ function compare({ gsap, reduce }) {
 
 /* ---------- 09 · Seed packets ---------- */
 function packets({ gsap, reduce }) {
-  const items = gsap.utils.toArray('.packet');
-  items.forEach((p) => p.addEventListener('click', () => {
-    p.setAttribute('aria-pressed', String(p.getAttribute('aria-pressed') !== 'true'));
-  }));
+  // One state per packet, driven only by its button (hover just lifts it).
+  gsap.utils.toArray('.packet').forEach((p) => {
+    const btn = p.querySelector('.packet-toggle');
+    const back = p.querySelector('.packet-back');
+    const label = btn.querySelector('.sr-only');
+    const name = label.textContent.replace(/: show details$/, '');
+    btn.addEventListener('click', () => {
+      const open = !p.classList.contains('is-open');
+      p.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+      back.setAttribute('aria-hidden', String(!open));
+      back.inert = !open;
+      label.textContent = `${name}: ${open ? 'hide' : 'show'} details`;
+    });
+  });
   if (reduce) return;
-  gsap.from('.packets li', {
-    y: -30, rotation: () => gsap.utils.random(-6, 6), opacity: 0, duration: 0.7, stagger: 0.05, ease: 'back.out(1.6)',
+  // Packets lift on hover with a CSS transform transition: explicit end
+  // values + clearProps keep the entrance from fighting it (see chips).
+  gsap.fromTo('.packets li', { y: -30, rotation: () => gsap.utils.random(-6, 6), opacity: 0 }, {
+    y: 0, rotation: 0, opacity: 1, duration: 0.7, stagger: 0.05, ease: 'back.out(1.6)',
+    clearProps: 'transform,translate,rotate,scale,opacity',
     scrollTrigger: { trigger: '.packets', start: 'top 85%', once: true },
   });
   // Ages leaves unfurl too, echoing the loader.
@@ -345,12 +427,14 @@ function counters({ gsap, reduce }) {
     const target = parseFloat(el.dataset.count);
     const dec = parseInt(el.dataset.decimals || '0', 10);
     if (reduce) return;
+    // The final value stays in the DOM until the number scrolls into view;
+    // the count only starts then (screen readers use the sr-only text).
     const obj = { v: 0 };
-    el.textContent = (0).toFixed(dec);
     gsap.to(obj, {
       v: target, duration: 1.6, ease: 'power2.out',
+      onStart: () => { el.textContent = (0).toFixed(dec); },
       onUpdate: () => { el.textContent = obj.v.toFixed(dec); },
-      scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+      scrollTrigger: { trigger: el, start: 'top bottom', once: true },
     });
   });
   if (ring && !reduce) {

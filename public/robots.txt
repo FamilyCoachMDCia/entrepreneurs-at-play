@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://entrepreneurs-at-play.vercel.app/sitemap.xml

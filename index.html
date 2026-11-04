@@ -4,21 +4,38 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Entrepreneurs at Play · Physician-founded microschool in Omaha, NE</title>
-<meta name="description" content="A physician-founded, multi-age program in Omaha for ages 2–12, in two pathways (The Hatch, 2–6, and The Studio, 7–12): advanced academics, real-world entrepreneurship and joyful play. Opening January 4, 2027. Only 5 spots to start.">
+<meta name="description" content="A physician-founded, multi-age program in Omaha for ages 2–12, in two pathways (The Hatch, 2–6, and The Studio, 7–12): advanced academics, real-world entrepreneurship and joyful play. Opening {{opening_long}}. Only {{spots}} spots to start.">
+<link rel="canonical" href="{{url}}/">
 <meta name="theme-color" content="#F6F2EA">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
+<meta property="og:url" content="{{url}}/">
+<meta property="og:site_name" content="Entrepreneurs at Play">
 <meta property="og:title" content="Entrepreneurs at Play · Play'sWork">
-<meta property="og:description" content="A physician-founded, multi-age program in Omaha for ages 2–12: The Hatch (2–6) and The Studio (7–12). Opening January 4, 2027. Only 5 spots to start.">
-<meta property="og:image" content="/og-image.jpg">
+<meta property="og:description" content="A physician-founded, multi-age program in Omaha for ages 2–12: The Hatch (2–6) and The Studio (7–12). Opening {{opening_long}}. Only {{spots}} spots to start.">
+<meta property="og:image" content="{{url}}/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Entrepreneurs at Play, a FamilyCoachMD program in Omaha">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..800,0..100,0..1;1,9..144,400..800,0..100,0..1&display=swap">
 <link rel="stylesheet" href="/src/styles/main.css">
-<script>document.documentElement.classList.add('js');</script>
+<script>
+/* Effects hide content until JS is ready. If the app script never starts
+   (blocked, offline, error), drop the flag so the page shows as plain HTML. */
+document.documentElement.classList.add('js');
+setTimeout(function () {
+  var h = document.documentElement;
+  if (!h.classList.contains('app-ready')) {
+    h.classList.remove('js');
+    var l = document.getElementById('loader'); if (l) l.remove();
+  }
+}, 5000);
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -26,7 +43,8 @@
   "name": "Entrepreneurs at Play",
   "alternateName": "EP, a FamilyCoachMD program",
   "description": "A physician-founded, multi-age collaborative home educator immersion program for children ages 2 to 12 in the Omaha area, in two pathways: The Hatch (ages 2–6) and The Studio (ages 7–12).",
-  "email": "Grow@familycoachmd.com",
+  "email": "{{email}}",
+  "url": "{{url}}/",
   "areaServed": "Omaha, Nebraska",
   "founder": { "@type": "Person", "name": "Dr. Larisa Che, MD", "jobTitle": "Board-certified child and adolescent psychiatrist" },
   "parentOrganization": { "@type": "Organization", "name": "FamilyCoachMD" }
@@ -68,11 +86,12 @@
 </svg>
 
 <!-- 00 · Loader: the FamilyCoachMD logo grows -->
-<div class="loader" id="loader" aria-hidden="true">
-  <div class="loader-inner">
+<div class="loader" id="loader">
+  <div class="loader-inner" aria-hidden="true">
     <div class="loader-logo"><!--logo-anim--></div>
     <p class="loader-line">Entrepreneurs at Play · A FamilyCoachMD program</p>
   </div>
+  <button class="loader-skip" type="button">Skip intro</button>
 </div>
 
 <div class="cursor" aria-hidden="true"><span class="cursor-dot"></span><span class="cursor-ring"><em class="cursor-label"></em></span></div>
@@ -82,12 +101,12 @@
 <header class="site-head" id="site-head">
   <div class="ticker" role="region" aria-label="Announcements">
     <ul class="ticker-list">
-      <li>Opening January 4, 2027</li>
-      <li><span>Only 5 spots to start:</span><a href="#visit">book a visit</a></li>
+      <li>Opening {{opening_long}}</li>
+      <li><span>Only {{spots}} spots to start:</span><a href="#visit">book a visit</a></li>
       <li>The Hatch 2–6 · The Studio 7–12 · Mon–Fri 9–4</li>
       <li>A physician-founded program</li>
     </ul>
-    <button class="ticker-pause" type="button" aria-pressed="false" aria-label="Pause announcements"><span></span><span></span></button>
+    <button class="ticker-pause" type="button" aria-pressed="false" aria-label="Pause all motion"><span></span><span></span></button>
   </div>
   <nav class="nav" aria-label="Main">
     <a href="#top" class="nav-brand" aria-label="Entrepreneurs at Play, home">
@@ -115,7 +134,7 @@
     <li><a href="#faq">Questions</a></li>
     <li><a href="#visit">Book a visit</a></li>
   </ul>
-  <p class="menu-foot">Opening January 4, 2027 · <a href="mailto:Grow@familycoachmd.com">Grow@familycoachmd.com</a></p>
+  <p class="menu-foot">Opening {{opening_long}} · <a href="mailto:{{email}}">{{email}}</a></p>
 </div>
 
 <main id="main">
@@ -141,7 +160,7 @@
       </div>
     </div>
     <ul class="hero-chips">
-      <li><small>Opening</small> Jan 4, 2027</li>
+      <li><small>Opening</small> {{opening_short}}</li>
       <li><small>Ages</small> 2–12</li>
       <li><small>Guides</small> 2 adults, always</li>
     </ul>
@@ -157,8 +176,8 @@
     </div>
   </div>
   <div class="badge" aria-hidden="true">
-    <svg viewBox="0 0 200 200"><defs><path id="badge-circle" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs><text><textPath href="#badge-circle">ONLY 5 SPOTS · OPENING JANUARY 2027 · </textPath></text></svg>
-    <span>5</span>
+    <svg viewBox="0 0 200 200"><defs><path id="badge-circle" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/></defs><text><textPath href="#badge-circle">ONLY {{spots}} SPOTS · OPENING {{opening_month_year}} · </textPath></text></svg>
+    <span>{{spots}}</span>
   </div>
   <a class="scroll-cue" href="#pathways"><svg aria-hidden="true"><use href="#i-sprout"/></svg><span>scroll to grow</span></a>
 </section>
@@ -173,8 +192,8 @@
       </div>
       <p class="sub">Every child grows on the same stem. The little leaf and the big leaf of our logo are our two pathways.</p>
     </div>
-    <div class="paths-grid" data-active="hatch">
-      <article class="path path-hatch is-active" data-path="hatch" tabindex="0" aria-labelledby="path-hatch-title">
+    <div class="paths-grid">
+      <article class="path path-hatch" data-path="hatch" aria-labelledby="path-hatch-title">
         <figure class="path-photo"><img data-photo="cooking" sizes="(max-width: 767px) 100vw, 640px" alt="Two young children mixing batter together in a kitchen" loading="lazy"></figure>
         <div class="path-body">
           <svg class="path-leaf" viewBox="0 0 46 40" aria-hidden="true"><path d="M2 38 C 4 24, 14 12, 34 10 C 32 26, 22 36, 2 38 z" fill="#BDAF90" stroke="#9A9B86" stroke-width="2"/></svg>
@@ -182,10 +201,11 @@
           <h3 id="path-hatch-title">The Hatch</h3>
           <ul class="path-words" aria-label="Play, wonder, grow"><li>Play</li><li>Wonder</li><li>Grow</li></ul>
           <p class="path-text">Where it all starts: free and guided play, sign language, music, nature and gentle routines, with big kids as mentors.</p>
+          <p class="path-soon">A full Hatch day (rhythm, rest and outings) is coming soon. Ask us about it on your visit.</p>
           <a class="btn path-btn" href="#visit" data-path-cta="hatch"><span>Book a Hatch visit</span><i class="btn-dot"></i></a>
         </div>
       </article>
-      <article class="path path-studio" data-path="studio" tabindex="0" aria-labelledby="path-studio-title">
+      <article class="path path-studio" data-path="studio" aria-labelledby="path-studio-title">
         <figure class="path-photo"><img data-photo="business-fair" sizes="(max-width: 767px) 100vw, 640px" alt="A young entrepreneur explaining his product to a customer at a business fair" loading="lazy"></figure>
         <div class="path-body">
           <svg class="path-leaf" viewBox="0 0 46 40" aria-hidden="true"><path d="M2 38 C 4 20, 16 6, 44 2 C 42 24, 28 36, 2 38 z" fill="#6E7157" stroke="#3C4136" stroke-width="2"/><path d="M4 36 C 16 26, 26 16, 38 8" fill="none" stroke="#3C4136" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -197,17 +217,46 @@
         </div>
       </article>
     </div>
-    <div class="age-helper" data-path="hatch">
+    <div class="age-helper">
       <div class="age-q">
         <label for="age-range">How old is your child?</label>
-        <p class="age-value"><output id="age-out" for="age-range">4</output><span>years old</span></p>
+        <p class="age-value"><output id="age-out" for="age-range">–</output><span>years old</span></p>
       </div>
       <div class="age-track">
         <input id="age-range" type="range" min="2" max="12" step="1" value="4">
         <div class="age-ticks" aria-hidden="true"><span style="--p:0">2</span><span style="--p:.1">3</span><span style="--p:.2">4</span><span style="--p:.3">5</span><span style="--p:.4">6</span><span style="--p:.5">7</span><span style="--p:.6">8</span><span style="--p:.7">9</span><span style="--p:.8">10</span><span style="--p:.9">11</span><span style="--p:1">12</span></div>
         <div class="age-zones" aria-hidden="true"><span class="zone-hatch">The Hatch · 2–6</span><span class="zone-studio">The Studio · 7–12</span></div>
       </div>
-      <p class="age-note" role="status" aria-live="polite">Your child would join <strong>The Hatch</strong>.</p>
+      <p class="age-note" role="status" aria-live="polite">Slide to your child’s age to see which pathway fits.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · Founder -->
+<section class="founder" id="founder" aria-labelledby="founder-title" data-sprout>
+  <div class="wrap founder-grid">
+    <div class="founder-visual">
+      <svg class="founder-svg" viewBox="0 0 400 520" aria-hidden="true">
+        <defs>
+          <clipPath id="leaf-clip"><path d="M200 12 C 330 40, 392 170, 380 300 C 368 430, 280 508, 200 508 C 120 508, 32 430, 20 300 C 8 170, 70 40, 200 12 z"/></clipPath>
+        </defs>
+        <image href="/img/founder-lg.webp" x="0" y="0" width="400" height="533" clip-path="url(#leaf-clip)" preserveAspectRatio="xMidYMin slice"/>
+        <path class="founder-outline" d="M200 12 C 330 40, 392 170, 380 300 C 368 430, 280 508, 200 508 C 120 508, 32 430, 20 300 C 8 170, 70 40, 200 12 z" fill="none"/>
+      </svg>
+      <span class="sr-only">Portrait of Dr. Larisa Che, MD, founder of Entrepreneurs at Play</span>
+    </div>
+    <div class="founder-copy">
+      <p class="eyebrow">Meet the founder</p>
+      <h2 class="h2" id="founder-title" data-split>Dr. Larisa Che, <em>MD</em></h2>
+      <ul class="cred">
+        <li>Board-certified child &amp; adolescent psychiatrist</li>
+        <li>Founder, FamilyCoachMD</li>
+        <li>Creighton fellowship-trained</li>
+        <li>Omaha mom</li>
+      </ul>
+      <blockquote class="quote" data-lines>“Childhood is not merely a holding space for adulthood. The time is now; the time is here; Entrepreneurs are at play.”</blockquote>
+      <p>My background informs my passion for raising resilient and capable kids who learn to harness the power of failure and success alike. Emotional health, calm guidance and character are built into every day, alongside rigorous academics.</p>
+      <p class="signature">— Dr. Larisa Che</p>
     </div>
   </div>
 </section>
@@ -274,8 +323,9 @@
       <h2 class="h2" id="apart-title" data-split>Eight things that set <em>EP</em> apart</h2>
     </div>
     <div class="carousel-nav">
-      <button class="round-btn" type="button" data-carousel="prev" aria-label="Previous"><svg class="flip-x"><use href="#d-chev"/></svg></button>
-      <button class="round-btn" type="button" data-carousel="next" aria-label="Next"><svg><use href="#d-chev"/></svg></button>
+      <button class="round-btn" type="button" data-carousel="prev" aria-label="Previous"><svg class="flip-x" aria-hidden="true"><use href="#d-chev"/></svg></button>
+      <p class="carousel-count" aria-live="polite"><span class="cc-now">1</span> of 8</p>
+      <button class="round-btn" type="button" data-carousel="next" aria-label="Next"><svg aria-hidden="true"><use href="#d-chev"/></svg></button>
     </div>
   </div>
   <div class="carousel" data-cursor="drag" tabindex="0" aria-label="Eight things that set EP apart, scrollable">
@@ -283,64 +333,64 @@
       <li class="card" data-sticker="sparkle">
         <div class="card-inner">
           <figure class="card-front"><img data-photo="business-fair" sizes="(max-width: 767px) 78vw, 380px" alt="A young entrepreneur explaining his product to a customer at a business fair" loading="lazy"></figure>
-          <div class="card-back"><p>One of our young entrepreneurs at a real business fair: greeting customers, explaining his product, making the sale himself.</p><span class="doodle-note">he did the math himself!</span></div>
-          <button class="cam" type="button" aria-label="Show the story behind this photo" aria-pressed="false"><svg><use href="#d-camera"/></svg></button>
+          <div class="card-back" id="story-1" aria-hidden="true" inert><p>One of our young entrepreneurs at a real business fair: greeting customers, explaining his product, making the sale himself.</p><span class="doodle-note">he did the math himself!</span></div>
+          <button class="cam" type="button" aria-expanded="false" aria-controls="story-1" aria-label="Show the story behind this photo"><svg aria-hidden="true"><use href="#d-camera"/></svg></button>
         </div>
         <span class="card-num">01</span><h3>Real-life entrepreneurship</h3><p>Children make, price and sell real products to real customers.</p>
       </li>
       <li class="card">
         <div class="card-inner">
           <figure class="card-front"><img data-photo="podcast" sizes="(max-width: 767px) 78vw, 380px" alt="A podcast microphone on a stand" loading="lazy"></figure>
-          <div class="card-back"><p>They choose a question, interview someone making a difference for kids, then record and publish it themselves.</p><span class="doodle-note">on air!</span></div>
-          <button class="cam" type="button" aria-label="Show the story behind this photo" aria-pressed="false"><svg><use href="#d-camera"/></svg></button>
+          <div class="card-back" id="story-2" aria-hidden="true" inert><p>They choose a question, interview someone making a difference for kids, then record and publish it themselves.</p><span class="doodle-note">on air!</span></div>
+          <button class="cam" type="button" aria-expanded="false" aria-controls="story-2" aria-label="Show the story behind this photo"><svg aria-hidden="true"><use href="#d-camera"/></svg></button>
         </div>
         <span class="card-num">02</span><h3>Podcasting</h3><p>Children interview, record and publish their own podcast.</p>
       </li>
       <li class="card">
         <div class="card-inner">
           <figure class="card-front"><img data-photo="golf" sizes="(max-width: 767px) 78vw, 380px" alt="A golf club about to strike a ball on the green" loading="lazy"></figure>
-          <div class="card-back"><p>Golf builds focus, patience, honesty and self-control, and it’s a game they can share with mentors for life.</p><span class="doodle-note">fore!</span></div>
-          <button class="cam" type="button" aria-label="Show the story behind this photo" aria-pressed="false"><svg><use href="#d-camera"/></svg></button>
+          <div class="card-back" id="story-3" aria-hidden="true" inert><p>Golf builds focus, patience, honesty and self-control, and it’s a game they can share with mentors for life.</p><span class="doodle-note">fore!</span></div>
+          <button class="cam" type="button" aria-expanded="false" aria-controls="story-3" aria-label="Show the story behind this photo"><svg aria-hidden="true"><use href="#d-camera"/></svg></button>
         </div>
         <span class="card-num">03</span><h3>Golf</h3><p>Weekly coaching for focus, patience and honesty.</p>
       </li>
       <li class="card">
         <div class="card-inner">
           <figure class="card-front"><img data-photo="flight" sizes="(max-width: 767px) 78vw, 380px" alt="Two smiling children in the pilot seats of a flight simulator" loading="lazy"></figure>
-          <div class="card-back"><p>Learning goes where the lessons are used: here, in the cockpit of a flight simulator.</p><span class="doodle-note">future pilots</span></div>
-          <button class="cam" type="button" aria-label="Show the story behind this photo" aria-pressed="false"><svg><use href="#d-camera"/></svg></button>
+          <div class="card-back" id="story-4" aria-hidden="true" inert><p>Learning goes where the lessons are used: here, in the cockpit of a flight simulator.</p><span class="doodle-note">future pilots</span></div>
+          <button class="cam" type="button" aria-expanded="false" aria-controls="story-4" aria-label="Show the story behind this photo"><svg aria-hidden="true"><use href="#d-camera"/></svg></button>
         </div>
         <span class="card-num">04</span><h3>Academic excellence</h3><p>Advanced academics at each child’s pace, from farms to flight decks.</p>
       </li>
       <li class="card" data-sticker="sun">
         <div class="card-inner">
           <figure class="card-front"><img data-photo="garden" sizes="(max-width: 767px) 78vw, 380px" alt="A child in rain boots pulling weeds from wet soil" loading="lazy"></figure>
-          <div class="card-back"><p>Childhood is for getting your hands dirty and your mind inspired. Real work outdoors, rain or shine, builds grit.</p><span class="doodle-note">rain boots on</span></div>
-          <button class="cam" type="button" aria-label="Show the story behind this photo" aria-pressed="false"><svg><use href="#d-camera"/></svg></button>
+          <div class="card-back" id="story-5" aria-hidden="true" inert><p>Childhood is for getting your hands dirty and your mind inspired. Real work outdoors, rain or shine, builds grit.</p><span class="doodle-note">rain boots on</span></div>
+          <button class="cam" type="button" aria-expanded="false" aria-controls="story-5" aria-label="Show the story behind this photo"><svg aria-hidden="true"><use href="#d-camera"/></svg></button>
         </div>
         <span class="card-num">05</span><h3>Childhood play</h3><p>Free play every day, guided play and real work outdoors.</p>
       </li>
       <li class="card">
         <div class="card-inner">
           <figure class="card-front"><img data-photo="cuisine" sizes="(max-width: 767px) 78vw, 380px" alt="A table of fried plantains, rice, fresh fruit and muffins" loading="lazy"></figure>
-          <div class="card-back"><p>Every dish comes with its own words, stories and manners. And Fridays happen in French.</p><span class="doodle-note">bon appétit!</span></div>
-          <button class="cam" type="button" aria-label="Show the story behind this photo" aria-pressed="false"><svg><use href="#d-camera"/></svg></button>
+          <div class="card-back" id="story-6" aria-hidden="true" inert><p>Every dish comes with its own words, stories and manners. And Fridays happen in French.</p><span class="doodle-note">bon appétit!</span></div>
+          <button class="cam" type="button" aria-expanded="false" aria-controls="story-6" aria-label="Show the story behind this photo"><svg aria-hidden="true"><use href="#d-camera"/></svg></button>
         </div>
         <span class="card-num">06</span><h3>Cultural immersion</h3><p>French, sign language (ASL), many faiths and world cuisines.</p>
       </li>
       <li class="card">
         <div class="card-inner">
           <figure class="card-front"><img data-photo="guitar" sizes="(max-width: 767px) 78vw, 380px" alt="A smiling young child holding an acoustic guitar" loading="lazy"></figure>
-          <div class="card-back"><p>Partnerships with local studios and artists bring music, choir and theater to life.</p><span class="doodle-note">first chords</span></div>
-          <button class="cam" type="button" aria-label="Show the story behind this photo" aria-pressed="false"><svg><use href="#d-camera"/></svg></button>
+          <div class="card-back" id="story-7" aria-hidden="true" inert><p>Partnerships with local studios and artists bring music, choir and theater to life.</p><span class="doodle-note">first chords</span></div>
+          <button class="cam" type="button" aria-expanded="false" aria-controls="story-7" aria-label="Show the story behind this photo"><svg aria-hidden="true"><use href="#d-camera"/></svg></button>
         </div>
         <span class="card-num">07</span><h3>Arts and humanities</h3><p>Music, choir, theater and art, fully engaged.</p>
       </li>
       <li class="card" data-sticker="star">
         <div class="card-inner">
           <figure class="card-front"><img data-photo="speaking" sizes="(max-width: 767px) 78vw, 380px" alt="A young boy in a vest and tie, smiling with his arms open as he speaks" loading="lazy"></figure>
-          <div class="card-back"><p>One-on-one coaching: learning to listen well, organize thoughts and speak with confidence.</p><span class="doodle-note">the floor is yours</span></div>
-          <button class="cam" type="button" aria-label="Show the story behind this photo" aria-pressed="false"><svg><use href="#d-camera"/></svg></button>
+          <div class="card-back" id="story-8" aria-hidden="true" inert><p>One-on-one coaching: learning to listen well, organize thoughts and speak with confidence.</p><span class="doodle-note">the floor is yours</span></div>
+          <button class="cam" type="button" aria-expanded="false" aria-controls="story-8" aria-label="Show the story behind this photo"><svg aria-hidden="true"><use href="#d-camera"/></svg></button>
         </div>
         <span class="card-num">08</span><h3>Communication coaching</h3><p>One-on-one speech coaching from experts.</p>
       </li>
@@ -356,10 +406,11 @@
       <div class="day-head">
         <p class="eyebrow">A day at EP · 9:00 to 4:00</p>
         <h2 class="h2" id="day-title">Follow the <em>sun</em> through a Wednesday</h2>
+        <p class="day-note">A sample Wednesday in <strong>The Studio</strong> (ages 7–12). Some activities rotate through the semester.</p>
       </div>
       <svg class="sundial" viewBox="0 0 1000 200" aria-hidden="true">
         <path class="sun-arc" d="M40 190 C 220 -30, 780 -30, 960 190" fill="none"/>
-        <g class="sun"><circle r="26"/><g class="sun-rays"><path d="M0 -44v10M0 34v10M-44 0h10M34 0h10M-31 -31l7 7M24 24l7 7M-31 31l7 -7M24 -24l7 -7"/></g></g>
+        <g class="sun" transform="translate(40 190)"><circle r="26"/><g class="sun-rays"><path d="M0 -44v10M0 34v10M-44 0h10M34 0h10M-31 -31l7 7M24 24l7 7M-31 31l7 -7M24 -24l7 -7"/></g></g>
       </svg>
       <div class="day-stage">
         <div class="day-times" aria-hidden="true"></div>
@@ -375,7 +426,6 @@
           <li><time>4:00</time><h3>Group uplift and check-out</h3><p>We close the day lifting each other up before heading home.</p><img data-photo="hens" sizes="(max-width: 767px) 60vw, 420px" alt="A child feeding three hens on a grassy hill" loading="lazy"></li>
         </ol>
       </div>
-      <p class="day-foot">A sample Wednesday in The Studio (ages 7–12). Some activities rotate through the semester.</p>
     </div>
   </div>
 </section>
@@ -423,7 +473,7 @@
         <figure class="ages-photo ap-2"><img data-photo="cooking" sizes="(max-width: 767px) 55vw, 300px" alt="An older child and a younger child mixing batter together" loading="lazy"></figure>
       </div>
     </div>
-    <p class="coming">Coming next: after-school enrichment, school’s-out weeks and summer camp. <a class="link" href="mailto:Grow@familycoachmd.com?subject=Notify%20me%20about%20EP%20enrichment%20programs">Get notified</a></p>
+    <p class="coming">Coming next: after-school enrichment, school’s-out weeks and summer camp. <a class="link" href="mailto:{{email}}?subject=Notify%20me%20about%20EP%20enrichment%20programs">Get notified</a></p>
   </div>
 </section>
 
@@ -433,17 +483,83 @@
     <h2 class="h2" id="domains-title" data-split>Eleven subjects. One <em>curious</em> child.</h2>
     <p class="sub">We want children who can solve an equation, write a strong essay, cook a meal, run a small business and speak with confidence.</p>
     <ul class="packets">
-      <li><button class="packet" type="button" aria-pressed="false"><span class="packet-front"><span class="packet-n">01</span><svg aria-hidden="true"><use href="#i-builder"/></svg><strong>Math and Me</strong><small>Plant: Spring 2027</small></span><span class="packet-back"><strong>Mathematics</strong><span>Small groups, each child at their own level.</span></span></button></li>
-      <li><button class="packet" type="button" aria-pressed="false"><span class="packet-front"><span class="packet-n">02</span><svg aria-hidden="true"><use href="#i-thinker"/></svg><strong>Literature Is Lit</strong><small>Plant: Spring 2027</small></span><span class="packet-back"><strong>Language Arts and Literature</strong><span>Reading groups, essays and Socratic discussion.</span></span></button></li>
-      <li><button class="packet" type="button" aria-pressed="false"><span class="packet-front"><span class="packet-n">03</span><svg aria-hidden="true"><use href="#d-sparkle"/></svg><strong>Sciencey Stuff</strong><small>Plant: Spring 2027</small></span><span class="packet-back"><strong>Science and Animal Studies</strong><span>Experiments, animals and how the world works.</span></span></button></li>
-      <li><button class="packet" type="button" aria-pressed="false"><span class="packet-front"><span class="packet-n">04</span><svg aria-hidden="true"><use href="#d-plane"/></svg><strong>Engage and Engineer</strong><small>Plant: Spring 2027</small></span><span class="packet-back"><strong>Engineering and Design</strong><span>Builds, prototypes and hackathons.</span></span></button></li>
-      <li><button class="packet" type="button" aria-pressed="false"><span class="packet-front"><span class="packet-n">05</span><svg aria-hidden="true"><use href="#d-leaf"/></svg><strong>Heart and Soil</strong><small>Plant: Spring 2027</small></span><span class="packet-back"><strong>Nature, Mindfulness and SEL</strong><span>Outdoors, calm minds and emotional skills.</span></span></button></li>
-      <li><button class="packet" type="button" aria-pressed="false"><span class="packet-front"><span class="packet-n">06</span><svg aria-hidden="true"><use href="#p-chart"/></svg><strong>Finance Is Fun</strong><small>Plant: Spring 2027</small></span><span class="packet-back"><strong>Finance and Entrepreneurship</strong><span>A student store and a stock market game.</span></span></button></li>
-      <li><button class="packet" type="button" aria-pressed="false"><span class="packet-front"><span class="packet-n">07</span><svg aria-hidden="true"><use href="#i-explorer"/></svg><strong>Culture and Cuisine</strong><small>Plant: Spring 2027</small></span><span class="packet-back"><strong>World Cultures, Languages and Life Skills</strong><span>French, ASL and cooking from around the world.</span></span></button></li>
-      <li><button class="packet" type="button" aria-pressed="false"><span class="packet-front"><span class="packet-n">08</span><svg aria-hidden="true"><use href="#i-artist"/></svg><strong>Soulful Sounds</strong><small>Plant: Spring 2027</small></span><span class="packet-back"><strong>Arts, Theater, Music and Spirituality</strong><span>Music, choir, theater and reflection.</span></span></button></li>
-      <li><button class="packet" type="button" aria-pressed="false"><span class="packet-front"><span class="packet-n">09</span><svg aria-hidden="true"><use href="#i-talker"/></svg><strong>Humane Tech</strong><small>Plant: Spring 2027</small></span><span class="packet-back"><strong>Technology and Media</strong><span>From the typewriter to the podcast studio.</span></span></button></li>
-      <li><button class="packet" type="button" aria-pressed="false"><span class="packet-front"><span class="packet-n">10</span><svg aria-hidden="true"><use href="#p-adults"/></svg><strong>Ubuntu</strong><small>Plant: Spring 2027</small></span><span class="packet-back"><strong>Leadership and Self-Governance</strong><span>“I am because we are.”</span></span></button></li>
-      <li><button class="packet" type="button" aria-pressed="false"><span class="packet-front"><span class="packet-n">11</span><svg aria-hidden="true"><use href="#d-sun"/></svg><strong>Play</strong><small>Plant: Spring 2027</small></span><span class="packet-back"><strong>Guided and Free Play, Health and PE</strong><span>Every day, rain or shine.</span></span></button></li>
+      <li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-n" aria-hidden="true">01</span><svg aria-hidden="true"><use href="#i-builder"/></svg><strong>Math and Me</strong><small>Plant: Spring 2027</small></div>
+          <div class="packet-back" id="pk-1" aria-hidden="true" inert><strong>Mathematics</strong><span>Small groups, each child at their own level.</span></div>
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="pk-1"><span class="sr-only">Math and Me: show details</span></button>
+      </li>
+      <li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-n" aria-hidden="true">02</span><svg aria-hidden="true"><use href="#i-thinker"/></svg><strong>Literature Is Lit</strong><small>Plant: Spring 2027</small></div>
+          <div class="packet-back" id="pk-2" aria-hidden="true" inert><strong>Language Arts and Literature</strong><span>Reading groups, essays and Socratic discussion.</span></div>
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="pk-2"><span class="sr-only">Literature Is Lit: show details</span></button>
+      </li>
+      <li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-n" aria-hidden="true">03</span><svg aria-hidden="true"><use href="#d-sparkle"/></svg><strong>Sciencey Stuff</strong><small>Plant: Spring 2027</small></div>
+          <div class="packet-back" id="pk-3" aria-hidden="true" inert><strong>Science and Animal Studies</strong><span>Experiments, animals and how the world works.</span></div>
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="pk-3"><span class="sr-only">Sciencey Stuff: show details</span></button>
+      </li>
+      <li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-n" aria-hidden="true">04</span><svg aria-hidden="true"><use href="#d-plane"/></svg><strong>Engage and Engineer</strong><small>Plant: Spring 2027</small></div>
+          <div class="packet-back" id="pk-4" aria-hidden="true" inert><strong>Engineering and Design</strong><span>Builds, prototypes and hackathons.</span></div>
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="pk-4"><span class="sr-only">Engage and Engineer: show details</span></button>
+      </li>
+      <li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-n" aria-hidden="true">05</span><svg aria-hidden="true"><use href="#d-leaf"/></svg><strong>Heart and Soil</strong><small>Plant: Spring 2027</small></div>
+          <div class="packet-back" id="pk-5" aria-hidden="true" inert><strong>Nature, Mindfulness and SEL</strong><span>Outdoors, calm minds and emotional skills.</span></div>
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="pk-5"><span class="sr-only">Heart and Soil: show details</span></button>
+      </li>
+      <li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-n" aria-hidden="true">06</span><svg aria-hidden="true"><use href="#p-chart"/></svg><strong>Finance Is Fun</strong><small>Plant: Spring 2027</small></div>
+          <div class="packet-back" id="pk-6" aria-hidden="true" inert><strong>Finance and Entrepreneurship</strong><span>A student store and a stock market game.</span></div>
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="pk-6"><span class="sr-only">Finance Is Fun: show details</span></button>
+      </li>
+      <li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-n" aria-hidden="true">07</span><svg aria-hidden="true"><use href="#i-explorer"/></svg><strong>Culture and Cuisine</strong><small>Plant: Spring 2027</small></div>
+          <div class="packet-back" id="pk-7" aria-hidden="true" inert><strong>World Cultures, Languages and Life Skills</strong><span>French, ASL and cooking from around the world.</span></div>
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="pk-7"><span class="sr-only">Culture and Cuisine: show details</span></button>
+      </li>
+      <li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-n" aria-hidden="true">08</span><svg aria-hidden="true"><use href="#i-artist"/></svg><strong>Soulful Sounds</strong><small>Plant: Spring 2027</small></div>
+          <div class="packet-back" id="pk-8" aria-hidden="true" inert><strong>Arts, Theater, Music and Spirituality</strong><span>Music, choir, theater and reflection.</span></div>
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="pk-8"><span class="sr-only">Soulful Sounds: show details</span></button>
+      </li>
+      <li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-n" aria-hidden="true">09</span><svg aria-hidden="true"><use href="#i-talker"/></svg><strong>Humane Tech</strong><small>Plant: Spring 2027</small></div>
+          <div class="packet-back" id="pk-9" aria-hidden="true" inert><strong>Technology and Media</strong><span>From the typewriter to the podcast studio.</span></div>
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="pk-9"><span class="sr-only">Humane Tech: show details</span></button>
+      </li>
+      <li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-n" aria-hidden="true">10</span><svg aria-hidden="true"><use href="#p-adults"/></svg><strong>Ubuntu</strong><small>Plant: Spring 2027</small></div>
+          <div class="packet-back" id="pk-10" aria-hidden="true" inert><strong>Leadership and Self-Governance</strong><span>“I am because we are.”</span></div>
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="pk-10"><span class="sr-only">Ubuntu: show details</span></button>
+      </li>
+      <li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-n" aria-hidden="true">11</span><svg aria-hidden="true"><use href="#d-sun"/></svg><strong>Play</strong><small>Plant: Spring 2027</small></div>
+          <div class="packet-back" id="pk-11" aria-hidden="true" inert><strong>Guided and Free Play, Health and PE</strong><span>Every day, rain or shine.</span></div>
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="pk-11"><span class="sr-only">Play: show details</span></button>
+      </li>
     </ul>
   </div>
 </section>
@@ -451,10 +567,10 @@
 <!-- 10 · Proof in numbers -->
 <section class="numbers" aria-label="EP in numbers">
   <div class="wrap stats">
-    <div class="stat"><p class="stat-n"><span class="stat-ring"><svg viewBox="0 0 200 100" aria-hidden="true"><use href="#d-circle"/></svg></span>1 : <span data-count="2.5" data-decimals="1">2.5</span></p><p>Adults to children. Two trained guides on site at all times.</p></div>
-    <div class="stat"><p class="stat-n"><span data-count="11">11</span></p><p>Brain-based learning principles behind every lesson.</p></div>
-    <div class="stat"><p class="stat-n"><span data-count="2">2</span>× a year</p><p>NWEA MAP Growth testing, so progress is visible.</p></div>
-    <div class="stat"><p class="stat-n"><span data-count="400">400</span>+</p><p>Studies behind our technology policy (Brookings, 2026).</p></div>
+    <div class="stat"><p class="stat-n"><span class="sr-only">1 adult for every 2.5 children</span><span aria-hidden="true"><span class="stat-ring"><svg viewBox="0 0 200 100"><use href="#d-circle"/></svg></span>1 : <span data-count="2.5" data-decimals="1">2.5</span></span></p><p>Two trained adults with our first {{spots}} children, so every child gets small-group teaching every day.</p></div>
+    <div class="stat"><p class="stat-n"><span class="sr-only">11</span><span aria-hidden="true" data-count="11">11</span></p><p>Brain-based learning principles, as described by MacKenzie Price, shape how lessons are planned.</p></div>
+    <div class="stat"><p class="stat-n"><span class="sr-only">2 times a year</span><span aria-hidden="true"><span data-count="2">2</span>× a year</span></p><p>NWEA MAP Growth testing in January and May, so families can see progress.</p></div>
+    <div class="stat"><p class="stat-n"><span class="sr-only">50 countries</span><span aria-hidden="true"><span data-count="50">50</span> countries</span></p><p>Our technology policy follows Brookings’ 2026 report on students and AI, built with 505 voices from 50 countries. <a class="link" href="https://www.brookings.edu/articles/a-new-direction-for-students-in-an-ai-world-prosper-prepare-protect/" target="_blank" rel="noopener">Read the report</a></p></div>
   </div>
 </section>
 
@@ -483,38 +599,9 @@
     <svg class="five-doodle fd-3"><use href="#d-sun"/></svg>
   </div>
   <div class="five-copy">
-    <h2 class="five-title" id="five-title"><em>Only 5 spots to start.</em></h2>
-    <p>A small group by design, so every child gets small-group teaching and one-on-one time every day. Opening January 4, 2027.</p>
+    <h2 class="five-title" id="five-title"><em>Only {{spots}} spots to start.</em></h2>
+    <p>A small group by design, so every child gets small-group teaching and one-on-one time every day. Opening {{opening_long}}.</p>
     <a href="#visit" class="btn btn-primary" data-magnetic><span>Book a visit</span><i class="btn-dot"></i></a>
-  </div>
-</section>
-
-<!-- 12 · Founder -->
-<section class="founder" id="founder" aria-labelledby="founder-title" data-sprout>
-  <div class="wrap founder-grid">
-    <div class="founder-visual">
-      <svg class="founder-svg" viewBox="0 0 400 520" aria-hidden="true">
-        <defs>
-          <clipPath id="leaf-clip"><path d="M200 12 C 330 40, 392 170, 380 300 C 368 430, 280 508, 200 508 C 120 508, 32 430, 20 300 C 8 170, 70 40, 200 12 z"/></clipPath>
-        </defs>
-        <image href="/img/founder-lg.webp" x="0" y="0" width="400" height="533" clip-path="url(#leaf-clip)" preserveAspectRatio="xMidYMin slice"/>
-        <path class="founder-outline" d="M200 12 C 330 40, 392 170, 380 300 C 368 430, 280 508, 200 508 C 120 508, 32 430, 20 300 C 8 170, 70 40, 200 12 z" fill="none"/>
-      </svg>
-      <span class="sr-only">Portrait of Dr. Larisa Che, MD, founder of Entrepreneurs at Play</span>
-    </div>
-    <div class="founder-copy">
-      <p class="eyebrow">Meet the founder</p>
-      <h2 class="h2" id="founder-title" data-split>Dr. Larisa Che, <em>MD</em></h2>
-      <ul class="cred">
-        <li>Board-certified child &amp; adolescent psychiatrist</li>
-        <li>Founder, FamilyCoachMD</li>
-        <li>Creighton fellowship-trained</li>
-        <li>Omaha mom</li>
-      </ul>
-      <blockquote class="quote" data-lines>“Childhood is not merely a holding space for adulthood. The time is now; the time is here; Entrepreneurs are at play.”</blockquote>
-      <p>My background informs my passion for raising resilient and capable kids who learn to harness the power of failure and success alike. Emotional health, calm guidance and character are built into every day, alongside rigorous academics.</p>
-      <p class="signature">— Dr. Larisa Che</p>
-    </div>
   </div>
 </section>
 
@@ -529,6 +616,23 @@
       <li><svg aria-hidden="true"><use href="#p-chart"/></svg><h3>Progress you can see.</h3><p>MAP Growth testing in January and May, aligned to Nebraska standards.</p></li>
       <li><svg aria-hidden="true"><use href="#p-hands"/></svg><h3>Real work, real world.</h3><p>Every week, children make things that matter to real people.</p></li>
     </ul>
+  </div>
+</section>
+
+<!-- 13b · Good to know: practical facts for planning a visit -->
+<section class="practical" id="practical" aria-labelledby="practical-title">
+  <div class="wrap">
+    <p class="eyebrow">Good to know</p>
+    <h2 class="h2" id="practical-title" data-split>The <em>practical</em> part.</h2>
+    <dl class="facts">
+      <div><dt>Opening</dt><dd>{{opening_long}} (planned), spring semester January to May.</dd></div>
+      <div><dt>Days and hours</dt><dd>Monday to Friday, 9 a.m. to 4 p.m.</dd></div>
+      <div><dt>Ages</dt><dd>The Hatch, 2–6, and The Studio, 7–12.</dd></div>
+      <div><dt>Group size</dt><dd>{{spots}} children to start, growing to {{max_children}}. Two trained adults on site at all times.</dd></div>
+      <div><dt>Location</dt><dd>Omaha area. The exact location will be announced soon.</dd></div>
+      <div><dt>Tuition</dt><dd>Shared by email so we can answer your questions personally. <a class="link" href="mailto:{{email}}?subject=Program%20fee%20details%20-%20Entrepreneurs%20at%20Play">Ask for fee details</a></dd></div>
+      <div><dt>School status</dt><dd>Runs like a microschool. Our school license is pending.</dd></div>
+    </dl>
   </div>
 </section>
 
@@ -562,11 +666,11 @@
 <section class="visit has-grid-dark" id="visit" aria-labelledby="visit-title" data-sprout>
   <div class="wrap visit-grid">
     <div class="visit-copy">
-      <p class="eyebrow">Only 5 spots to start</p>
+      <p class="eyebrow">Only {{spots}} spots to start</p>
       <h2 class="h2" id="visit-title">Come visit. Meet us. <em>See if EP is right for your child.</em></h2>
-      <ol class="steps"><li><span>1</span>Email us</li><li><span>2</span>Visit with your child</li><li><span>3</span>Join the program</li></ol>
-      <p class="visit-mail">Prefer email? <a href="mailto:Grow@familycoachmd.com">Grow@familycoachmd.com</a> <button class="copy" type="button" data-copy="Grow@familycoachmd.com">Copy</button></p>
-      <p class="fine">Opening January 4, 2027 · Omaha area · Program fee details by email</p>
+      <ol class="steps"><li><span>1</span>Send a request</li><li><span>2</span>We confirm a visit time</li><li><span>3</span>Visit with your child</li></ol>
+      <p class="visit-mail">Prefer email? <a class="visit-email" href="mailto:{{email}}">{{email}}</a> <button class="copy" type="button" data-copy="{{email}}">Copy</button> <span class="copy-status" role="status" aria-live="polite"></span></p>
+      <p class="fine">Opening {{opening_long}} · Omaha area · Program fee details by email</p>
     </div>
     <form class="visit-form" id="visit-form" novalidate>
       <div class="field"><label for="f-name">Parent name</label><input id="f-name" name="name" autocomplete="name" required></div>
@@ -574,13 +678,14 @@
       <div class="field-row">
         <div class="field"><label for="f-age">Child’s age</label>
           <select id="f-age" name="age" required aria-describedby="f-path"><option value="">Select</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
-        <div class="field"><label for="f-week">Best week to visit</label>
-          <select id="f-week" name="week"><option value="">Any week</option><option>Nov 9–13</option><option>Nov 16–20</option><option>Nov 30–Dec 4</option><option>Dec 7–11</option><option>Dec 14–18</option></select></div>
+        <div class="field"><label for="f-week">Preferred week <span>(we’ll confirm)</span></label>
+          <select id="f-week" name="week"><option value="">Any week</option><!--visit-weeks--></select></div>
       </div>
+      <input type="hidden" name="pathway" id="f-pathway">
       <p class="form-path" id="f-path" aria-live="polite" hidden></p>
       <div class="field"><label for="f-msg">Message <span>(optional)</span></label><textarea id="f-msg" name="message" rows="3"></textarea></div>
       <button class="btn btn-primary btn-submit" type="submit"><span>Request a visit</span><i class="btn-dot"></i></button>
-      <p class="form-note">We only use this to schedule your visit. No child names needed.</p>
+      <p class="form-note">We only use this to schedule your visit. No child names needed. A request does not book a time yet: we’ll reply to confirm one.</p>
       <p class="form-status" role="status" aria-live="polite"></p>
     </form>
   </div>
@@ -600,13 +705,13 @@
       <a href="#why">Why EP</a><a href="#day">A day at EP</a><a href="#pathways">Pathways</a><a href="#founder">Founder</a><a href="#faq">FAQ</a><a href="#visit">Book a visit</a>
     </nav>
     <div class="foot-contact">
-      <p><a href="mailto:Grow@familycoachmd.com">Grow@familycoachmd.com</a></p>
+      <p><a href="mailto:{{email}}">{{email}}</a></p>
       <p>Omaha, Nebraska</p>
       <p>A FamilyCoachMD program</p>
     </div>
   </div>
   <div class="wrap foot-bottom">
-    <p>© 2026 Entrepreneurs at Play · FamilyCoachMD · “Play’sWork.”</p>
+    <p>© {{year}} Entrepreneurs at Play · FamilyCoachMD · “Play’sWork.”</p>
     <p>Site by <a href="https://www.haderach.com.br" rel="noopener">Haderach Solutions</a></p>
   </div>
 </footer>

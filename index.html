@@ -308,9 +308,9 @@ setTimeout(function () {
         </div>
         <h2 class="h2" id="microschool-title" data-split><em>Microschool</em></h2>
         <p>Our spring beta opens {{opening_long}}. The Hatch (ages 2–6) and The Studio (ages 7–12) share one community. Families can request a place on the Fall 2027 waitlist.</p>
-        <ul class="micro-paths" aria-hidden="true">
-          <li class="mp-hatch"><svg viewBox="0 0 46 40"><path d="M2 38 C 4 24, 14 12, 34 10 C 32 26, 22 36, 2 38 z" fill="#BDAF90" stroke="#9A9B86" stroke-width="2"/></svg>The Hatch · 2–6</li>
-          <li class="mp-studio"><svg viewBox="0 0 46 40"><path d="M2 38 C 4 20, 16 6, 44 2 C 42 24, 28 36, 2 38 z" fill="#6E7157" stroke="#3C4136" stroke-width="2"/><path d="M4 36 C 16 26, 26 16, 38 8" fill="none" stroke="#3C4136" stroke-width="1.6" stroke-linecap="round"/></svg>The Studio · 7–12</li>
+        <ul class="micro-paths" aria-label="The microschool's two pathways">
+          <li class="mp-hatch"><a href="#pathways"><svg viewBox="0 0 46 40" aria-hidden="true"><path d="M2 38 C 4 24, 14 12, 34 10 C 32 26, 22 36, 2 38 z" fill="#BDAF90" stroke="#9A9B86" stroke-width="2"/></svg>The Hatch · 2–6</a></li>
+          <li class="mp-studio"><a href="#pathways"><svg viewBox="0 0 46 40" aria-hidden="true"><path d="M2 38 C 4 20, 16 6, 44 2 C 42 24, 28 36, 2 38 z" fill="#6E7157" stroke="#3C4136" stroke-width="2"/><path d="M4 36 C 16 26, 26 16, 38 8" fill="none" stroke="#3C4136" stroke-width="1.6" stroke-linecap="round"/></svg>The Studio · 7–12</a></li>
         </ul>
       </div>
       <div class="micro-side">
@@ -325,6 +325,8 @@ setTimeout(function () {
         </div>
       </div>
     </div>
+    <!-- The stem: the microschool card grows into its two pathways below. -->
+    <a class="micro-stem" href="#pathways"><span>Inside the microschool: two pathways</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
   </div>
 </section>
 
@@ -332,8 +334,8 @@ setTimeout(function () {
   <div class="wrap">
     <div class="paths-head">
       <div>
-        <p class="eyebrow">Two pathways, one stem</p>
-        <h2 class="h2" id="paths-title" data-split>Choose a <em>pathway</em>.</h2>
+        <p class="eyebrow paths-eyebrow"><span class="program-num" aria-hidden="true">03</span>Microschool · two pathways, one stem</p>
+        <h2 class="h2" id="paths-title" data-split>Choose a <em>pathway</em> in our microschool.</h2>
       </div>
       <p class="sub">Every child grows on the same stem. The little leaf and the big leaf of our logo are our two pathways.</p>
     </div>

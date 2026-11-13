@@ -1214,6 +1214,11 @@ details[open] summary::after { transform: rotate(45deg); background: var(--marig
 .visit-mail a { color: var(--paper); font-weight: 600; }
 .copy { margin-left: 8px; padding: 4px 12px; border-radius: 999px; border: 1.5px solid rgba(246, 242, 234, .4); background: none; color: var(--paper); font-size: .85rem; }
 .visit-copy { position: relative; }
+.visit-copy .social-pending { border-color: rgba(246, 242, 234, .45); color: var(--paper); }
+.visit-copy a.social-link:is(:focus-visible, :active) { border-color: var(--paper); }
+@media (hover: hover) {
+  .visit-copy a.social-link:hover { border-color: var(--paper); }
+}
 .visit-arrow { display: none; }
 @media (min-width: 1024px) {
   .visit-arrow { display: block; position: absolute; right: -40px; bottom: -90px; width: 150px; height: auto; overflow: visible; }

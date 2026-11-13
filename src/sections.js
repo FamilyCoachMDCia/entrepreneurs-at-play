@@ -12,7 +12,6 @@ export function initSections(ctx) {
   learner(ctx);
   carousel(ctx);
   sundial(ctx);
-  familyBook(ctx);
   compare(ctx);
   weekPlanner(ctx);
   practical(ctx);
@@ -587,47 +586,6 @@ function sundial({ gsap, reduce }) {
         .fromTo(photos[k], { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration: 0.35 }, at + 0.1);
     }
   }
-}
-
-/* ---------- 11 · FamilyCoachMD book ---------- */
-// The book rises and tips upright as the section scrolls in, then opens; on
-// desktop it leans toward the pointer (the stage moves, the book tilts).
-function familyBook({ gsap, reduce }) {
-  const link = document.querySelector('.family-book-link');
-  if (!link) return;
-  const stage = link.querySelector('.family-book-stage');
-  const book = link.querySelector('.family-book');
-  // With a mouse the book stays closed and opens only on hover (CSS :hover /
-  // :focus-visible). Touch screens have no hover, so there it opens once the
-  // card is in view.
-  const touch = !matchMedia('(hover: hover)').matches;
-  const open = () => { if (touch) link.classList.add('is-open'); };
-  if (reduce) { open(); return; }
-
-  // Upright by the time the card's top reaches 70% of the screen, so the
-  // book never sits half-tilted over its label while someone is reading.
-  // Phones: tilt only, no drop, so the book never slides over its label.
-  const drop = matchMedia('(max-width: 767px)').matches ? 0 : 44;
-  gsap.fromTo(stage, { y: drop, rotationX: 26, transformOrigin: '50% 100%' }, {
-    y: 0, rotationX: 0, ease: 'none',
-    scrollTrigger: {
-      trigger: link, start: 'top bottom', end: 'top 70%', scrub: 0.6,
-      onUpdate: (self) => { if (self.progress > 0.8) open(); },
-      onLeave: open,
-    },
-  });
-
-  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  gsap.set(book, { transformPerspective: 1000 });
-  const rx = gsap.quickTo(book, 'rotationX', { duration: 0.6, ease: 'power3' });
-  const ry = gsap.quickTo(book, 'rotationY', { duration: 0.6, ease: 'power3' });
-  link.addEventListener('pointermove', (e) => {
-    if (e.pointerType !== 'mouse') return;
-    const r = link.getBoundingClientRect();
-    ry(((e.clientX - r.left) / r.width - 0.5) * 14);
-    rx(-((e.clientY - r.top) / r.height - 0.5) * 10);
-  });
-  link.addEventListener('pointerleave', () => { rx(0); ry(0); });
 }
 
 /* ---------- 07 · Morning / afternoon compare ---------- */

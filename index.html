@@ -127,6 +127,10 @@ setTimeout(function () {
       <li><a href="#enrichment">Enrichment</a></li>
       <li><a href="#summer">Summer</a></li>
       <li><a href="#microschool">Microschool</a></li>
+      <li><a href="#pathways">Pathways</a></li>
+      <li><a href="#why">Why EP</a></li>
+      <li><a href="#day">A Day at EP</a></li>
+      <li><a href="#domains">Curriculum</a></li>
       <li><a href="#founder">Founder</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
@@ -136,19 +140,38 @@ setTimeout(function () {
   </nav>
 </header>
 
-<div class="menu" id="menu" tabindex="-1" hidden>
-  <ul class="menu-links">
-    <li><a href="#enrichment">Enrichment</a></li>
-    <li><a href="#summer">Summer</a></li>
-    <li><a href="#microschool">Microschool</a></li>
-    <li><a href="#day">A Wednesday in The&nbsp;Studio</a></li>
-    <li><a href="#founder">Founder</a></li>
-    <li><a href="#faq">Questions</a></li>
-    <li><a href="#visit" data-program-cta="t6">T6 sign-up</a></li>
-  </ul>
-  <p class="menu-foot"><a href="mailto:{{email}}">{{email}}</a></p>
-
-</div>
+<nav class="menu" id="menu" aria-label="Main menu" tabindex="-1" data-lenis-prevent hidden>
+  <div class="menu-group">
+    <h2>Programs</h2>
+    <ul class="menu-links menu-programs">
+      <li><a href="#enrichment">Enrichment</a></li>
+      <li><a href="#summer">Summer</a></li>
+      <li><a href="#microschool">Microschool</a></li>
+    </ul>
+  </div>
+  <div class="menu-group">
+    <h2>Learning at EP</h2>
+    <ul class="menu-links">
+      <li><a href="#pathways">Pathways</a></li>
+      <li><a href="#why">Why EP</a></li>
+      <li><a href="#day">A Day at EP</a></li>
+      <li><a href="#domains">Curriculum</a></li>
+    </ul>
+  </div>
+  <div class="menu-group">
+    <h2>About &amp; information</h2>
+    <ul class="menu-links">
+      <li><a href="#founder">Founder</a></li>
+      <li><a href="#familycoachmd">FamilyCoachMD</a></li>
+      <li><a href="#practical">Practical Info</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </div>
+  <div class="menu-foot">
+    <a href="#visit" class="btn btn-primary" data-program-cta="t6"><span>T6 sign-up</span><i class="btn-dot"></i></a>
+    <a class="menu-email" href="mailto:{{email}}">{{email}}</a>
+  </div>
+</nav>
 
 <main id="main">
 

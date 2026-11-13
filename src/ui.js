@@ -74,11 +74,10 @@ function nav({ ScrollTrigger }) {
 // Mobile menu as a modal: focus moves in and stays in (Tab / Shift+Tab wrap
 // between the close button and the links), everything behind is inert, the
 // page can't scroll, Escape closes, and focus returns to the burger.
-function menu({ gsap, lenis, reduce }) {
+function menu({ lenis }) {
   const burger = document.querySelector('.burger');
   const sheet = document.getElementById('menu');
   if (!burger || !sheet) return;
-  const links = sheet.querySelectorAll('.menu-links li');
   const behind = () => [document.getElementById('main'), document.querySelector('.foot'), document.querySelector('.ticker'), document.querySelector('.nav-brand')].filter(Boolean);
   const focusables = () => [burger, ...sheet.querySelectorAll('a, button')];
 
@@ -88,21 +87,15 @@ function menu({ gsap, lenis, reduce }) {
     document.body.classList.toggle('menu-open', open);
     behind().forEach((el) => { el.inert = open; });
     document.documentElement.style.overflow = open ? 'hidden' : '';
+    sheet.hidden = !open;
     if (open) {
-      sheet.hidden = false;
       lenis?.stop();
       // Focus the sheet itself (tabindex="-1", no ring): the next Tab reaches
       // the first link, and no link shows a focus ring on a plain tap.
       sheet.focus({ preventScroll: true });
-      if (!reduce) {
-        gsap.fromTo(sheet, { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 0.6, ease: 'expo.inOut' });
-        gsap.fromTo(links, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.06, delay: 0.2, ease: 'power3.out' });
-      }
     } else {
       lenis?.start();
       if (restoreFocus) burger.focus({ preventScroll: true });
-      if (reduce) { sheet.hidden = true; return; }
-      gsap.to(sheet, { clipPath: 'inset(0 0 100% 0)', duration: 0.5, ease: 'expo.inOut', onComplete: () => { sheet.hidden = true; } });
     }
   };
   const isOpen = () => burger.getAttribute('aria-expanded') === 'true';
@@ -120,7 +113,11 @@ function menu({ gsap, lenis, reduce }) {
     else if (!e.shiftKey && i === list.length - 1) { e.preventDefault(); list[0].focus(); }
   });
   // Leaving the phone layout with the menu open: close it cleanly.
-  matchMedia('(min-width: 1024px)').addEventListener?.('change', (e) => { if (e.matches && isOpen()) set(false, { restoreFocus: false }); });
+  matchMedia('(min-width: 1280px)').addEventListener('change', (e) => {
+    if (!e.matches || !isOpen()) return;
+    set(false, { restoreFocus: false });
+    document.querySelector('.nav-brand').focus({ preventScroll: true });
+  });
 }
 
 // In-page links scroll smoothly, then move keyboard focus to the section's

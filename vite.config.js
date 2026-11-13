@@ -4,7 +4,7 @@ import { SITE } from './src/site-config.js';
 
 // Width x height of each exported -lg photo (see tools/images.py).
 const PHOTOS = {
-  'business-fair': [1000, 721], capitol: [750, 1000], cooking: [795, 900],
+  baking: [1079, 1617], 'business-fair': [1000, 721], capitol: [750, 1000], cooking: [795, 900],
   cuisine: [1200, 861], flight: [1100, 802], founder: [700, 933],
   garden: [1000, 737], golf: [960, 540], guitar: [541, 900], hens: [1000, 726],
   horse: [1000, 716], mentoring: [575, 1000], podcast: [800, 1200],
@@ -14,28 +14,20 @@ const PHOTOS = {
 const TOKENS = {
   url: SITE.url,
   opening_long: SITE.openingLong,
-  opening_short: SITE.openingShort,
-  opening_month_year: SITE.openingMonthYear.toUpperCase(),
-  spots: String(SITE.spotsToStart),
-  max_children: String(SITE.maxChildren),
   year: String(SITE.copyrightYear),
   email: SITE.email,
 };
 
 // Expands <img data-photo="name" ...> into src/srcset/size attributes,
 // inlines the animated logo where <!--logo-anim--> appears, fills {{tokens}}
-// from src/site-config.js and writes the visit-week <option>s.
+// from src/site-config.js.
 function sitePartials() {
   return {
     name: 'site-partials',
     transformIndexHtml(html) {
       const logo = readFileSync(new URL('./src/partials/logo-anim.svg', import.meta.url), 'utf8');
-      const weeks = SITE.visitWeeks
-        .map((w) => `<option value="${w.label}" data-start="${w.start}">${w.label}</option>`)
-        .join('');
       return html
         .replace('<!--logo-anim-->', logo)
-        .replace('<!--visit-weeks-->', weeks)
         .replace(/\{\{(\w+)\}\}/g, (m, key) => {
           if (!(key in TOKENS)) throw new Error(`Unknown token: ${m}`);
           return TOKENS[key];

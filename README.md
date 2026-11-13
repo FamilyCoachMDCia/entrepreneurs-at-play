@@ -18,20 +18,17 @@ npx vercel --prod    # publish to production
 
 Vercel detects Vite automatically (build `npm run build`, output `dist`).
 
-## Dates, spots and visit weeks
+## Site settings
 
-Opening date, spots, max children, email, site URL and the preferred visit
-weeks live in `src/site-config.js`. `index.html` uses them as `{{tokens}}`
-(filled at build by `vite.config.js`), so change them there, not in the HTML.
-Visit weeks that have already started are hidden automatically.
+The microschool beta opening date, contact email and site URL live in
+`src/site-config.js`. Vite fills the corresponding `{{tokens}}` in `index.html`.
 
-## Visit form
+## Program requests
 
-Without an endpoint the button reads "Prepare my email": it opens the visitor's
-email app with the request filled in and says clearly that nothing is sent until
-they press Send. To receive requests directly, create a Formspree form and add
-its URL: `<form ... data-endpoint="https://formspree.io/f/XXXX">`. The form then
-sends, blocks double clicks, and only confirms after the server answers.
+Program links preselect the corresponding request. The microschool waitlist
+uses the child's age to identify The Hatch or The Studio. “Prepare my email”
+opens the visitor's email app with the request filled in. The visitor sends the
+email from that app.
 
 ## Publishing extras
 

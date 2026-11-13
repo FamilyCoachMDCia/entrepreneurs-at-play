@@ -7,14 +7,17 @@ export function initSections(ctx) {
   alignGrids(ctx);
   reveals(ctx);
   heroRotator(ctx);
+  programs(ctx);
   initPathways(ctx);
   learner(ctx);
   carousel(ctx);
   sundial(ctx);
+  familyBook(ctx);
   compare(ctx);
+  weekPlanner(ctx);
+  practical(ctx);
   packets(ctx);
   counters(ctx);
-  five(ctx);
   founder(ctx);
   faq(ctx);
   visit(ctx);
@@ -98,6 +101,196 @@ function heroRotator({ gsap, reduce }) {
     gsap.to(cur, { yPercent: -100, opacity: 0, duration: 0.5, ease: 'power3.in' });
     gsap.fromTo(words[i], { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, delay: 0.2, ease: 'power3.out' });
   }, 2200);
+}
+
+/* ---------- Programs: 01 Enrichment → 02 Summer → 03 Microschool ---------- */
+// Elements with a CSS hover transform (day cards) get explicit end values +
+// clearProps, so an inline GSAP transform never fights the hover lift.
+const CLEAR = 'transform,translate,rotate,scale,opacity';
+
+function programs(ctx) {
+  dayStrip(ctx);
+  t6Card(ctx);
+  summerCard(ctx);
+  microschoolCard(ctx);
+}
+
+// Each day pill brings its card into view and makes it say "here".
+function dayStrip({ reduce }) {
+  document.querySelectorAll('[data-day-pill]').forEach((pill) => pill.addEventListener('click', () => {
+    const card = document.querySelector(pill.getAttribute('href'));
+    if (!card) return;
+    // Phones: the day cards sit in a sideways scroller; slide this one in.
+    const row = card.closest('.program-week');
+    if (row && row.scrollWidth > row.clientWidth + 2) {
+      const left = row.scrollLeft + card.getBoundingClientRect().left - row.getBoundingClientRect().left - parseFloat(getComputedStyle(row).paddingLeft);
+      row.scrollTo({ left, behavior: reduce ? 'auto' : 'smooth' });
+    }
+    card.classList.remove('is-flash');
+    void card.offsetWidth; // restart the highlight
+    card.classList.add('is-flash');
+    clearTimeout(card._flash);
+    card._flash = setTimeout(() => card.classList.remove('is-flash'), 1700);
+  }));
+
+  // Phones and tablets: three dots under the sideways row show which card is in view.
+  const row = document.querySelector('.program-week');
+  const dots = [...document.querySelectorAll('.day-dots i')];
+  if (!row || !dots.length) return;
+  const cards = [...row.querySelectorAll('.day-card')];
+  let raf = 0;
+  const update = () => {
+    raf = 0;
+    const max = row.scrollWidth - row.clientWidth;
+    let on = 0;
+    if (max > 2 && row.scrollLeft >= max - 2) on = cards.length - 1;
+    else if (max > 2) {
+      const x = row.getBoundingClientRect().left + parseFloat(getComputedStyle(row).paddingLeft);
+      let best = Infinity;
+      cards.forEach((c, i) => { const d = Math.abs(c.getBoundingClientRect().left - x); if (d < best) { best = d; on = i; } });
+    }
+    dots.forEach((d, i) => d.classList.toggle('is-on', i === on));
+  };
+  row.addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+  addEventListener('resize', update);
+  update();
+}
+
+// A photo reveal shared by T6 and summer: a clip-path wipe, the photo settling
+// from a gentle zoom, then a slow parallax drift while it crosses the screen.
+function photoReveal(gsap, frame, img, tl, from) {
+  tl.fromTo(frame, { clipPath: from }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'power3.inOut', clearProps: 'clipPath' }, 0)
+    .fromTo(img, { scale: 1.28 }, { scale: 1.12, duration: 1.5, ease: 'power3.out' }, 0);
+  gsap.fromTo(img, { yPercent: -4 }, {
+    yPercent: 4, ease: 'none',
+    scrollTrigger: { trigger: frame, start: 'top bottom', end: 'bottom top', scrub: true },
+  });
+}
+
+function t6Card({ gsap, reduce }) {
+  const card = document.getElementById('t6');
+  if (!card) return;
+  const week = gsap.utils.toArray('.day-card');
+  if (reduce) return;
+
+  const photo = card.querySelector('.t6-photo');
+  const ball = card.querySelector('.putt-ball');
+  const track = card.querySelector('.putt-path');
+  const flag = card.querySelector('.putt-flag');
+  const roll = { path: track, align: track, alignOrigin: [0.5, 0.5] };
+  gsap.set(ball, { motionPath: { ...roll, end: 0 } }); // waits at the tee
+
+  const tl = gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 75%', once: true } });
+  photoReveal(gsap, photo, photo.querySelector('img'), tl, 'inset(0% 100% 0% 0%)');
+  tl.fromTo(card.querySelector('.t6-badge'), { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: 0.9, ease: 'back.out(2)', clearProps: 'transform' }, 0.45)
+    .fromTo(card.querySelectorAll('.t6-chips li'), { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.06, ease: 'power3.out', clearProps: CLEAR }, 0.4)
+    .fromTo(card.querySelectorAll('.t6-ing svg'), { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.7, stagger: 0.14, ease: 'back.out(2.4)', clearProps: 'transform' }, 0.7)
+    // The putt: flag pops up, the dotted line draws, the ball rolls in and drops.
+    .from(card.querySelectorAll('.putt-pole, .putt-flag, .putt-hole'), { scaleY: 0, transformOrigin: '50% 100%', duration: 0.5, ease: 'back.out(2)' }, 0.8)
+    .fromTo(card.querySelector('.putt-reveal'), { drawSVG: '0%' }, { drawSVG: '100%', duration: 1.1, ease: 'power1.inOut' }, 1)
+    .to(ball, { motionPath: { ...roll, start: 0, end: 1 }, duration: 1.4, ease: 'power2.out' }, 1.05)
+    .to(ball, { scale: 0.78, svgOrigin: '250 92', duration: 0.18, ease: 'power2.in' }, '>-0.08')
+    .to(flag, { keyframes: { rotation: [0, -16, 11, -6, 0] }, svgOrigin: '250 19', duration: 1, ease: 'sine.inOut' }, '>-0.05');
+
+  // Day cards drop in like the seed packets, settling from a slight tilt.
+  gsap.fromTo(week, { y: -34, rotation: () => gsap.utils.random(-6, 6), opacity: 0 }, {
+    y: 0, rotation: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'back.out(1.6)', clearProps: CLEAR,
+    scrollTrigger: { trigger: '.program-week', start: 'top 85%', once: true },
+  });
+}
+
+function summerCard({ gsap, reduce }) {
+  const card = document.querySelector('.summer-card');
+  if (!card || reduce) return;
+  const frame = card.querySelector('.summer-frame');
+  const plane = card.querySelector('.plane');
+  const flight = card.querySelector('.plane-path');
+  const arc = card.querySelector('.time-arc-path');
+  const sunDot = card.querySelector('.time-arc-sun');
+  const fly = { path: flight, align: flight, alignOrigin: [0.5, 0.5], autoRotate: 40 };
+  const sweep = { path: arc, align: arc, alignOrigin: [0.5, 0.5] };
+  gsap.set(plane, { motionPath: { ...fly, end: 0 }, opacity: 0 });
+  gsap.set(sunDot, { motionPath: { ...sweep, end: 0 } });
+
+  const tl = gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 75%', once: true } });
+  photoReveal(gsap, frame, frame.querySelector('img'), tl, 'inset(100% 0% 0% 0%)');
+  // The sun rises from behind the photo's corner (it then turns slowly in CSS).
+  tl.fromTo(card.querySelector('.summer-sun'), { xPercent: -45, yPercent: 60, scale: 0.5 }, { xPercent: 0, yPercent: 0, scale: 1, duration: 1.6, ease: 'power3.out', clearProps: 'transform' }, 0.5)
+    .fromTo(card.querySelector('.time-chip'), { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', clearProps: CLEAR }, 0.35)
+    .to(sunDot, { motionPath: { ...sweep, start: 0, end: 1 }, duration: 1.6, ease: 'sine.inOut' }, 0.7)
+    .fromTo(card.querySelector('.hand-note'), { scale: 0.6, rotation: -14, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.7, ease: 'back.out(2)', clearProps: CLEAR }, 1.1)
+    // One paper-plane flight along a dotted line.
+    .fromTo(card.querySelector('.plane-reveal'), { drawSVG: '0%' }, { drawSVG: '100%', duration: 1.5, ease: 'power1.inOut' }, 0.6)
+    .to(plane, { opacity: 1, duration: 0.2 }, 0.6)
+    .to(plane, { motionPath: { ...fly, start: 0, end: 1 }, duration: 1.5, ease: 'power1.inOut' }, 0.6);
+}
+
+function microschoolCard({ gsap, reduce }) {
+  const card = document.querySelector('.microschool-card');
+  if (!card || reduce) return;
+  const tl = gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 75%', once: true } });
+  // Thunk: the status stamp lands, the timeline draws, the two leaves unfurl.
+  tl.fromTo(card.querySelector('.stamp'), { scale: 2.4, rotation: -16, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.7)', clearProps: CLEAR }, 0.2)
+    .fromTo(card, { y: 0 }, { y: 3, duration: 0.07, yoyo: true, repeat: 1, ease: 'power1.inOut', clearProps: 'transform' }, 0.62)
+    .fromTo(card.querySelectorAll('.mt-dot'), { scale: 0 }, { scale: 1, duration: 0.5, stagger: 0.55, ease: 'back.out(2.5)', clearProps: 'transform' }, 0.5)
+    .fromTo(card.querySelector('.mt-line'), { scaleX: 0 }, { scaleX: 1, transformOrigin: '0% 50%', duration: 0.6, ease: 'power2.inOut', clearProps: 'transform' }, 0.62)
+    .fromTo(card.querySelectorAll('.mt-step b, .mt-step span'), { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.08, ease: 'power3.out', clearProps: CLEAR }, 0.55)
+    .fromTo(card.querySelectorAll('.micro-paths li'), { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.12, ease: 'power3.out', clearProps: CLEAR }, 0.7)
+    .fromTo(card.querySelectorAll('.micro-paths svg'), { scale: 0.2, rotation: -30 }, { scale: 1, rotation: 0, duration: 1, stagger: 0.15, ease: 'elastic.out(1, 0.5)', clearProps: 'transform' }, 0.8);
+}
+
+/* ---------- 07b · A week in the microschool ---------- */
+function weekPlanner({ gsap, reduce }) {
+  const list = document.querySelector('.week-rhythm');
+  if (!list) return;
+  // The ring hugs only "Wednesday" + "Podcasting", clear of the icon and the
+  // after-school dot. Phones: one row (CSS sets top/bottom); wider: a column.
+  const ringSvg = list.querySelector('.wed-ring');
+  const phone = matchMedia('(max-width: 767px)');
+  const fitRing = () => {
+    const li = ringSvg?.closest('li');
+    const day = li?.querySelector('strong');
+    const link = li?.querySelector('a');
+    if (!day || !link) return;
+    const base = li.getBoundingClientRect();
+    const a = day.getBoundingClientRect();
+    const b = link.getBoundingClientRect();
+    const box = {
+      left: Math.min(a.left, b.left) - base.left, right: Math.max(a.right, b.right) - base.left,
+      top: Math.min(a.top, b.top) - base.top, bottom: Math.max(a.bottom, b.bottom) - base.top,
+    };
+    // The drawn ellipse sits a little inside its box, so pad more on the right.
+    const narrow = innerWidth <= 380;
+    const padL = phone.matches ? (narrow ? 12 : 18) : 34;
+    const padR = phone.matches ? (narrow ? 24 : 30) : 26;
+    ringSvg.style.left = `${box.left - padL}px`;
+    ringSvg.style.width = `${box.right - box.left + padL + padR}px`;
+    if (phone.matches) { ringSvg.style.top = ''; ringSvg.style.height = ''; return; }
+    ringSvg.style.top = `${box.top - 24}px`;
+    ringSvg.style.height = `${box.bottom - box.top + 40}px`;
+  };
+  fitRing();
+  document.fonts?.ready.then(fitRing);
+  addEventListener('resize', fitRing);
+  if (reduce) return;
+  const ring = list.querySelector('.wed-ring path');
+  gsap.set(ring, { drawSVG: '0%' });
+  gsap.timeline({ scrollTrigger: { trigger: list, start: 'top 85%', once: true } })
+    .fromTo(list.children, { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: 'power3.out', clearProps: CLEAR })
+    .fromTo(list.querySelectorAll('.week-icon'), { scale: 0, rotation: -25 }, { scale: 1, rotation: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(2.2)', clearProps: 'transform' }, 0.15)
+    .fromTo(list.querySelectorAll('.after-dot'), { scale: 0 }, { scale: 1, duration: 0.4, stagger: 0.07, ease: 'back.out(3)', clearProps: 'transform' }, 0.6)
+    .to(ring, { drawSVG: '100%', duration: 1, ease: 'power2.inOut' }, 0.8);
+}
+
+/* ---------- 13b · The practical part ---------- */
+function practical({ gsap, reduce }) {
+  const card = document.querySelector('.index-card');
+  if (!card || reduce) return;
+  gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 85%', once: true } })
+    .fromTo(card, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out', clearProps: CLEAR })
+    .fromTo(card.querySelectorAll('.facts > div'), { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.07, ease: 'power3.out', clearProps: CLEAR }, 0.2)
+    .fromTo(card.querySelectorAll('.fact-icon'), { scale: 0, rotation: -20 }, { scale: 1, rotation: 0, duration: 0.5, stagger: 0.07, ease: 'back.out(2.4)', clearProps: 'transform' }, 0.3)
+    .fromTo(card.querySelector('.facts-cta'), { y: 16, opacity: 0, scale: 0.97 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.6)', clearProps: CLEAR }, 0.7);
 }
 
 /* ---------- 04 · What kind of learner ---------- */
@@ -216,23 +409,60 @@ function carousel({ gsap, reduce }) {
     if (e.key === 'ArrowLeft') scroller.scrollBy({ left: -stepSize(), behavior: 'smooth' });
   });
 
-  // Mouse drag to scroll (touch already scrolls natively).
+  // Mouse drag to scroll (touch already scrolls natively). Snap is off while
+  // dragging; on release the row glides (with a little momentum) to the
+  // nearest card, then snap comes back on, so nothing jumps.
+  const snapTargets = () => {
+    const edge = scroller.getBoundingClientRect().left + parseFloat(getComputedStyle(scroller).paddingLeft);
+    const max = scroller.scrollWidth - scroller.clientWidth;
+    return cards.map((c) => Math.min(max, Math.max(0, scroller.scrollLeft + c.getBoundingClientRect().left - edge)));
+  };
   let down = null;
+  let justDragged = false;
+  scroller.addEventListener('dragstart', (e) => e.preventDefault()); // no ghost images
   scroller.addEventListener('pointerdown', (e) => {
-    if (e.pointerType !== 'mouse' || e.target.closest('button')) return;
-    down = { x: e.clientX, left: scroller.scrollLeft, moved: false };
+    if (e.pointerType !== 'mouse' || e.button !== 0 || e.target.closest('button, a')) return;
+    gsap.killTweensOf(scroller);
+    down = { id: e.pointerId, x: e.clientX, left: scroller.scrollLeft, moved: false, vx: 0, lastX: e.clientX, lastT: performance.now() };
   });
-  window.addEventListener('pointermove', (e) => {
-    if (!down) return;
+  scroller.addEventListener('pointermove', (e) => {
+    if (!down || e.pointerId !== down.id) return;
     const dx = e.clientX - down.x;
-    if (Math.abs(dx) > 4) { down.moved = true; scroller.classList.add('is-dragging'); }
+    if (!down.moved) {
+      if (Math.abs(dx) < 6) return;
+      down.moved = true;
+      scroller.setPointerCapture(e.pointerId);
+      scroller.classList.add('is-dragging');
+      window.getSelection()?.removeAllRanges();
+    }
+    const t = performance.now();
+    const dt = Math.max(1, t - down.lastT);
+    down.vx = 0.8 * ((e.clientX - down.lastX) / dt) + 0.2 * down.vx; // px per ms, smoothed
+    down.lastX = e.clientX;
+    down.lastT = t;
     scroller.scrollLeft = down.left - dx;
   });
-  window.addEventListener('pointerup', () => {
-    if (!down) return;
+  const release = (e) => {
+    if (!down || e.pointerId !== down.id) return;
+    const { moved, vx, lastT } = down;
     down = null;
-    scroller.classList.remove('is-dragging');
-  });
+    if (!moved) return;
+    justDragged = true;
+    setTimeout(() => { justDragged = false; }, 0);
+    // A flick carries on a bit; a slow release stays where it is.
+    const fresh = performance.now() - lastT < 80;
+    const projected = scroller.scrollLeft - (fresh ? vx * 260 : 0);
+    const targets = snapTargets();
+    const goal = targets.reduce((best, x) => (Math.abs(x - projected) < Math.abs(best - projected) ? x : best), targets[0]);
+    gsap.to(scroller, {
+      scrollLeft: goal, duration: reduce ? 0 : 0.55, ease: 'power3.out',
+      onComplete: () => scroller.classList.remove('is-dragging'),
+    });
+  };
+  scroller.addEventListener('pointerup', release);
+  scroller.addEventListener('pointercancel', release);
+  // A drag that ends over a link or button must not also click it.
+  scroller.addEventListener('click', (e) => { if (justDragged) { e.preventDefault(); e.stopPropagation(); } }, true);
 
   // Camera button flips a photo to its story (Patagonia-style captions). The
   // story is a disclosure: hidden from assistive tech and focus until shown.
@@ -359,6 +589,47 @@ function sundial({ gsap, reduce }) {
   }
 }
 
+/* ---------- 11 · FamilyCoachMD book ---------- */
+// The book rises and tips upright as the section scrolls in, then opens; on
+// desktop it leans toward the pointer (the stage moves, the book tilts).
+function familyBook({ gsap, reduce }) {
+  const link = document.querySelector('.family-book-link');
+  if (!link) return;
+  const stage = link.querySelector('.family-book-stage');
+  const book = link.querySelector('.family-book');
+  // With a mouse the book stays closed and opens only on hover (CSS :hover /
+  // :focus-visible). Touch screens have no hover, so there it opens once the
+  // card is in view.
+  const touch = !matchMedia('(hover: hover)').matches;
+  const open = () => { if (touch) link.classList.add('is-open'); };
+  if (reduce) { open(); return; }
+
+  // Upright by the time the card's top reaches 70% of the screen, so the
+  // book never sits half-tilted over its label while someone is reading.
+  // Phones: tilt only, no drop, so the book never slides over its label.
+  const drop = matchMedia('(max-width: 767px)').matches ? 0 : 44;
+  gsap.fromTo(stage, { y: drop, rotationX: 26, transformOrigin: '50% 100%' }, {
+    y: 0, rotationX: 0, ease: 'none',
+    scrollTrigger: {
+      trigger: link, start: 'top bottom', end: 'top 70%', scrub: 0.6,
+      onUpdate: (self) => { if (self.progress > 0.8) open(); },
+      onLeave: open,
+    },
+  });
+
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  gsap.set(book, { transformPerspective: 1000 });
+  const rx = gsap.quickTo(book, 'rotationX', { duration: 0.6, ease: 'power3' });
+  const ry = gsap.quickTo(book, 'rotationY', { duration: 0.6, ease: 'power3' });
+  link.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    const r = link.getBoundingClientRect();
+    ry(((e.clientX - r.left) / r.width - 0.5) * 14);
+    rx(-((e.clientY - r.top) / r.height - 0.5) * 10);
+  });
+  link.addEventListener('pointerleave', () => { rx(0); ry(0); });
+}
+
 /* ---------- 07 · Morning / afternoon compare ---------- */
 function compare({ gsap, reduce }) {
   const box = document.querySelector('.compare');
@@ -422,7 +693,6 @@ function packets({ gsap, reduce }) {
 
 /* ---------- 10 · Count-up numbers ---------- */
 function counters({ gsap, reduce }) {
-  const ring = document.querySelector('.stat-ring');
   gsap.utils.toArray('[data-count]').forEach((el) => {
     const target = parseFloat(el.dataset.count);
     const dec = parseInt(el.dataset.decimals || '0', 10);
@@ -436,26 +706,6 @@ function counters({ gsap, reduce }) {
       onUpdate: () => { el.textContent = obj.v.toFixed(dec); },
       scrollTrigger: { trigger: el, start: 'top bottom', once: true },
     });
-  });
-  if (ring && !reduce) {
-    gsap.from(ring, { scale: 0.6, opacity: 0, rotation: -10, duration: 0.8, delay: 1.5, ease: 'back.out(2)', scrollTrigger: { trigger: ring, start: 'top 85%', once: true } });
-  }
-}
-
-/* ---------- 11 · Only 5 ---------- */
-function five({ gsap, reduce }) {
-  if (reduce) return;
-  gsap.fromTo('.five-collage', { y: 60 }, {
-    y: -140, ease: 'none',
-    scrollTrigger: { trigger: '.five', start: 'top bottom', end: 'bottom top', scrub: true },
-  });
-  gsap.from('.five-doodle', {
-    scale: 0, rotation: -45, duration: 0.8, stagger: 0.15, ease: 'back.out(2.2)',
-    scrollTrigger: { trigger: '.five-art', start: 'top 70%', once: true },
-  });
-  gsap.from('.five-copy > *', {
-    y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out',
-    scrollTrigger: { trigger: '.five-copy', start: 'top 85%', once: true },
   });
 }
 
@@ -516,6 +766,15 @@ function faq({ gsap, reduce, ScrollTrigger }) {
 function visit({ gsap, reduce }) {
   if (reduce) return;
   gsap.from('.visit', { y: 80, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.visit', start: 'top 95%', once: true } });
-  gsap.from('.steps li', { x: -20, opacity: 0, duration: 0.6, stagger: 0.12, ease: 'power3.out', scrollTrigger: { trigger: '.steps', start: 'top 85%', once: true } });
-  gsap.from('.visit-form', { y: 40, opacity: 0, duration: 0.9, ease: 'power3.out', scrollTrigger: { trigger: '.visit-form', start: 'top 90%', once: true } });
+  // The form card rises with a slight tilt, then its program chips pop in.
+  gsap.timeline({ scrollTrigger: { trigger: '.visit-form', start: 'top 90%', once: true } })
+    .fromTo('.visit-form', { y: 50, rotation: 1.5, opacity: 0 }, { y: 0, rotation: 0, opacity: 1, duration: 0.9, ease: 'power3.out', clearProps: CLEAR })
+    .fromTo('.pick', { y: 12, scale: 0.92, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.5, stagger: 0.05, ease: 'back.out(2)', clearProps: CLEAR }, 0.35);
+  // Desktop: a doodle arrow draws itself toward the form.
+  const arrow = document.querySelector('.visit-arrow');
+  if (arrow && getComputedStyle(arrow).display !== 'none') {
+    gsap.timeline({ scrollTrigger: { trigger: arrow, start: 'top 85%', once: true } })
+      .fromTo(arrow.querySelector('.va-line'), { drawSVG: '0%' }, { drawSVG: '100%', duration: 0.8, ease: 'power2.inOut' }, 0.6)
+      .fromTo(arrow.querySelector('.va-head'), { drawSVG: '0%' }, { drawSVG: '100%', duration: 0.3, ease: 'power2.out' });
+  }
 }

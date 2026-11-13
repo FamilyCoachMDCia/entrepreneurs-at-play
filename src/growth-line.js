@@ -72,14 +72,15 @@ export function initGrowthLine({ gsap, ScrollTrigger, reduce }) {
     }
     path.setAttribute('d', d);
 
-    const size = mobile ? 26 : 46;
     pairs.forEach(({ section, big, small }) => {
       const y = pageY(section) - top + 90;
       const x = xAt(y);
-      const visible = y > 0 && y < height;
+      const size = Math.min(46, Math.max(0, contentLeft - x - 7));
+      const visible = y > 0 && y < height && size >= 18;
       big.style.display = small.style.display = visible ? '' : 'none';
-      Object.assign(big.style, { left: `${x}px`, top: `${y - size * 0.87}px` });
-      Object.assign(small.style, { left: `${x}px`, top: `${y - size * 0.4}px` });
+      const leaf = { left: `${x}px`, width: `${size}px`, height: `${size * 40 / 46}px` };
+      Object.assign(big.style, leaf, { top: `${y - size * 0.87}px` });
+      Object.assign(small.style, leaf, { top: `${y - size * 0.4}px` });
     });
   }
 

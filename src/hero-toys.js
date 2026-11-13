@@ -9,7 +9,7 @@ const C = {
 };
 
 const TOYS = [
-  { key: 'golf', name: 'Golf', line: 'Weekly coaching for focus, patience and honesty.' },
+  { key: 'golf', name: 'Golf', line: 'Practice with a PGA professional to build focus, patience and honesty.' },
   { key: 'mic', name: 'Podcasting', line: 'Children interview, record and publish their own podcast.' },
   { key: 'plane', name: 'Academic excellence', line: 'From farms to flight decks, at each child’s pace.' },
   { key: 'key', name: 'Humane tech', line: 'From the typewriter to the podcast studio.' },

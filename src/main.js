@@ -74,7 +74,7 @@ function devShot() {
 
 function heroIntro() {
   if (reduce) return;
-  const items = gsap.utils.toArray('.hero-copy > *, .badge');
+  const items = gsap.utils.toArray('.hero-copy > *');
   gsap.from(items, { y: 36, opacity: 0, duration: 0.9, stagger: 0.07, ease: 'power3.out' });
 }
 

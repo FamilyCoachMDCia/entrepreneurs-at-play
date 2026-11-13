@@ -1,7 +1,7 @@
-import { PATHS, pathFor } from './pathways.js';
+import { currentPathway } from './pathways.js';
 import { SITE } from './site-config.js';
 
-// Chrome around the content: ticker, nav, menu, cursor, magnetic buttons,
+// Chrome around the content: ticker, nav, menu, magnetic buttons,
 // anchor scrolling, the visit form and copy-to-clipboard.
 
 // One switch for every self-running effect (WCAG 2.2.2). Effects read
@@ -24,7 +24,6 @@ export function initUI(ctx) {
   menu(ctx);
   anchors(ctx);
   if (!ctx.reduce && matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    cursor(ctx);
     magnetic(ctx);
   }
   form();
@@ -43,7 +42,7 @@ function ticker({ gsap, reduce }) {
   if (reduce) return; // reduced motion: the first announcement stays put
   let i = 0;
   setInterval(() => {
-    if (motionState.paused || document.hidden) return;
+    if (motionState.paused || document.hidden || btn?.closest('.is-scrolled')) return;
     const cur = items[i];
     i = (i + 1) % items.length;
     gsap.to(cur, { yPercent: -100, duration: 0.6, ease: 'power3.inOut' });
@@ -58,7 +57,7 @@ function nav({ ScrollTrigger }) {
     start: 0, end: 'max',
     onUpdate: (self) => {
       const y = self.scroll();
-      head.classList.toggle('is-scrolled', y > 10);
+      head.classList.toggle('is-scrolled', y > 34);
       // Never hide the header while the menu is open or it holds keyboard focus.
       if (document.body.classList.contains('menu-open') || head.contains(document.activeElement)) {
         head.classList.remove('is-hidden');
@@ -92,7 +91,9 @@ function menu({ gsap, lenis, reduce }) {
     if (open) {
       sheet.hidden = false;
       lenis?.stop();
-      sheet.querySelector('a')?.focus({ preventScroll: true });
+      // Focus the sheet itself (tabindex="-1", no ring): the next Tab reaches
+      // the first link, and no link shows a focus ring on a plain tap.
+      sheet.focus({ preventScroll: true });
       if (!reduce) {
         gsap.fromTo(sheet, { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 0.6, ease: 'expo.inOut' });
         gsap.fromTo(links, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.06, delay: 0.2, ease: 'power3.out' });
@@ -129,7 +130,9 @@ function anchors({ lenis }) {
   const go = (id, { push }) => {
     const target = id === '#top' ? document.getElementById('top') : document.querySelector(id);
     if (!target) return false;
-    if (lenis) lenis.scrollTo(id === '#top' ? 0 : target, { offset: -70, duration: 1.2 });
+    // A section's scroll-margin-top (CSS) clears the fixed header; default 70px.
+    const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 70;
+    if (lenis) lenis.scrollTo(id === '#top' ? 0 : target, { offset: -margin, duration: 1.2 });
     else target.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     const focusEl = target.querySelector('h1, h2') || target;
     if (!focusEl.hasAttribute('tabindex')) focusEl.setAttribute('tabindex', '-1');
@@ -145,32 +148,6 @@ function anchors({ lenis }) {
   window.addEventListener('popstate', () => { if (location.hash) go(location.hash, { push: false }); else lenis ? lenis.scrollTo(0) : window.scrollTo(0, 0); });
 }
 
-function cursor({ gsap }) {
-  const root = document.querySelector('.cursor');
-  if (!root) return;
-  const dot = root.querySelector('.cursor-dot');
-  const ring = root.querySelector('.cursor-ring');
-  const label = root.querySelector('.cursor-label');
-  const dx = gsap.quickTo(dot, 'x', { duration: 0.1 });
-  const dy = gsap.quickTo(dot, 'y', { duration: 0.1 });
-  const rx = gsap.quickTo(ring, 'x', { duration: 0.45, ease: 'power3' });
-  const ry = gsap.quickTo(ring, 'y', { duration: 0.45, ease: 'power3' });
-  const CONTROLS = 'a, button, input, select, textarea, summary, label, [role="button"]';
-  window.addEventListener('pointermove', (e) => {
-    if (e.pointerType !== 'mouse') return;
-    dx(e.clientX); dy(e.clientY); rx(e.clientX); ry(e.clientY);
-    // Over controls the decorative ring steps aside for the native cursor.
-    const onControl = !!e.target.closest?.(CONTROLS);
-    root.classList.toggle('on-control', onControl);
-    const zone = onControl ? null : e.target.closest?.('[data-cursor], .card-front, .tile, .ages-photo');
-    const text = zone ? (zone.dataset.cursor || 'look') : '';
-    root.classList.toggle('has-label', !!text);
-    if (text) label.textContent = text;
-  });
-  document.addEventListener('pointerleave', () => root.classList.add('is-hidden'));
-  document.addEventListener('pointerenter', () => root.classList.remove('is-hidden'));
-}
-
 function magnetic({ gsap }) {
   document.querySelectorAll('[data-magnetic]').forEach((el) => {
     const x = gsap.quickTo(el, 'x', { duration: 0.4, ease: 'power3' });
@@ -184,75 +161,72 @@ function magnetic({ gsap }) {
   });
 }
 
-// Visit form. With data-endpoint (e.g. a Formspree URL) it really sends and
-// only then confirms. Without one it can only prepare an email in the
-// visitor's own app, and says so plainly: nothing is sent until they press
-// Send there. Typed data is never cleared on failure.
+// Program requests are sent from the visitor’s email app.
 function form() {
-  const f = document.getElementById('visit-form');
-  if (!f) return;
-  const status = f.querySelector('.form-status');
-  const submit = f.querySelector('.btn-submit');
-  const btnLabel = submit.querySelector('span');
-  const endpoint = f.dataset.endpoint;
-  const idleLabel = endpoint ? 'Request a visit' : 'Prepare my email';
-  btnLabel.textContent = idleLabel;
+  const form = document.getElementById('visit-form');
+  if (!form) return;
+  const program = form.querySelector('#f-program');
+  const age = form.querySelector('#f-age');
+  const ageNote = form.querySelector('#f-age-note');
+  const status = form.querySelector('.form-status');
+  const picks = [...form.querySelectorAll('input[name="program-pick"]')];
+  const summary = form.querySelector('.form-summary');
 
-  // Hide preferred weeks that have already started.
-  const today = new Date().toISOString().slice(0, 10);
-  f.querySelectorAll('#f-week option[data-start]').forEach((o) => { if (o.dataset.start < today) o.remove(); });
+  // The program chips mirror the hidden select (the source of truth): a chip
+  // writes the select; every select change (chip, CTA) repaints the chips.
+  const syncPicks = () => {
+    picks.forEach((r) => { r.checked = r.value === program.value; });
+    if (!summary) return;
+    if (!program.value) { summary.textContent = 'Pick a program above.'; return; }
+    const strong = document.createElement('strong');
+    strong.textContent = program.selectedOptions[0].textContent;
+    summary.replaceChildren('Your request: ', strong);
+  };
+  picks.forEach((r) => r.addEventListener('change', () => {
+    if (!r.checked) return;
+    program.value = r.value;
+    program.dispatchEvent(new Event('change'));
+  }));
 
-  const setStatus = (msg, kind = '') => {
-    status.textContent = msg;
-    status.classList.toggle('is-error', kind === 'error');
-    status.classList.toggle('is-pending', kind === 'pending');
+  const updateAge = () => {
+    syncPicks();
+    const min = program.value === 't6' ? 8 : 2;
+    const restricted = program.value === 't6' || program.value === 'microschool';
+    [...age.options].slice(1).forEach((option) => {
+      option.disabled = restricted && (option.value === 'other' || Number(option.value) < min);
+    });
+    if (age.selectedOptions[0]?.disabled) age.value = '';
+    ageNote.hidden = !restricted;
+    ageNote.textContent = restricted ? `This program is for ages ${min}–12.` : '';
+    age.dispatchEvent(new Event('change'));
   };
 
-  f.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (f.dataset.busy) return; // no double sends
-    let firstBad = null;
-    f.querySelectorAll('[required]').forEach((el) => {
-      const bad = !el.value.trim() || (el.type === 'email' && !/^\S+@\S+\.\S+$/.test(el.value));
-      el.setAttribute('aria-invalid', String(bad));
-      if (bad && !firstBad) firstBad = el;
+  program.addEventListener('change', updateAge);
+  document.querySelectorAll('[data-program-cta]').forEach((link) => {
+    link.addEventListener('click', () => {
+      program.value = link.dataset.programCta;
+      updateAge();
     });
-    if (firstBad) {
-      setStatus('Please fill in your name, a valid email and your child’s age.', 'error');
-      firstBad.focus();
-      return;
-    }
-    const data = Object.fromEntries(new FormData(f));
-    const pathway = PATHS[pathFor(data.age)].name;
-
-    if (!endpoint) {
-      const body = [
-        `Parent: ${data.name}`, `Email: ${data.email}`, `Child's age: ${data.age}`,
-        `Pathway: ${pathway}`, `Preferred week: ${data.week || 'Any week'}`, '', data.message || '',
-      ].join('\n');
-      window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(`Visit request: ${pathway} at Entrepreneurs at Play`)}&body=${encodeURIComponent(body)}`;
-      setStatus(`Your email app should open with this request ready. Nothing has been sent yet: press Send there. If it didn’t open, write to ${SITE.email}.`, 'pending');
-      return;
-    }
-
-    f.dataset.busy = '1';
-    submit.disabled = true;
-    btnLabel.textContent = 'Sending…';
-    setStatus('Sending your request…', 'pending');
-    try {
-      const res = await fetch(endpoint, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(f) });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      f.classList.add('is-sent');
-      btnLabel.textContent = 'Request received ✓';
-      setStatus('Thank you! Your request was received. We’ll reply by email to confirm a visit time.');
-    } catch {
-      btnLabel.textContent = idleLabel;
-      submit.disabled = false;
-      setStatus(`We couldn’t send your request. Your answers are still here: please try again, or write to ${SITE.email}.`, 'error');
-    } finally {
-      delete f.dataset.busy;
-    }
   });
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    const choice = program.selectedOptions[0].textContent;
+    const body = [
+      `Program: ${choice}`,
+      `Parent or guardian: ${data.name}`,
+      `Email: ${data.email}`,
+      `Child’s age: ${age.selectedOptions[0].textContent}`,
+      ...(data.program === 'microschool' ? [`Pathway: ${currentPathway()}`] : []),
+      '',
+      data.message,
+    ].join('\n');
+    window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(`Entrepreneurs at Play: ${choice}`)}&body=${encodeURIComponent(body)}`;
+    status.textContent = `If your email app opened, press Send there. You can also write to ${SITE.email}.`;
+  });
+  updateAge();
+  form.hidden = false;
 }
 
 // Copy the email. If the clipboard is blocked, select the address on the page

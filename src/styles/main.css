@@ -115,6 +115,38 @@ h1 em, h2 em, .h2 em, .foot-word em, .nav-word em {
 .btn:hover .btn-dot { transform: scale(1.8); }
 .btn-ghost { border-color: rgba(35, 38, 31, .25); color: var(--ink); }
 .btn-ghost:hover { border-color: var(--ink); }
+
+.socials {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 16px;
+}
+.social-link {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  min-height: 44px; padding: 8px 11px;
+  border: 1px solid var(--sage); border-radius: 9px;
+  background: var(--paper-2); color: var(--forest-deep);
+  font-size: .85rem; font-weight: 600; line-height: 1.2; text-decoration: none;
+  transition: background-color .25s, border-color .25s, color .25s;
+}
+.social-link svg { flex: none; width: 17px; height: 17px; color: var(--forest); }
+.social-pending { background: transparent; border-color: var(--line); color: var(--ink-soft); }
+.social-pending svg { color: currentColor; }
+.social-pending small { display: block; margin-top: 2px; font-size: .7rem; font-weight: 500; }
+a.social-link:is(:focus-visible, :active) {
+  border-color: var(--forest-deep); background: var(--forest-deep); color: var(--paper);
+}
+a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
+@media (hover: hover) {
+  a.social-link:hover { border-color: var(--forest-deep); background: var(--forest-deep); color: var(--paper); }
+  a.social-link:hover svg { color: var(--marigold); }
+}
+@media (max-width: 420px) {
+  .socials { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .social-link { height: 100%; padding: 5px 3px; gap: 4px; font-size: .8rem; }
+  .social-link svg { width: 15px; height: 15px; }
+  .social-pending small { font-size: .65rem; }
+}
+
 .round-btn {
   width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center;
   background: var(--paper); border: 1.5px solid var(--line); box-shadow: 0 6px 18px rgba(31, 42, 23, .08);
@@ -1276,7 +1308,7 @@ details[open] summary::after { transform: rotate(45deg); background: var(--marig
 .foot-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .foot-links a { text-decoration: none; font-weight: 500; }
 .foot-links a:hover { color: var(--forest); }
-.foot-contact a { color: var(--forest); font-weight: 600; }
+.foot-contact > p a { color: var(--forest); font-weight: 600; }
 .foot-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--line); font-size: .85rem; color: var(--ink-soft); }
 @media (min-width: 900px) { .foot-grid { grid-template-columns: 1.4fr 1fr 1fr; } }
 

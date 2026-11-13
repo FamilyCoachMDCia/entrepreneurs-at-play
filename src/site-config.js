@@ -6,4 +6,9 @@ export const SITE = {
   openingLong: 'January 4, 2027',
   copyrightYear: 2026,
   email: 'Grow@familycoachmd.com',
+  socials: {
+    instagram: null,
+    facebook: null,
+    substack: 'https://larisachemd.substack.com/',
+  },
 };

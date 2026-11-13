@@ -18,8 +18,26 @@ const TOKENS = {
   email: SITE.email,
 };
 
+const SOCIAL_LABELS = {
+  instagram: 'Instagram',
+  facebook: 'Facebook',
+  substack: 'Substack',
+};
+
+function socialLinks() {
+  const links = Object.entries(SOCIAL_LABELS).map(([platform, label]) => {
+    const href = SITE.socials[platform];
+    const icon = `<svg aria-hidden="true"><use href="/svg/social-icons.svg#${platform}"/></svg>`;
+    const item = href
+      ? `<a class="social-link" href="${href}" target="_blank" rel="noopener">${icon}${label}</a>`
+      : `<span class="social-link social-pending">${icon}<span>${label}<small>Coming soon</small></span></span>`;
+    return `<li>${item}</li>`;
+  });
+  return `<ul class="socials" aria-label="Social media and articles">${links.join('')}</ul>`;
+}
+
 // Expands <img data-photo="name" ...> into src/srcset/size attributes,
-// inlines the animated logo where <!--logo-anim--> appears, fills {{tokens}}
+// inlines the logo and social links where marked, fills {{tokens}}
 // from src/site-config.js.
 function sitePartials() {
   return {
@@ -28,6 +46,7 @@ function sitePartials() {
       const logo = readFileSync(new URL('./src/partials/logo-anim.svg', import.meta.url), 'utf8');
       return html
         .replace('<!--logo-anim-->', logo)
+        .replaceAll('<!--social-links-->', socialLinks())
         .replace(/\{\{(\w+)\}\}/g, (m, key) => {
           if (!(key in TOKENS)) throw new Error(`Unknown token: ${m}`);
           return TOKENS[key];

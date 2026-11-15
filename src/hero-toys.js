@@ -9,14 +9,15 @@ const C = {
 };
 
 const TOYS = [
-  { key: 'golf', name: 'Golf', line: 'Practice with a PGA professional to build focus, patience and honesty.' },
-  { key: 'mic', name: 'Podcasting', line: 'Children interview, record and publish their own podcast.' },
-  { key: 'plane', name: 'Academic excellence', line: 'From farms to flight decks, at each child’s pace.' },
+  // Names follow "Nine things that set EP apart" on /about/.
+  { key: 'golf', name: 'Golf', line: 'Weekly coaching builds focus, patience and honesty.' },
+  { key: 'mic', name: 'Podcasting and communication', line: 'Kids host their own podcast, interviewing local changemakers.' },
+  { key: 'plane', name: 'Bringing the world to our city', line: 'EP Model United Nations, for kids 9 and up.' },
   { key: 'key', name: 'Humane tech', line: 'From the typewriter to the podcast studio.' },
-  { key: 'coin', name: 'Real-life entrepreneurship', line: 'Children make, price and sell real products.' },
-  { key: 'guitar', name: 'Arts and humanities', line: 'Music, choir, theater and art, fully engaged.' },
-  { key: 'leaf', name: 'Childhood play', line: 'Free play every day, and real work outdoors.' },
-  { key: 'globe', name: 'Cultural immersion', line: 'French, ASL, many faiths and world cuisines.' },
+  { key: 'coin', name: 'Financial literacy', line: 'Saving, spending and investing, learned by doing.' },
+  { key: 'guitar', name: 'Arts and humanities', line: 'Art, music and theater, fully engaged.' },
+  { key: 'leaf', name: 'Nature and play', line: 'Daily free play, plus time in nature.' },
+  { key: 'globe', name: 'Culture and cuisine', line: 'A foreign language and world cultures, learned through food.' },
 ];
 
 const clay = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.72, metalness: 0, ...extra });

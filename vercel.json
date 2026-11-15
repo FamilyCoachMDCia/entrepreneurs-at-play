@@ -1,0 +1,11 @@
+{
+  "trailingSlash": true,
+  "redirects": [
+    { "source": "/t6", "destination": "/enrichment/#t6" },
+    { "source": "/t6/", "destination": "/enrichment/#t6" },
+    { "source": "/waitlist", "destination": "/microschool/#visit" },
+    { "source": "/waitlist/", "destination": "/microschool/#visit" },
+    { "source": "/contact", "destination": "/#visit" },
+    { "source": "/contact/", "destination": "/#visit" }
+  ]
+}

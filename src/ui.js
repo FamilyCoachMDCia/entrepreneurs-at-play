@@ -1,5 +1,6 @@
 import { currentPathway } from './pathways.js';
 import { SITE } from './site-config.js';
+import { takeProgramChoice } from './transitions.js';
 
 // Chrome around the content: ticker, nav, menu, magnetic buttons,
 // anchor scrolling, the visit form and copy-to-clipboard.
@@ -29,6 +30,16 @@ export function initUI(ctx) {
   form();
   copy();
 }
+
+// Needs ScrollTrigger positions, so main.js calls it after the sections.
+export function initPageChrome(ctx) {
+  subnav(ctx);
+  stickyCta(ctx);
+}
+
+// In-page jump used by other modules (a link to this same page by path).
+let jump = null;
+export const goToHash = (hash, opts = { push: true }) => jump?.(hash, opts);
 
 function ticker({ gsap, reduce }) {
   const items = gsap.utils.toArray('.ticker-list li');
@@ -66,9 +77,14 @@ function nav({ ScrollTrigger }) {
       }
       head.classList.toggle('is-hidden', y > lastY && y > 240);
       lastY = y;
+      // The sticky section row follows the header (top: nav height or 0).
+      document.documentElement.classList.toggle('head-hidden', head.classList.contains('is-hidden'));
     },
   });
-  head.addEventListener('focusin', () => head.classList.remove('is-hidden'));
+  head.addEventListener('focusin', () => {
+    head.classList.remove('is-hidden');
+    document.documentElement.classList.remove('head-hidden');
+  });
 }
 
 // Mobile menu as a modal: focus moves in and stays in (Tab / Shift+Tab wrap
@@ -101,8 +117,8 @@ function menu({ lenis }) {
   const isOpen = () => burger.getAttribute('aria-expanded') === 'true';
   burger.addEventListener('click', () => set(!isOpen()));
   // A link closes the menu without stealing focus back: the anchor handler
-  // moves focus to the destination section.
-  sheet.addEventListener('click', (e) => { if (e.target.closest('a[href^="#"]')) set(false, { restoreFocus: false }); });
+  // moves focus to the destination section, or the page transition takes over.
+  sheet.addEventListener('click', (e) => { if (e.target.closest('a[href]:not([href^="mailto:"])')) set(false, { restoreFocus: false }); });
   document.addEventListener('keydown', (e) => {
     if (!isOpen()) return;
     if (e.key === 'Escape') { set(false); return; }
@@ -113,7 +129,7 @@ function menu({ lenis }) {
     else if (!e.shiftKey && i === list.length - 1) { e.preventDefault(); list[0].focus(); }
   });
   // Leaving the phone layout with the menu open: close it cleanly.
-  matchMedia('(min-width: 1280px)').addEventListener('change', (e) => {
+  matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
     if (!e.matches || !isOpen()) return;
     set(false, { restoreFocus: false });
     document.querySelector('.nav-brand').focus({ preventScroll: true });
@@ -125,7 +141,8 @@ function menu({ lenis }) {
 // so Back returns to the previous section.
 function anchors({ lenis }) {
   const go = (id, { push }) => {
-    const target = id === '#top' ? document.getElementById('top') : document.querySelector(id);
+    let target = null;
+    try { target = id === '#top' ? document.getElementById('top') || document.getElementById('main') : document.querySelector(id); } catch { /* not a selector */ }
     if (!target) return false;
     // A section's scroll-margin-top (CSS) clears the fixed header; default 70px.
     const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 70;
@@ -137,6 +154,7 @@ function anchors({ lenis }) {
     if (push && location.hash !== id) history.pushState(null, '', id);
     return true;
   };
+  jump = go;
   document.addEventListener('click', (e) => {
     const a = e.target.closest('a[href^="#"]');
     if (!a || a.getAttribute('href') === '#') return;
@@ -158,21 +176,31 @@ function magnetic({ gsap }) {
   });
 }
 
-// Program requests are sent from the visitor’s email app.
+// Program requests are sent from the visitor’s email app. Each page's form
+// opens on that page's own program; a program button clicked on another page
+// wins (transitions.js carries it over).
+const NO_CHILD = ['general', 'partner'];
+const samePage = (a) => new URL(a.href, location.href).pathname.replace(/index\.html$/, '') === location.pathname.replace(/index\.html$/, '');
+
 function form() {
   const form = document.getElementById('visit-form');
   if (!form) return;
   const program = form.querySelector('#f-program');
   const age = form.querySelector('#f-age');
+  const ageField = form.querySelector('.field-age');
   const ageNote = form.querySelector('#f-age-note');
   const status = form.querySelector('.form-status');
   const picks = [...form.querySelectorAll('input[name="program-pick"]')];
   const summary = form.querySelector('.form-summary');
+  const more = form.querySelector('.pick-more');
 
   // The program chips mirror the hidden select (the source of truth): a chip
   // writes the select; every select change (chip, CTA) repaints the chips.
   const syncPicks = () => {
     picks.forEach((r) => { r.checked = r.value === program.value; });
+    // A choice tucked under "Looking for another program?" opens that drawer.
+    const chosen = picks.find((r) => r.checked);
+    if (more && chosen && more.contains(chosen)) more.open = true;
     if (!summary) return;
     if (!program.value) { summary.textContent = 'Pick a program above.'; return; }
     const strong = document.createElement('strong');
@@ -187,8 +215,12 @@ function form() {
 
   const updateAge = () => {
     syncPicks();
+    // Questions and partnerships are not about a child: no age field.
+    const childless = NO_CHILD.includes(program.value);
+    ageField.hidden = childless;
+    age.required = !childless;
     const min = program.value === 't6' ? 8 : 2;
-    const restricted = program.value === 't6' || program.value === 'microschool';
+    const restricted = !childless && (program.value === 't6' || program.value === 'microschool');
     [...age.options].slice(1).forEach((option) => {
       option.disabled = restricted && (option.value === 'other' || Number(option.value) < min);
     });
@@ -201,6 +233,7 @@ function form() {
   program.addEventListener('change', updateAge);
   document.querySelectorAll('[data-program-cta]').forEach((link) => {
     link.addEventListener('click', () => {
+      if (!samePage(link)) return; // another page: its own form picks it up
       program.value = link.dataset.programCta;
       updateAge();
     });
@@ -210,11 +243,12 @@ function form() {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(form));
     const choice = program.selectedOptions[0].textContent;
+    const childless = NO_CHILD.includes(program.value);
     const body = [
-      `Program: ${choice}`,
-      `Parent or guardian: ${data.name}`,
+      `Request: ${choice}`,
+      `${childless ? 'Name' : 'Parent or guardian'}: ${data.name}`,
       `Email: ${data.email}`,
-      `Child’s age: ${age.selectedOptions[0].textContent}`,
+      ...(childless ? [] : [`Child’s age: ${age.selectedOptions[0].textContent}`]),
       ...(data.program === 'microschool' ? [`Pathway: ${currentPathway()}`] : []),
       '',
       data.message,
@@ -222,8 +256,70 @@ function form() {
     window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(`Entrepreneurs at Play: ${choice}`)}&body=${encodeURIComponent(body)}`;
     status.textContent = `If your email app opened, press Send there. You can also write to ${SITE.email}.`;
   });
+
+  const valid = (v) => !!v && [...program.options].some((o) => o.value === v);
+  const carried = takeProgramChoice();
+  const fallback = form.dataset.defaultProgram;
+  program.value = valid(carried) ? carried : valid(fallback) ? fallback : '';
   updateAge();
   form.hidden = false;
+}
+
+// Phones and tablets: the page's own call to action floats at the bottom once
+// the page top has scrolled away, and steps aside for the form, the menu and
+// the keyboard.
+function stickyCta({ ScrollTrigger }) {
+  const bar = document.querySelector('.sticky-cta');
+  const visit = document.getElementById('visit');
+  const top = document.querySelector('main > section');
+  if (!bar || !visit || !top) return;
+  const link = bar.querySelector('a');
+  let past = false;
+  let atForm = false;
+  let typing = false;
+  const render = () => {
+    const on = past && !atForm && !typing;
+    bar.classList.toggle('is-on', on);
+    bar.setAttribute('aria-hidden', String(!on));
+    link.tabIndex = on ? 0 : -1;
+  };
+  ScrollTrigger.create({ trigger: top, start: 'bottom 40%', end: 'max', onToggle: (self) => { past = self.isActive; render(); } });
+  ScrollTrigger.create({ trigger: visit, start: 'top 92%', end: 'max', onToggle: (self) => { atForm = self.isActive; render(); } });
+  document.addEventListener('focusin', (e) => { typing = !!e.target.closest?.('input, select, textarea'); render(); });
+  document.addEventListener('focusout', () => { typing = false; render(); });
+}
+
+// Desktop: the "On this page" row sticks under the header and marks the
+// section in view. Phones: a sideways row (CSS), same links.
+function subnav({ ScrollTrigger }) {
+  const nav = document.querySelector('.subnav');
+  if (!nav) return;
+  document.documentElement.classList.add('has-subnav');
+  const links = [...nav.querySelectorAll('a[href^="#"]')];
+  const list = nav.querySelector('.subnav-list');
+  const mark = (link) => {
+    links.forEach((l) => (l === link ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current')));
+    // Keep the marked chip in view inside the row (phones and narrow screens).
+    if (link && list.scrollWidth > list.clientWidth + 2) {
+      list.scrollTo({ left: link.parentElement.offsetLeft - 16, behavior: 'smooth' });
+    }
+  };
+  links.forEach((link) => {
+    const section = document.querySelector(link.getAttribute('href'));
+    if (!section) return;
+    ScrollTrigger.create({
+      trigger: section, start: 'top 45%', end: 'bottom 45%',
+      onToggle: (self) => { if (self.isActive) mark(link); },
+    });
+  });
+  // The pinned sun-dial uses the whole screen: the row tucks away meanwhile.
+  const day = document.querySelector('.day');
+  if (day) {
+    ScrollTrigger.create({
+      trigger: day, start: 'top 30%', end: 'bottom 70%',
+      onToggle: (self) => nav.classList.toggle('is-tucked', self.isActive && day.classList.contains('is-pinned')),
+    });
+  }
 }
 
 // Copy the email. If the clipboard is blocked, select the address on the page

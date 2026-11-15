@@ -8,6 +8,8 @@ export function initSections(ctx) {
   reveals(ctx);
   heroRotator(ctx);
   programs(ctx);
+  doors(ctx);
+  nameEquation(ctx);
   initPathways(ctx);
   learner(ctx);
   carousel(ctx);
@@ -81,11 +83,14 @@ function reveals({ gsap, SplitText, reduce }) {
     }
   }
 
-  // Promise icons and FAQ rows.
-  gsap.from('.promise-list li', {
-    y: 40, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out',
-    scrollTrigger: { trigger: '.promise-list', start: 'top 80%', once: true },
-  });
+  // Promise icons (microschool page only).
+  const promises = document.querySelector('.promise-list');
+  if (promises) {
+    gsap.from(promises.children, {
+      y: 40, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out',
+      scrollTrigger: { trigger: promises, start: 'top 80%', once: true },
+    });
+  }
 }
 
 /* ---------- Hero rotating line ---------- */
@@ -106,6 +111,107 @@ function heroRotator({ gsap, reduce }) {
 // Elements with a CSS hover transform (day cards) get explicit end values +
 // clearProps, so an inline GSAP transform never fights the hover lift.
 const CLEAR = 'transform,translate,rotate,scale,opacity';
+const token = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+/* ---------- Home · the three doors ---------- */
+// Each program is a door. A mouse over it (or keyboard focus) leaves it ajar
+// (CSS) and plays its little drawing; a click opens it all the way into its
+// page (transitions.js). On touch screens each door breathes open once as it
+// reaches the middle of the screen, to show it opens.
+function doors({ gsap, reduce, ScrollTrigger }) {
+  const all = gsap.utils.toArray('.door');
+  if (!all.length) return;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  all.forEach((door) => {
+    const art = door.querySelector('.door-art');
+    const play = art && !reduce ? artTimeline(gsap, art) : null;
+    if (play) {
+      const go = () => { if (!motionState.paused) play.restart(); };
+      door.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') go(); });
+      door.addEventListener('focus', go);
+    }
+    if (reduce) return;
+    if (!fine) {
+      ScrollTrigger.create({
+        trigger: door, start: 'top 62%', once: true,
+        onEnter: () => {
+          if (motionState.paused) return;
+          door.classList.add('is-breathing');
+          play?.restart();
+          setTimeout(() => door.classList.remove('is-breathing'), 1300);
+        },
+      });
+    }
+  });
+
+  if (reduce) return;
+  // The home row rises in, then each door breathes open once.
+  const row = document.querySelector('.doors-row');
+  if (row) {
+    gsap.fromTo(row.children, { y: 44, opacity: 0 }, {
+      y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: 'power3.out', clearProps: CLEAR,
+      scrollTrigger: { trigger: row, start: 'top 92%', once: true },
+      onComplete: () => {
+        if (!fine || motionState.paused) return;
+        all.filter((d) => row.contains(d)).forEach((d, i) => setTimeout(() => {
+          d.classList.add('is-breathing');
+          setTimeout(() => d.classList.remove('is-breathing'), 1300);
+        }, i * 140));
+      },
+    });
+  }
+  gsap.utils.toArray('.next-row').forEach((r) => gsap.fromTo(r.children, { y: 30, opacity: 0 }, {
+    y: 0, opacity: 1, duration: 0.7, stagger: 0.1, ease: 'power3.out', clearProps: CLEAR,
+    scrollTrigger: { trigger: r, start: 'top 90%', once: true },
+  }));
+}
+
+// The drawing on each door: a putt rolls into the hole, the sun climbs its
+// arc, the two leaves unfurl. Paused until hover.
+function artTimeline(gsap, art) {
+  const tl = gsap.timeline({ paused: true });
+  if (art.classList.contains('art-putt')) {
+    const ball = art.querySelector('.art-ball');
+    const track = art.querySelector('.art-track');
+    tl.fromTo(ball, { motionPath: { path: track, align: track, alignOrigin: [0.5, 0.9], start: 0, end: 0 } },
+      { motionPath: { path: track, align: track, alignOrigin: [0.5, 0.9], start: 0, end: 1 }, duration: 0.9, ease: 'power2.out' })
+      .to(ball, { scale: 0.2, opacity: 0, svgOrigin: '132 64', duration: 0.2, ease: 'power2.in' })
+      .fromTo(art.querySelector('.art-flag'), { rotation: 0, svgOrigin: '132 17' }, { rotation: -10, duration: 0.18, yoyo: true, repeat: 3, ease: 'sine.inOut' }, '<')
+      .set(ball, { opacity: 1, scale: 1, motionPath: { path: track, align: track, alignOrigin: [0.5, 0.9], start: 0, end: 0 } }, '+=0.5');
+  } else if (art.classList.contains('art-sun')) {
+    const sun = art.querySelector('.art-sunball');
+    const track = art.querySelector('.art-track');
+    const mp = (end) => ({ path: track, align: track, alignOrigin: [0.5, 0.5], start: 0.14, end });
+    gsap.set(sun, { motionPath: mp(0.14) });
+    tl.fromTo(sun, { motionPath: mp(0.14) }, { motionPath: mp(0.5), duration: 1, ease: 'power2.inOut' })
+      .fromTo(art.querySelector('.art-rays'), { rotation: 0, svgOrigin: '0 0' }, { rotation: 90, duration: 1, ease: 'power2.inOut' }, 0);
+  } else if (art.classList.contains('art-leaves')) {
+    tl.fromTo(art.querySelector('.art-stem'), { drawSVG: '0%' }, { drawSVG: '100%', duration: 0.5, ease: 'power2.inOut' })
+      .fromTo(art.querySelector('.art-leaf-big'), { scale: 0.3, rotation: -30, svgOrigin: '104 42' }, { scale: 1, rotation: 0, duration: 0.9, ease: 'elastic.out(1, 0.5)' }, 0.3)
+      .fromTo(art.querySelector('.art-vein'), { drawSVG: '0%' }, { drawSVG: '100%', duration: 0.4 }, 0.45)
+      .fromTo(art.querySelector('.art-leaf-small'), { scale: 0.3, rotation: 30, svgOrigin: '86 64' }, { scale: 1, rotation: 0, duration: 0.9, ease: 'elastic.out(1, 0.5)' }, 0.42);
+  }
+  // At rest each drawing shows its last frame (the ball back at the tee, the
+  // leaves open); the sun waits low on its arc.
+  if (!art.classList.contains('art-sun')) tl.progress(1).pause();
+  return tl;
+}
+
+/* ---------- Who we are · What's in a name ---------- */
+// The two words slide together, the + and = draw themselves, and the
+// result writes in line by line (data-split).
+function nameEquation({ gsap, reduce }) {
+  const eq = document.querySelector('.name-eq');
+  if (!eq || reduce) return;
+  const [ent, play] = eq.querySelectorAll('.name-card');
+  const ops = eq.querySelectorAll('.name-op path');
+  gsap.set(ops, { drawSVG: '0%' });
+  gsap.timeline({ scrollTrigger: { trigger: eq, start: 'top 78%', once: true } })
+    .fromTo(ent, { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: 'power3.out', clearProps: CLEAR })
+    .fromTo(play, { x: 50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.8, ease: 'power3.out', clearProps: CLEAR }, 0.05)
+    .to(ops, { drawSVG: '100%', duration: 0.35, stagger: 0.12, ease: 'power2.out' }, 0.45);
+}
 
 function programs(ctx) {
   dayStrip(ctx);
@@ -242,9 +348,10 @@ function microschoolCard({ gsap, reduce }) {
 function weekPlanner({ gsap, reduce }) {
   const list = document.querySelector('.week-rhythm');
   if (!list) return;
-  // The ring hugs only "Wednesday" + "Podcasting", clear of the icon and the
-  // after-school dot. Phones: one row (CSS sets top/bottom); wider: a column.
-  const ringSvg = list.querySelector('.wed-ring');
+  // The ring hugs only the sample day and its activity (from SCHEDULE), clear
+  // of the icon and the after-school dot. Phones: one row (CSS sets
+  // top/bottom); wider: a column.
+  const ringSvg = list.querySelector('.day-ring');
   const phone = matchMedia('(max-width: 767px)');
   const fitRing = () => {
     const li = ringSvg?.closest('li');
@@ -272,13 +379,15 @@ function weekPlanner({ gsap, reduce }) {
   document.fonts?.ready.then(fitRing);
   addEventListener('resize', fitRing);
   if (reduce) return;
-  const ring = list.querySelector('.wed-ring path');
-  gsap.set(ring, { drawSVG: '0%' });
+  // The ring stretches with non-scaling strokes, which DrawSVG can't measure:
+  // a left-to-right wipe draws it instead.
+  const ring = list.querySelector('.day-ring');
+  gsap.set(ring, { clipPath: 'inset(-12px 100% -12px -12px)' });
   gsap.timeline({ scrollTrigger: { trigger: list, start: 'top 85%', once: true } })
     .fromTo(list.children, { y: 26, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.08, ease: 'power3.out', clearProps: CLEAR })
     .fromTo(list.querySelectorAll('.week-icon'), { scale: 0, rotation: -25 }, { scale: 1, rotation: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(2.2)', clearProps: 'transform' }, 0.15)
     .fromTo(list.querySelectorAll('.after-dot'), { scale: 0 }, { scale: 1, duration: 0.4, stagger: 0.07, ease: 'back.out(3)', clearProps: 'transform' }, 0.6)
-    .to(ring, { drawSVG: '100%', duration: 1, ease: 'power2.inOut' }, 0.8);
+    .to(ring, { clipPath: 'inset(-12px -12px -12px -12px)', duration: 1, ease: 'power2.inOut', clearProps: 'clipPath' }, 0.8);
 }
 
 /* ---------- 13b · The practical part ---------- */
@@ -467,9 +576,9 @@ function carousel({ gsap, reduce }) {
   // story is a disclosure: hidden from assistive tech and focus until shown.
   cards.forEach((card) => {
     const cam = card.querySelector('.cam');
-    const use = cam.querySelector('use');
+    const use = cam?.querySelector('use');
     const back = card.querySelector('.card-back');
-    cam.addEventListener('click', () => {
+    cam?.addEventListener('click', () => {
       const on = card.classList.toggle('is-story');
       cam.setAttribute('aria-expanded', String(on));
       cam.setAttribute('aria-label', on ? 'Show the photo' : 'Show the story behind this photo');
@@ -572,7 +681,7 @@ function sundial({ gsap, reduce }) {
     tl.to('.sun', { motionPath: { path: '.sun-arc', align: '.sun-arc', alignOrigin: [0.5, 0.5] }, duration: n - 1 }, 0)
       .to('.sun-rays', { rotation: 180, svgOrigin: '0 0', duration: n - 1 }, 0)
       .to(section, {
-        keyframes: { backgroundColor: ['#F6F2EA', '#FBF3DC', '#FBF3DC', '#CFE0DF', '#F3E2C4'] },
+        keyframes: { backgroundColor: ['--paper', '--tint-dawn', '--tint-dawn', '--sky', '--tint-dusk'].map(token) },
         duration: n - 1,
       }, 0);
 
@@ -636,12 +745,13 @@ function packets({ gsap, reduce }) {
   if (reduce) return;
   // Packets lift on hover with a CSS transform transition: explicit end
   // values + clearProps keep the entrance from fighting it (see chips).
-  gsap.fromTo('.packets li', { y: -30, rotation: () => gsap.utils.random(-6, 6), opacity: 0 }, {
+  gsap.utils.toArray('.packets').forEach((row) => gsap.fromTo(row.children, { y: -30, rotation: () => gsap.utils.random(-6, 6), opacity: 0 }, {
     y: 0, rotation: 0, opacity: 1, duration: 0.7, stagger: 0.05, ease: 'back.out(1.6)',
     clearProps: 'transform,translate,rotate,scale,opacity',
-    scrollTrigger: { trigger: '.packets', start: 'top 85%', once: true },
-  });
+    scrollTrigger: { trigger: row, start: 'top 85%', once: true },
+  }));
   // Ages leaves unfurl too, echoing the loader.
+  if (!document.querySelector('.ages-card')) return;
   gsap.timeline({ scrollTrigger: { trigger: '.ages-card', start: 'top 75%', once: true } })
     .from('.ages-stem', { drawSVG: '0%', duration: 0.8, ease: 'power2.inOut' })
     .from('.ages-leaf-big', { scale: 0.2, rotation: -30, svgOrigin: '140 80', opacity: 0, duration: 1, ease: 'elastic.out(1, 0.5)' }, 0.5)
@@ -669,7 +779,7 @@ function counters({ gsap, reduce }) {
 
 /* ---------- 12 · Founder ---------- */
 function founder({ gsap, SplitText, reduce }) {
-  if (reduce) return;
+  if (reduce || !document.querySelector('.founder')) return;
   gsap.timeline({ scrollTrigger: { trigger: '.founder', start: 'top 70%', once: true } })
     .from('.founder-outline', { drawSVG: '0%', duration: 1.6, ease: 'power2.inOut' })
     .from('.founder-svg image', { scale: 1.08, opacity: 0, transformOrigin: '50% 50%', duration: 1.2, ease: 'power3.out' }, 0.1)

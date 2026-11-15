@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite';
 import { readFileSync } from 'node:fs';
-import { SITE } from './src/site-config.js';
+import { fileURLToPath } from 'node:url';
+import { SITE, dayOf, openDays, SCHEDULE } from './src/site-config.js';
+import { renderPartial } from './build/partials.js';
+
+const root = fileURLToPath(new URL('.', import.meta.url));
 
 // Width x height of each exported -lg photo (see tools/images.py).
 const PHOTOS = {
@@ -11,11 +15,17 @@ const PHOTOS = {
   speaking: [887, 876], surprise: [1100, 855], typewriter: [600, 450],
 };
 
+const open = openDays();
 const TOKENS = {
   url: SITE.url,
   opening_long: SITE.openingLong,
   year: String(SITE.copyrightYear),
   email: SITE.email,
+  // Weekdays come from SCHEDULE, so moving an activity updates every sentence.
+  t6_day: dayOf('t6'),
+  cuisine_day: dayOf('cuisine'),
+  sample_day: SCHEDULE.find((d) => d.sampleDay).weekday,
+  open_days: `${open[0].weekday} through ${open[open.length - 1].weekday}`,
 };
 
 const SOCIAL_LABELS = {
@@ -36,15 +46,18 @@ function socialLinks() {
   return `<ul class="socials" aria-label="Social media and articles">${links.join('')}</ul>`;
 }
 
-// Expands <img data-photo="name" ...> into src/srcset/size attributes,
-// inlines the logo and social links where marked, fills {{tokens}}
-// from src/site-config.js.
+// For each page: fills the shared partials (<!--@name-->, see build/partials.js),
+// inlines the logo and social links, fills {{tokens}} and expands
+// <img data-photo="name" ...> into src/srcset/size attributes.
 function sitePartials() {
   return {
     name: 'site-partials',
     transformIndexHtml(html) {
+      const page = html.match(/<html[^>]*\bdata-page="(\w+)"/)?.[1];
+      if (!page) throw new Error('Every page needs <html data-page="...">');
       const logo = readFileSync(new URL('./src/partials/logo-anim.svg', import.meta.url), 'utf8');
       return html
+        .replace(/<!--@([\w-]+)-->/g, (m, name) => renderPartial(name, page))
         .replace('<!--logo-anim-->', logo)
         .replaceAll('<!--social-links-->', socialLinks())
         .replace(/\{\{(\w+)\}\}/g, (m, key) => {
@@ -62,7 +75,21 @@ function sitePartials() {
 }
 
 export default defineConfig({
+  appType: 'mpa',
   plugins: [sitePartials()],
-  // three.js is one lazy chunk (~130 KB gzip) loaded after first paint.
-  build: { target: 'es2020', assetsInlineLimit: 0, chunkSizeWarningLimit: 600 },
+  // three.js is one lazy chunk (~130 KB gzip), requested only by the home page.
+  build: {
+    target: 'es2020',
+    assetsInlineLimit: 0,
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      input: {
+        main: `${root}index.html`,
+        enrichment: `${root}enrichment/index.html`,
+        summer: `${root}summer/index.html`,
+        microschool: `${root}microschool/index.html`,
+        about: `${root}about/index.html`,
+      },
+    },
+  },
 });

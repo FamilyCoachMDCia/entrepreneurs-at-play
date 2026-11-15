@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" data-page="enrichment">
+<head>
+<!--@head-->
+<link rel="stylesheet" href="/src/styles/main.css">
+<link rel="stylesheet" href="/src/styles/pages.css">
+</head>
+<body>
+<!--@body-start-->
+
+<!--@site-head-->
+<!--@menu-->
+
+<main id="main">
+
+<!-- 01 · Enrichment: after school, open to all kids -->
+<section class="enrichment page-top" id="enrichment" aria-labelledby="enrichment-title" data-sprout>
+  <div class="wrap">
+    <div class="program-head">
+      <div>
+        <p class="eyebrow program-eyebrow"><span class="program-num" aria-hidden="true">01</span>Try it · After school in Omaha</p>
+        <h1 class="h2" id="enrichment-title" data-split><em>Enrichment</em></h1>
+        <p class="sub">After-school sessions open to all kids. We start with four {{t6_day}}s of Golf &amp; Finance in January. Each activity has its own schedule.</p>
+      </div>
+      <!-- Day strip: each pill jumps to (and highlights) that day's card (from SCHEDULE) -->
+      <!--@day-strip-->
+    </div>
+    <article class="enrichment-feature" id="t6" aria-labelledby="t6-title">
+      <figure class="t6-photo">
+        <img data-photo="golf" sizes="(max-width: 767px) 100vw, 640px" alt="A golf club and ball on the green" fetchpriority="high">
+        <!-- A little putt rolls into the hole when the card comes into view -->
+        <svg class="t6-putt" viewBox="0 0 300 110" aria-hidden="true">
+          <defs><mask id="putt-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="300" height="110"><path class="putt-reveal" d="M22 86 C 80 58, 150 106, 246 90" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round"/></mask></defs>
+          <path class="putt-path" d="M22 86 C 80 58, 150 106, 246 90" fill="none" mask="url(#putt-mask)"/>
+          <ellipse class="putt-hole" cx="250" cy="92" rx="15" ry="4.5"/>
+          <path class="putt-pole" d="M250 91 V 18"/>
+          <path class="putt-flag" d="M250 19 C 262 21, 272 26, 286 29 C 274 34, 262 38, 250 42 z"/>
+          <circle class="putt-ball" cx="250" cy="89" r="6.5"/>
+        </svg>
+      </figure>
+      <div class="t6-badge" aria-hidden="true">
+        <svg class="t6-badge-ring" viewBox="0 0 120 120"><defs><path id="t6-ring" d="M60 60 m-44 0 a44 44 0 1 1 88 0 a44 44 0 1 1 -88 0"/></defs><text class="ring-long"><textPath href="#t6-ring" textLength="274" lengthAdjust="spacing">T6 · GOLF &amp; FINANCE · STARTS JAN 5 ·</textPath></text><text class="ring-short"><textPath href="#t6-ring" textLength="274" lengthAdjust="spacing">STARTS JAN 5 · TUESDAYS ·</textPath></text></svg>
+        <span class="t6-badge-core">T6</span>
+      </div>
+      <div class="program-copy">
+        <h3 id="t6-title">T6 Golf &amp; Finance</h3>
+        <ul class="t6-chips">
+          <li>Ages 8–12</li><li>{{t6_day}}s</li><li>From Jan 5, 2027</li><li>Clubs provided</li>
+        </ul>
+        <p>Practice golf with a PGA professional, learn about money through games and share tacos with friends. Golf clubs are provided.</p>
+        <p class="t6-recipe" aria-hidden="true">
+          <span class="t6-ing"><svg><use href="#d-flag"/></svg>golf</span><i>+</i>
+          <span class="t6-ing"><svg><use href="#d-coin"/></svg>money games</span><i>+</i>
+          <span class="t6-ing"><svg><use href="#d-taco"/></svg>tacos</span>
+        </p>
+        <a class="btn btn-primary" href="#visit" data-program-cta="t6"><span>Request a T6 spot</span><i class="btn-dot"></i></a>
+      </div>
+    </article>
+    <!-- Day cards and dots (from SCHEDULE) -->
+    <!--@day-cards-->
+  </div>
+</section>
+
+<!--@how-it-works-->
+
+<!--@faq-enrichment-->
+
+<!--@next-step-->
+
+<!--@contact-->
+
+</main>
+
+<!--@site-foot-->
+<!--@sticky-cta-->
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

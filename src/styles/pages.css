@@ -184,7 +184,7 @@ html.is-leaving body { pointer-events: none; }
 }
 
 /* ---------- Next step: the funnel at the end of each page ---------- */
-.next-step { padding: clamp(40px, 6vw, 84px) 0 clamp(24px, 3vw, 40px); }
+.next-step { padding: clamp(20px, 3vw, 36px) 0 clamp(24px, 3vw, 40px); }
 .next-title { max-width: 26ch; margin-bottom: 18px; font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.5rem); }
 .next-row { display: grid; gap: 10px; }
 @media (min-width: 768px) {
@@ -248,7 +248,7 @@ html.is-leaving body { pointer-events: none; }
 .day-strip .strip-signup b { background: var(--marigold); color: var(--forest-deep); }
 .strip-go { width: 18px; height: 18px; }
 
-.how { padding: clamp(40px, 6vw, 90px) 0 var(--section-space); }
+.how { padding: clamp(20px, 3vw, 36px) 0 var(--section-space); }
 .how-steps { display: grid; gap: 12px; margin-top: 26px; }
 .how-steps li { position: relative; padding: 22px; border-radius: var(--r-photo); background: var(--paper); border: 1.5px solid var(--line); }
 .how-n {
@@ -281,8 +281,9 @@ html.is-leaving body { pointer-events: none; }
 .summer-cta { display: flex; flex-wrap: wrap; gap: 10px; }
 
 /* ---------- Home: what's in a name (short) ---------- */
-.name-strip { padding: 0 0 clamp(36px, 5vw, 64px); }
+.name-strip { padding: 0 0 var(--section-space); }
 .name-strip-card { display: grid; gap: 12px; justify-items: start; padding: clamp(20px, 3vw, 36px); border-radius: var(--r-card); background: var(--tint-2); }
+.name-strip-card .door-about { width: min(100%, 400px); margin-top: 8px; }
 .name-strip-card .eyebrow { margin: 0; }
 .name-strip-eq {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px;

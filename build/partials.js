@@ -378,7 +378,16 @@ function nameStrip() {
         <span class="ns-op" aria-hidden="true">=</span><span class="sr-only">equals</span>
         <span class="ns-result">kids who are curious, bold and versatile, playing their way into real solutions.</span>
       </p>
-      <a class="link link-go" href="/about/">Who we are<svg aria-hidden="true"><use href="#d-chev"/></svg></a>
+      <a class="door door-about door--compact" href="/about/" style="--door: var(--paper-2)">
+        <span class="door-inside" aria-hidden="true"><img data-photo="founder" sizes="(max-width: 767px) 50vw, 420px" alt="" loading="lazy"></span>
+        <span class="door-leaf">
+          <span class="door-kicker">Our story</span>
+          <strong class="door-name">Who we are</strong>
+          <span class="door-line">Meet the people and ideas behind Entrepreneurs at Play.</span>
+          <svg class="door-art art-leaves" viewBox="0 0 160 84" aria-hidden="true"><path class="art-stem" d="M34 82 C 66 82, 92 68, 104 42"/><path class="art-leaf-big" d="M104 42 C 98 18, 120 3, 152 2 C 152 30, 136 46, 104 42 z"/><path class="art-vein" d="M106 40 C 118 28, 132 16, 146 8"/><path class="art-leaf-small" d="M86 64 C 70 52, 70 34, 78 24 C 92 34, 94 52, 86 64 z"/></svg>
+          <span class="door-go">Open ${use('d-chev')}</span>
+        </span>
+      </a>
     </div>
   </div>
 </section>`;

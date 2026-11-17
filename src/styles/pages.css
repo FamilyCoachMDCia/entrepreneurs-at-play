@@ -282,8 +282,13 @@ html.is-leaving body { pointer-events: none; }
 
 /* ---------- Home: what's in a name (short) ---------- */
 .name-strip { padding: 0 0 var(--section-space); }
-.name-strip-card { display: grid; gap: 12px; justify-items: start; padding: clamp(20px, 3vw, 36px); border-radius: var(--r-card); background: var(--tint-2); }
-.name-strip-card .door-about { width: min(100%, 400px); margin-top: 8px; }
+.name-strip-card { display: grid; grid-template-columns: minmax(0, 1fr) clamp(74px, 13vw, 160px); gap: 12px 20px; justify-items: start; padding: clamp(24px, 3vw, 40px); }
+.name-strip-card .eyebrow, .name-strip-eq { grid-column: 1 / -1; }
+.name-strip-detail { display: flex; flex-direction: column; align-items: flex-start; padding-bottom: 16px; }
+.name-strip-detail .door-kicker { margin-top: 4px; }
+.name-strip-detail .door-name { font-size: clamp(1.6rem, 1.3rem + 1vw, 2.2rem); }
+.name-strip-card .door-art { grid-column: 2; grid-row: 3; width: 100%; align-self: center; margin: 0; padding: 0 0 20px; }
+.name-strip-card::after { display: none; }
 .name-strip-card .eyebrow { margin: 0; }
 .name-strip-eq {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px;

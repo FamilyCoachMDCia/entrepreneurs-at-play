@@ -369,26 +369,26 @@ function nameStrip() {
   return `<!-- What's in a name: the short version (full one on /about/) -->
 <section class="name-strip" aria-labelledby="name-strip-title">
   <div class="wrap">
-    <div class="name-strip-card">
-      <h2 class="eyebrow" id="name-strip-title">What’s in a name?</h2>
-      <p class="name-strip-eq">
+    <a class="door door-about name-strip-door" href="/about/" style="--door: var(--paper-2)" aria-label="Who we are — learn about Entrepreneurs at Play">
+      <span class="door-inside" aria-hidden="true"><img data-photo="founder" sizes="(max-width: 767px) 100vw, 1200px" alt="" loading="lazy"></span>
+      <span class="door-leaf name-strip-card">
+      <span class="eyebrow" id="name-strip-title">What’s in a name?</span>
+      <span class="name-strip-eq">
         <span class="ns-term">Entrepreneurs</span>
         <span class="ns-op" aria-hidden="true">+</span><span class="sr-only">plus</span>
         <span class="ns-term ns-play">at <em>Play</em></span>
         <span class="ns-op" aria-hidden="true">=</span><span class="sr-only">equals</span>
         <span class="ns-result">kids who are curious, bold and versatile, playing their way into real solutions.</span>
-      </p>
-      <a class="door door-about door--compact" href="/about/" style="--door: var(--paper-2)">
-        <span class="door-inside" aria-hidden="true"><img data-photo="founder" sizes="(max-width: 767px) 50vw, 420px" alt="" loading="lazy"></span>
-        <span class="door-leaf">
+      </span>
+      <span class="name-strip-detail">
           <span class="door-kicker">Our story</span>
           <strong class="door-name">Who we are</strong>
           <span class="door-line">Meet the people and ideas behind Entrepreneurs at Play.</span>
-          <svg class="door-art art-leaves" viewBox="0 0 160 84" aria-hidden="true"><path class="art-stem" d="M34 82 C 66 82, 92 68, 104 42"/><path class="art-leaf-big" d="M104 42 C 98 18, 120 3, 152 2 C 152 30, 136 46, 104 42 z"/><path class="art-vein" d="M106 40 C 118 28, 132 16, 146 8"/><path class="art-leaf-small" d="M86 64 C 70 52, 70 34, 78 24 C 92 34, 94 52, 86 64 z"/></svg>
-          <span class="door-go">Open ${use('d-chev')}</span>
-        </span>
-      </a>
-    </div>
+      </span>
+      <svg class="door-art art-leaves" viewBox="0 0 160 84" aria-hidden="true"><path class="art-stem" d="M34 82 C 66 82, 92 68, 104 42"/><path class="art-leaf-big" d="M104 42 C 98 18, 120 3, 152 2 C 152 30, 136 46, 104 42 z"/><path class="art-vein" d="M106 40 C 118 28, 132 16, 146 8"/><path class="art-leaf-small" d="M86 64 C 70 52, 70 34, 78 24 C 92 34, 94 52, 86 64 z"/></svg>
+      <span class="door-go">Open ${use('d-chev')}</span>
+      </span>
+    </a>
   </div>
 </section>`;
 }

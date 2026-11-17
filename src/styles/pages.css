@@ -282,17 +282,27 @@ html.is-leaving body { pointer-events: none; }
 
 /* ---------- Home: what's in a name (short) ---------- */
 .name-strip { padding: 0 0 var(--section-space); }
-.name-strip-card { display: grid; grid-template-columns: minmax(0, 1fr) clamp(74px, 13vw, 160px); gap: 12px 20px; justify-items: start; padding: clamp(24px, 3vw, 40px); }
+.name-strip-door { height: auto; perspective: 3000px; }
+.name-strip-card { display: grid; grid-template-columns: minmax(0, 1fr) clamp(64px, 9vw, 110px); gap: 8px 16px; justify-items: start; padding: clamp(20px, 2vw, 28px); }
 .name-strip-card .eyebrow, .name-strip-eq { grid-column: 1 / -1; }
-.name-strip-detail { display: flex; flex-direction: column; align-items: flex-start; padding-bottom: 16px; }
+.name-strip-detail { display: flex; flex-direction: column; align-items: flex-start; padding-bottom: 8px; }
 .name-strip-detail .door-kicker { margin-top: 4px; }
-.name-strip-detail .door-name { font-size: clamp(1.6rem, 1.3rem + 1vw, 2.2rem); }
-.name-strip-card .door-art { grid-column: 2; grid-row: 3; width: 100%; align-self: center; margin: 0; padding: 0 0 20px; }
+.name-strip-detail .door-name { font-size: clamp(1.35rem, 1.1rem + .8vw, 1.8rem); }
+.name-strip-detail .door-line { max-width: 45ch; }
+.name-strip-card .door-art { grid-column: 2; grid-row: 3; width: 100%; align-self: center; margin: 0; padding: 0 0 16px; }
 .name-strip-card::after { display: none; }
 .name-strip-card .eyebrow { margin: 0; }
+.name-strip-door:focus-visible .door-leaf { transform: rotateY(-4deg); box-shadow: 5px 8px 16px rgba(31, 42, 23, .14); }
+@media (hover: hover) and (pointer: fine) {
+  .name-strip-door:hover .door-leaf { transform: rotateY(-4deg); box-shadow: 5px 8px 16px rgba(31, 42, 23, .14); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .name-strip-door:hover .door-leaf, .name-strip-door:focus-visible .door-leaf { transform: none; box-shadow: 0 0 0 2px var(--forest); }
+}
+.motion-paused .name-strip-door:hover .door-leaf, .motion-paused .name-strip-door:focus-visible .door-leaf { transform: none; box-shadow: 0 0 0 2px var(--forest); }
 .name-strip-eq {
   display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px;
-  font-family: var(--f-display); font-size: clamp(1.5rem, 1.1rem + 2vw, 2.8rem); line-height: 1.12; letter-spacing: -.015em;
+  font-family: var(--f-display); font-size: clamp(1.35rem, 1.1rem + 1.5vw, 2.3rem); line-height: 1.12; letter-spacing: -.015em;
 }
 .ns-term { font-weight: 700; }
 .ns-play em { font-style: italic; color: var(--forest); font-variation-settings: 'SOFT' 100, 'WONK' 1; }

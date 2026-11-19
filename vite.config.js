@@ -8,6 +8,7 @@ const root = fileURLToPath(new URL('.', import.meta.url));
 
 // Width x height of each exported -lg photo (see tools/images.py).
 const PHOTOS = {
+  'day-money': [1200, 800],
   'day-mindful': [1200, 1800],
   'day-math': [1200, 678],
   'day-reading': [1200, 801],

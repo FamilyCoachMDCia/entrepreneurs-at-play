@@ -859,6 +859,7 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 .day-steps time { font-family: var(--f-display); font-weight: 800; font-size: 2.4rem; color: var(--ochre); line-height: 1; }
 .day-steps h3 { font-family: var(--f-display); font-weight: 600; font-size: 1.5rem; }
 .day-steps p { color: var(--ink-soft); }
+.day-steps .day-openmic-photo, .day.is-pinned .day-photos .day-openmic-photo { object-position: center 25%; }
 .day-steps img { width: 100%; max-width: 420px; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--r-photo); margin-top: 8px; }
 .day-foot { font-size: .9rem; color: var(--ink-soft); margin-top: 8px; }
 

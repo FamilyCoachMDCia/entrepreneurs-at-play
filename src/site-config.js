@@ -27,7 +27,7 @@ export const SCHEDULE = [
   },
   {
     key: 't6', weekday: 'Tuesday', name: 'T6 Golf & Finance', week: 'Golf & Finance', strip: 'T6', icon: 'd-flag', open: true,
-    anchor: 't6', hours: '4–6 PM',
+    anchor: 't6', hours: 'See dates and times',
   },
   // 14/11/2026, Dr. Che's voice note: the makerspace partners can host on
   // Wednesdays, so CREATE moves there and Thursday becomes Tech Thursday

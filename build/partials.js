@@ -45,15 +45,15 @@ const OLD_ANCHORS = {
   enrichment: '/enrichment/', t6: '/enrichment/#t6', 'enr-podcast': '/enrichment/#enr-podcast',
   'enr-create': '/enrichment/#enr-create', 'enr-cuisine': '/enrichment/#enr-cuisine', summer: '/summer/',
   microschool: '/microschool/', pathways: '/microschool/#pathways', day: '/microschool/#day',
-  world: '/microschool/#world', ages: '/microschool/#ages', domains: '/microschool/#domains',
-  learner: '/microschool/#learner', practical: '/microschool/#practical', faq: '/microschool/#faq',
-  why: '/about/#why', apart: '/about/#apart', founder: '/about/#founder', familycoachmd: '/about/#familycoachmd',
+  world: '/microschool/#world', ages: '/microschool/#pathways', domains: '/microschool/#domains',
+  learner: '/microschool/#learner', practical: '/microschool/#microschool', faq: '/microschool/#visit',
+  why: '/about/#apart', apart: '/about/#apart', founder: '/#founder', familycoachmd: '/about/#familycoachmd',
 };
 
 function head(key) {
   const p = PAGES[key];
   const url = SITE.url + p.path;
-  const ogTitle = key === 'home' ? 'Entrepreneurs at Play · Play’sWork' : p.title;
+  const ogTitle = key === 'home' ? 'Entrepreneurs at Play · The world is our canvas, Play is our guide.' : p.title;
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(p.title)}</title>
@@ -76,7 +76,7 @@ function head(key) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..800,0..100,0..1;1,9..144,400..800,0..100,0..1&display=swap">
-${key === 'home' ? `<script>(function () { var to = ${JSON.stringify(OLD_ANCHORS)}[location.hash.slice(1)]; if (to) location.replace(to); })();</script>\n` : ''}${HEAD_SCRIPT}${key === 'home' ? `
+${key === 'home' ? `<script>(function () { var to = ${JSON.stringify(OLD_ANCHORS)}[location.hash.slice(1)]; if (to && to !== '/' + location.hash) location.replace(to); })();</script>\n` : ''}${HEAD_SCRIPT}${key === 'home' ? `
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -118,7 +118,7 @@ function siteHead(key) {
 <header class="site-head" id="site-head">
   <div class="ticker" role="region" aria-label="Announcements">
     <ul class="ticker-list">
-      <li><a href="/enrichment/#t6">T6 Golf &amp; Finance starts January 5</a></li>
+      <li><a href="/enrichment/#t6">T6 golf starts January 5</a></li>
       <li><a href="/enrichment/">After-school enrichment in Omaha</a></li>
       <li><a href="/microschool/#visit" data-program-cta="microschool">Microschool waitlist · Fall 2027</a></li>
     </ul>
@@ -141,8 +141,8 @@ function siteHead(key) {
 // Section shortcuts per page: the sticky row under the page top (subnav)
 // and the "On this page" group of the phone menu.
 const SUBNAV = {
-  microschool: [['#pathways', 'Pathways'], ['#world', 'A week'], ['#day', 'A day'], ['#domains', 'Subjects'], ['#promises', 'Promises'], ['#practical', 'Practical'], ['#faq', 'FAQ'], ['#visit', 'Waitlist']],
-  about: [['#name', 'Our name'], ['#believe', 'What we believe'], ['#create', 'CREATE'], ['#why', 'Why EP'], ['#apart', 'Nine things'], ['#founder', 'Founder'], ['#familycoachmd', 'FamilyCoachMD'], ['#partners', 'Partners'], ['#visit', 'Contact']],
+  microschool: [['#pathways', 'Pathways'], ['#world', 'A week'], ['#day', 'A day'], ['#domains', 'Subjects'], ['#visit', 'Waitlist']],
+  about: [['#name', 'Our name'], ['#believe', 'What we believe'], ['#create', 'CREATE'], ['#apart', 'Nine things'], ['#founder', 'Founder'], ['#familycoachmd', 'FamilyCoachMD'], ['#partners', 'Partners'], ['#visit', 'Contact']],
 };
 
 function onThisPage(key) {
@@ -150,7 +150,7 @@ function onThisPage(key) {
   if (key === 'enrichment') {
     return [
       ...openDays().map((d) => [`#${d.anchor}`, d.key === 't6' ? 'T6 Golf & Finance' : d.name]),
-      ['#how', 'How it works'], ['#faq', 'FAQ'], ['#visit', 'Sign up'],
+      ['#faq', 'FAQ'], ['#visit', 'Sign up'],
     ];
   }
   if (key === 'summer') return [['#summer-favorites', 'All-day favorites'], ['#visit', 'Get updates']];
@@ -221,7 +221,7 @@ function siteFoot(key) {
     </div>
   </div>
   <div class="wrap foot-bottom">
-    <p>© {{year}} Entrepreneurs at Play · FamilyCoachMD · “Play’sWork.”</p>
+    <p>© {{year}} Entrepreneurs at Play · FamilyCoachMD · “The world is our canvas, Play is our guide.”</p>
     <p>Site by <a href="https://www.haderach.com.br" rel="noopener">Haderach Solutions</a></p>
   </div>
 </footer>`;
@@ -239,16 +239,16 @@ function stickyCta(key) {
 
 const DOORS = {
   enrichment: {
-    line: 'After-school sessions open to all kids.', status: 'T6 starts Jan 5', photo: 'golf',
+    line: 'After-school sessions open to all kids.', status: 'T6 starts Jan 5',
     art: `<svg class="door-art art-putt" viewBox="0 0 160 84" aria-hidden="true"><path class="art-track" d="M14 66 C 52 44, 92 80, 128 64"/><ellipse class="art-hole" cx="132" cy="65" rx="11" ry="3.5"/><path class="art-pole" d="M132 64 V 16"/><path class="art-flag" d="M132 17 C 141 19, 148 22, 158 24 C 149 28, 141 31, 132 34 z"/><circle class="art-ball" cx="14" cy="62" r="5.5"/></svg>`,
   },
   summer: {
-    line: 'Longer days of hands-on adventure.', status: 'Summer 2027', photo: 'horse',
+    line: 'Longer days of hands-on adventure.', status: 'Summer 2027',
     art: `<svg class="door-art art-sun" viewBox="0 0 160 84" aria-hidden="true"><path class="art-track" d="M10 80 C 40 6, 120 6, 150 80"/><g class="art-sunball" transform="translate(27 46)"><g class="art-rays"><path d="M0 -17v5M0 12v5M-17 0h5M12 0h5M-12 -12l3.5 3.5M8.5 8.5l3.5 3.5M-12 12l3.5 -3.5M8.5 -8.5l3.5 -3.5"/></g><circle r="9"/></g></svg>`,
   },
   microschool: {
-    line: 'Full days of experiential learning. Fall 2027 waitlist open.', status: 'At capacity', stamp: true, photo: 'mentoring',
-    art: `<svg class="door-art art-leaves" viewBox="0 0 160 84" aria-hidden="true"><path class="art-stem" d="M34 82 C 66 82, 92 68, 104 42"/><path class="art-leaf-big" d="M104 42 C 98 18, 120 3, 152 2 C 152 30, 136 46, 104 42 z"/><path class="art-vein" d="M106 40 C 118 28, 132 16, 146 8"/><path class="art-leaf-small" d="M86 64 C 70 52, 70 34, 78 24 C 92 34, 94 52, 86 64 z"/></svg>`,
+    line: 'Full days of experiential learning. Fall 2027 waitlist open.', status: 'At capacity', stamp: true,
+    art: `<svg class="door-art art-school" viewBox="0 0 160 84" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M35 74h92M48 72V42l32-26 32 26v30M39 46l41-34 41 34M73 73V54h14v19M56 50h9v10h-9zM95 50h9v10h-9z"/><circle cx="80" cy="36" r="6"/></svg>`,
   },
 };
 
@@ -257,7 +257,7 @@ function door(k, { compact = false, label = '' } = {}) {
   const d = DOORS[k];
   const kicker = label || p.kicker;
   return `<a class="door door-${k}${compact ? ' door--compact' : ''}" href="${p.path}" data-door="${k}" style="--door: ${p.tint}" aria-label="${esc(`${p.name}: ${d.line} ${d.stamp ? 'Enrollment at capacity.' : `${d.status}.`}`)}">
-          <span class="door-inside" aria-hidden="true"><img data-photo="${d.photo}" sizes="(max-width: 767px) 50vw, 420px" alt="" loading="lazy"></span>
+          <span class="door-inside" aria-hidden="true"><strong>${p.name}</strong></span>
           <span class="door-leaf">
             <span class="door-top"><span class="door-num">${p.num}</span><span class="door-status${d.stamp ? ' door-stamp' : ''}">${d.status}</span></span>
             <span class="door-kicker">${kicker}</span>
@@ -275,7 +275,7 @@ function doors() {
   <div class="wrap">
     <div class="doors-head">
       <h2 class="doors-title" id="doors-title">Three ways to join. <em>One journey.</em></h2>
-      <p class="doors-note" aria-hidden="true">pick a door <svg viewBox="0 0 96 48"><use href="#d-arrow"/></svg></p>
+      <p class="doors-note" aria-hidden="true">Choose your adventure <svg viewBox="0 0 96 48"><use href="#d-arrow"/></svg></p>
     </div>
     <ol class="doors-row">
       ${PROGRAM_KEYS.map((k) => `<li>\n        ${door(k)}\n      </li>`).join('\n      ')}
@@ -351,12 +351,13 @@ function summerFavorites() {
   <div class="wrap">
     <div class="favorites-card">
       <div class="favorites-copy">
-        <p class="eyebrow">What summer looks like</p>
-        <h2 class="h2" id="favorites-title" data-split>After-school favorites, <em>all day.</em></h2>
-        <p class="sub">Summer takes what children love after school and gives it whole days: more time to build, cook, record and play outside.</p>
+        <h2 class="h2" id="favorites-title">Summer <em>activities</em></h2>
       </div>
       <ul class="favorites-list">
-        ${openDays().map((d) => `<li><a href="/enrichment/#${d.anchor}"><svg aria-hidden="true"><use href="#${d.icon}"/></svg><span>${esc(d.key === 't6' ? 'Golf & Finance' : d.name)}</span><small>${d.weekday}s after school</small></a></li>`).join('\n        ')}
+        <li><div><svg aria-hidden="true"><use href="#d-flag"/></svg><span>Golf &amp; Finance</span><small>Practice your swing and explore how money works.</small></div></li>
+        <li><div><svg aria-hidden="true"><use href="#d-hammer"/></svg><span>CREATE</span><small>Design, build and test a hands-on project.</small></div></li>
+        <li><div><svg aria-hidden="true"><use href="#i-talker"/></svg><span>Podcasting</span><small>Prepare questions and record an interview.</small></div></li>
+        <li><div><svg aria-hidden="true"><use href="#d-whisk"/></svg><span>Culture &amp; Cuisine</span><small>Cook together and discover the culture behind each dish.</small></div></li>
       </ul>
     </div>
   </div>
@@ -370,7 +371,7 @@ function nameStrip() {
 <section class="name-strip" aria-labelledby="name-strip-title">
   <div class="wrap">
     <a class="door door-about name-strip-door" href="/about/" style="--door: var(--paper-2)" aria-label="Who we are — learn about Entrepreneurs at Play">
-      <span class="door-inside" aria-hidden="true"><img data-photo="founder" sizes="(max-width: 767px) 100vw, 1200px" alt="" loading="lazy"></span>
+      <span class="door-inside" aria-hidden="true"><strong>Who we are</strong></span>
       <span class="door-leaf name-strip-card">
       <span class="eyebrow" id="name-strip-title">What’s in a name?</span>
       <span class="name-strip-eq">
@@ -395,21 +396,6 @@ function nameStrip() {
 
 /* ---------- Enrichment extras ---------- */
 
-function howItWorks() {
-  return `<!-- How joining works -->
-<section class="how" id="how" aria-labelledby="how-title">
-  <div class="wrap">
-    <h2 class="h2" id="how-title" data-split>How it <em>works.</em></h2>
-    <ol class="how-steps">
-      <li data-reveal><span class="how-n" aria-hidden="true">1</span><h3>Pick an afternoon</h3><p>Choose the activity your child is excited about. Each one has its own schedule.</p></li>
-      <li data-reveal><span class="how-n" aria-hidden="true">2</span><h3>Request a spot</h3><p>Send us a short request with your child’s age. It only takes a minute.</p></li>
-      <li data-reveal><span class="how-n" aria-hidden="true">3</span><h3>We confirm by email</h3><p>We reply with availability, the location and the next steps.</p></li>
-    </ol>
-    <a class="btn btn-primary how-cta" href="#visit" data-program-cta="t6"><span>Request a spot</span><i class="btn-dot"></i></a>
-  </div>
-</section>`;
-}
-
 function faqEnrichment() {
   return `<!-- Enrichment questions -->
 <section class="faq faq-simple" id="faq" aria-labelledby="faq-title">
@@ -417,9 +403,9 @@ function faqEnrichment() {
     <p class="eyebrow">Quick answers</p>
     <h2 class="h2" id="faq-title" data-split>Questions parents <em>ask</em></h2>
     <div class="faq-list">
-      <details><summary>What is EP?</summary><div class="faq-a"><p>Entrepreneurs at Play is an Omaha enrichment center founded by Dr. Larisa Che. It offers after-school enrichment, summer camp and a mixed-age microschool.</p></div></details>
+      <details><summary>What is EP?</summary><div class="faq-a"><p>Entrepreneurs at Play is a physician-founded program. It offers after-school enrichment, summer camp and a mixed-age microschool.</p></div></details>
       <details><summary>Who can join after-school enrichment?</summary><div class="faq-a"><p>Children from local schools and homeschool families can join. T6 Golf &amp; Finance is for ages 8–12. Ask about ages and schedules for the other activities.</p></div></details>
-      <details><summary>Where?</summary><div class="faq-a"><p>EP is based in the Omaha area. Ask us for the location of the program you’re interested in.</p></div></details>
+      <details><summary>Where?</summary><div class="faq-a"><p>EP is based in the Omaha metropolitan area. A Lincoln location is coming soon.</p></div></details>
       <details><summary>How much does it cost?</summary><div class="faq-a"><p>Fees vary by program. <a class="link" href="mailto:{{email}}">Email us</a> for current fees.</p></div></details>
     </div>
   </div>
@@ -544,6 +530,11 @@ function contact(key) {
 /* ---------- Shared by home and /about/ ---------- */
 
 function founder(key) {
+  if (key === 'about') return `<section class="founder" id="founder"><div class="wrap">
+    <p class="eyebrow">Meet the founder</p><h2 class="h2">Dr. Larisa Che, <em>MD</em></h2>
+    <p class="sub">Founder, Entrepreneurs at Play · Founder &amp; CEO, FamilyCoachMD · Mom</p>
+    <a class="link" href="/#founder">Read her story</a>
+  </div></section>`;
   return `<!-- 12 · Founder -->
 <section class="founder" id="founder" aria-labelledby="founder-title" data-sprout>
   <div class="wrap founder-grid">
@@ -562,15 +553,16 @@ function founder(key) {
       <h2 class="h2" id="founder-title" data-split>Dr. Larisa Che, <em>MD</em></h2>
       <ul class="cred">
         <li>Board-certified child &amp; adolescent psychiatrist</li>
-        <li>Founder, FamilyCoachMD</li>
+        <li>Founder, Entrepreneurs at Play</li>
+        <li>Founder &amp; CEO, FamilyCoachMD</li>
         <li>Creighton fellowship-trained</li>
         <li>Certified Positive Discipline parent educator</li>
-        <li>Omaha mom</li>
+        <li>Mom</li>
       </ul>
       <blockquote class="quote" data-lines>“Childhood is not merely a holding space for adulthood. The time is now; the time is here; Entrepreneurs are at play.”</blockquote>
       <p>My background informs my passion for raising resilient and capable kids who learn to harness the power of failure and success alike. Emotional health, calm guidance and character are built into every day, alongside rigorous academics.</p>
       <p class="signature">— Dr. Larisa Che</p>${key === 'home' ? `
-      <p class="founder-more"><a class="link link-go" href="/about/#founder">Read her story<svg aria-hidden="true"><use href="#d-chev"/></svg></a></p>` : ''}
+      <p class="founder-more"><a class="link link-go" href="/about/">More about EP<svg aria-hidden="true"><use href="#d-chev"/></svg></a></p>` : ''}
       <!--social-links-->
     </div>
   </div>
@@ -583,23 +575,7 @@ function manifesto() {
   <div class="wrap">
     <p class="eyebrow">Why Entrepreneurs at Play</p>
     <h2 class="manifesto-text" data-scrub-words>Every child carries an <em>entrepreneurial spirit</em>. We give it room to play.</h2>
-    <div class="pillars">
-      <article class="pillar" data-reveal>
-        <svg class="pillar-icon" aria-hidden="true"><use href="#i-thinker"/></svg>
-        <h3>Rigor</h3>
-        <p>Advanced academics aligned to Nebraska standards, at each child’s own pace.</p>
-      </article>
-      <article class="pillar" data-reveal>
-        <svg class="pillar-icon" aria-hidden="true"><use href="#p-adults"/></svg>
-        <h3>Heart</h3>
-        <p>Empathy, emotional health and “Humanese,” the shared language of being human, every day.</p>
-      </article>
-      <article class="pillar" data-reveal>
-        <svg class="pillar-icon" aria-hidden="true"><use href="#i-builder"/></svg>
-        <h3>Enterprise</h3>
-        <p>Children design, build, pitch and lead real projects, and learn to cook and handle money.</p>
-      </article>
-    </div>
+
   </div>
 </section>`;
 }
@@ -628,7 +604,7 @@ function homeWeek() {
 
 const DATES = [
   ['Jan 4', '2027', 'Our doors open', 'The spring semester begins in the Omaha area.', '/microschool/'],
-  ['Jan 5', '2027', 'T6 Golf &amp; Finance starts', 'Golf and money lessons on Tuesday afternoons.', '/enrichment/#t6'],
+  ['Jan 5', '2027', 'T6 golf starts', 'January golf at The Back Nine. Finance joins in February.', '/enrichment/#t6'],
   ['Summer', '2027', 'Summer camp', 'Longer days of building, cooking and projects together.', '/summer/'],
   ['Fall', '2027', 'Microschool waitlist', 'Enrollment is at capacity. Join the waitlist.', '/microschool/#visit'],
 ];
@@ -652,7 +628,7 @@ const PARTIALS = {
   head, 'body-start': bodyStart, 'site-head': siteHead, menu, subnav, 'site-foot': siteFoot, 'sticky-cta': stickyCta,
   doors, 'next-step': nextStep, 'name-strip': nameStrip, contact, founder, manifesto, 'home-week': homeWeek, dates,
   'day-strip': dayStrip, 'day-cards': dayCards, 'week-rhythm': weekRhythm,
-  'summer-favorites': summerFavorites, 'how-it-works': howItWorks, 'faq-enrichment': faqEnrichment,
+  'summer-favorites': summerFavorites, 'faq-enrichment': faqEnrichment,
 };
 
 export function renderPartial(name, key) {

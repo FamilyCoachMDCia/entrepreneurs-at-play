@@ -268,7 +268,7 @@ html.is-leaving body { pointer-events: none; }
 .summer-favorites { padding: var(--section-space) 0; }
 .favorites-card { display: grid; gap: 22px; padding: clamp(22px, 4vw, 52px); border-radius: var(--r-card); background: var(--tint-dawn); }
 .favorites-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.favorites-list a {
+.favorites-list li > div {
   display: grid; align-content: start; gap: 4px; min-height: 116px; padding: 16px; border-radius: 20px;
   background: var(--paper); border: 1.5px solid var(--line); text-decoration: none;
   transition: transform .35s var(--ease-soft), border-color .3s;
@@ -516,3 +516,21 @@ html[data-paper] body { background-color: var(--paper); }
   .hw-day strong { grid-area: name; font-size: 1rem; }
   .hw-time { grid-area: time; font-size: .82rem; text-align: right; }
 }
+
+.t6-sessions { display: grid; gap: .8rem; margin: 1rem 0 1.4rem; }
+.t6-sessions > div { border-inline-start: 3px solid var(--forest); padding-inline-start: .9rem; }
+.t6-sessions dt { font-family: var(--f-display); font-weight: 700; }
+.t6-sessions dd { margin: .22em 0 0; }
+.micro-questions { padding-block: 2rem; }
+.day-lettering { display: grid; place-items: center; text-align: center; padding: 1rem; width: 100%; max-width: 420px; aspect-ratio: 4/3; border: 1px solid var(--forest); border-radius: var(--r-photo); background: var(--tint-green); color: var(--forest); font: italic 600 clamp(1.4rem,4vw,3rem)/1.1 var(--f-display); }
+.day.is-pinned .day-photos .day-lettering { position: absolute; inset: 0; height: 100%; }
+.hero-tag { max-width: 29ch; }
+@media (min-width: 900px) {
+  .favorites-card { display: block; }
+  .favorites-list { grid-template-columns: repeat(4, 1fr); margin-top: 1.5rem; }
+}
+
+.door-inside { display: grid; place-items: center; }
+.door-inside strong { font: italic 600 clamp(1.4rem,3vw,2.7rem)/1 var(--f-display); color: var(--paper); }
+.book-mark { width: 100%; height: 100%; padding: 22%; color: var(--forest); }
+.learner-img { max-height: 160px; padding: 18px; color: var(--forest); }

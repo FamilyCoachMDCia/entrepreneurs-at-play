@@ -289,7 +289,6 @@ function t6Card({ gsap, reduce }) {
   photoReveal(gsap, photo, photo.querySelector('img'), tl, 'inset(0% 100% 0% 0%)');
   tl.fromTo(card.querySelector('.t6-badge'), { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: 0.9, ease: 'back.out(2)', clearProps: 'transform' }, 0.45)
     .fromTo(card.querySelectorAll('.t6-chips li'), { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.06, ease: 'power3.out', clearProps: CLEAR }, 0.4)
-    .fromTo(card.querySelectorAll('.t6-ing svg'), { scale: 0, rotation: -40 }, { scale: 1, rotation: 0, duration: 0.7, stagger: 0.14, ease: 'back.out(2.4)', clearProps: 'transform' }, 0.7)
     // The putt: flag pops up, the dotted line draws, the ball rolls in and drops.
     .from(card.querySelectorAll('.putt-pole, .putt-flag, .putt-hole'), { scaleY: 0, transformOrigin: '50% 100%', duration: 0.5, ease: 'back.out(2)' }, 0.8)
     .fromTo(card.querySelector('.putt-reveal'), { drawSVG: '0%' }, { drawSVG: '100%', duration: 1.1, ease: 'power1.inOut' }, 1)
@@ -403,12 +402,12 @@ function practical({ gsap, reduce }) {
 
 /* ---------- 04 · What kind of learner ---------- */
 const LEARNERS = {
-  builder: { title: 'The builder', photo: 'business-fair', alt: 'A young entrepreneur at his table at a business fair', text: 'Real products, real customers. Engage and Engineer, CrunchLabs builds and hackathons, and a weekly stock market game.' },
-  talker: { title: 'The talker', photo: 'speaking', alt: 'A young boy speaking with confidence', text: 'Their own podcast, one-on-one speech coaching from experts, and a mini United Nations.' },
-  explorer: { title: 'The explorer', photo: 'horse', alt: 'A young child beside a white horse', text: 'Afternoons out in Omaha: farms, college campuses, flight decks and nature, rain or shine.' },
-  artist: { title: 'The artist', photo: 'guitar', alt: 'A smiling child holding a guitar', text: 'Music, choir, theater and art with local studios, plus world cuisines in the kitchen.' },
-  thinker: { title: 'The deep thinker', photo: 'typewriter', alt: 'A child learning on an antique typewriter', text: 'Socratic reading groups, advanced academics at their own pace, and MAP Growth testing to prove it.' },
-  littlest: { title: 'The littlest one', photo: 'mentoring', alt: 'An older child helping a younger child', text: 'The Hatch, from age 2: free play, sign language, gentle routines, and big kids from The Studio who mentor them every day.' },
+  builder: { title: 'The builder', text: 'Real products, real customers. Engage and Engineer, CrunchLabs builds and hackathons, and a weekly stock market game.' },
+  talker: { title: 'The talker', text: 'Their own podcast, one-on-one speech coaching from experts, and a mini United Nations.' },
+  explorer: { title: 'The explorer', text: 'Afternoons out in Omaha: farms, college campuses, flight decks and nature, rain or shine.' },
+  artist: { title: 'The artist', text: 'Music, choir, theater and art with local studios, plus world cuisines in the kitchen.' },
+  thinker: { title: 'The deep thinker', text: 'Socratic reading groups, advanced academics at their own pace, and MAP Growth testing to prove it.' },
+  littlest: { title: 'The littlest one', text: 'The Hatch, from age 2: free play, sign language, gentle routines, and big kids from The Studio who mentor them every day.' },
 };
 
 function learner({ gsap, reduce, ScrollTrigger }) {
@@ -437,8 +436,7 @@ function learner({ gsap, reduce, ScrollTrigger }) {
   const fill = (key) => {
     const d = LEARNERS[key];
     const chip = chips.find((c) => c.dataset.learner === key);
-    img.src = `/img/${d.photo}-sm.webp`;
-    img.alt = d.alt;
+    img.querySelector('use').setAttribute('href', chip.querySelector('use').getAttribute('href'));
     kicker.textContent = d.title;
     text.textContent = d.text;
     card.style.setProperty('--tint', getComputedStyle(chip).getPropertyValue('--tint'));
@@ -644,8 +642,8 @@ function sundial({ gsap, reduce }) {
     });
     // Photos move (not clone) into the stage, so there is one copy of each.
     const photos = steps.map((li) => {
-      const img = li.querySelector('img');
-      img.loading = 'eager';
+      const img = li.querySelector('img, .day-lettering');
+      if (img.tagName === 'IMG') img.loading = 'eager';
       photosBox.append(img);
       return img;
     });

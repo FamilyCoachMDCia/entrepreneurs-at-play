@@ -656,6 +656,7 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 .path.is-active { border-color: var(--accent); box-shadow: 0 24px 60px rgba(31, 42, 23, .14); }
 .path-photo { position: relative; aspect-ratio: 16 / 10; overflow: hidden; }
 .path-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.25) contrast(.95); transform: scale(1.04); transition: filter .7s, transform 1s var(--ease-soft); }
+.path-studio .path-photo img { object-position: center 25%; }
 .path.is-active .path-photo img { filter: none; transform: scale(1); }
 .path-body { position: relative; padding: 24px; display: grid; gap: 10px; justify-items: start; background: linear-gradient(var(--accent-soft), var(--accent-soft)) 0 0 / 100% 0 no-repeat; transition: background-size .6s var(--ease-soft); }
 .path.is-active .path-body { background-size: 100% 100%; }
@@ -728,8 +729,7 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
   .paths-grid { display: flex; gap: 20px; }
   .path { flex: 1 1 0; min-width: 0; }
   .path.is-active { flex-grow: 1.55; }
-  /* Heading, both cards and "How old is your child?" share one laptop screen. */
-  .path-photo { aspect-ratio: auto; height: clamp(120px, calc(100svh - 720px), 220px); }
+  .path-photo { aspect-ratio: auto; height: clamp(250px, 32vw, 380px); }
   .path-body { padding: 22px 28px 24px; gap: 8px; }
   .path-leaf { width: 52px; height: 46px; top: -26px; }
   .path-text, .path-soon { font-size: .95rem; line-height: 1.45; }
@@ -739,7 +739,6 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 @media (min-width: 900px) and (max-height: 820px) {
   .paths-head { margin-bottom: 18px; }
   .paths-head .h2 { font-size: clamp(2rem, 1.4rem + 2vw, 3rem); }
-  .path-photo { height: 110px; }
   .path-body { padding: 18px 26px 20px; }
 }
 

@@ -11,7 +11,7 @@ const PHOTOS = {
   'nature-play': [703, 799],
   'guitar-detail': [541, 342],
   'hatch-blocks': [1200, 800],
-  'studio-robot': [1200, 801],
+  'studio-making': [508, 339],
   baking: [1079, 1617], 'business-fair': [1000, 721], capitol: [750, 1000], cooking: [795, 900],
   cuisine: [1200, 861], flight: [1100, 802], founder: [700, 933],
   garden: [1000, 737], golf: [960, 540], guitar: [541, 900], hens: [1000, 726],

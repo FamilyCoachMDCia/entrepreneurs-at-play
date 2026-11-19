@@ -21,7 +21,7 @@ const PHOTOS = {
   'guitar-detail': [541, 342],
   'hatch-blocks': [1200, 800],
   'studio-making': [508, 339],
-  baking: [1079, 1617], 'business-fair': [1000, 721], capitol: [750, 1000], cooking: [795, 900],
+  'baking-licensed': [1200, 1799], 'business-fair': [1000, 721], capitol: [750, 1000], cooking: [795, 900],
   cuisine: [1200, 861], flight: [1100, 802], founder: [700, 933],
   garden: [1000, 737], golf: [960, 540], guitar: [541, 900], hens: [1000, 726],
   horse: [1000, 716], mentoring: [575, 1000], podcast: [800, 1200],

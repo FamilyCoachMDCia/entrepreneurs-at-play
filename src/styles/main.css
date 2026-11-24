@@ -207,7 +207,7 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 .ticker-pause[aria-pressed="true"] span:last-child { display: none; }
 
 .nav {
-  height: 72px; display: flex; align-items: center; gap: 16px; padding: 0 var(--gutter);
+  height: var(--nav-h); display: flex; align-items: center; gap: 16px; padding: 0 var(--gutter);
   background: color-mix(in srgb, var(--paper) 86%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid transparent; transition: border-color .3s;
 }
@@ -215,6 +215,12 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: auto; }
 .nav-symbol { width: 120px; height: auto; }
 .nav-word { font-family: var(--f-display); font-weight: 600; font-size: 1.15rem; line-height: 1; letter-spacing: -.01em; }
+/* Phones: a slimmer header leaves more of the screen to the page. */
+@media (max-width: 767px) {
+  :root { --nav-h: 56px; }
+  .nav-symbol { width: 92px; }
+  .nav-word { font-size: 1rem; }
+}
 .nav-links { display: none; align-items: center; gap: clamp(14px, 1.35vw, 28px); white-space: nowrap; }
 .nav-links a { position: relative; text-decoration: none; font-weight: 500; font-size: .98rem; padding: 6px 0; }
 .nav-links a::after {
@@ -236,6 +242,25 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
   overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
 }
 .menu[hidden] { display: none; }
+/* Opening: the sheet unrolls downward from the header, then its parts drop in. */
+.menu { animation: menu-down .42s cubic-bezier(.22, 1, .36, 1) both; }
+.menu > * { animation: menu-item-in .45s cubic-bezier(.22, 1, .36, 1) both; }
+.menu-programs li { animation: menu-item-in .45s cubic-bezier(.22, 1, .36, 1) both; }
+.menu-programs li:nth-child(1) { animation-delay: .08s; }
+.menu-programs li:nth-child(2) { animation-delay: .13s; }
+.menu-programs li:nth-child(3) { animation-delay: .18s; }
+.menu-programs li:nth-child(4) { animation-delay: .23s; }
+.menu > :nth-child(2) { animation-delay: .26s; }
+.menu > :nth-child(3) { animation-delay: .3s; }
+.menu > :nth-child(4) { animation-delay: .34s; }
+.menu.is-closing { animation: menu-up .26s cubic-bezier(.55, 0, .75, .2) both; }
+.menu.is-closing > *, .menu.is-closing .menu-programs li { animation: none; }
+@keyframes menu-down { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes menu-up { from { clip-path: inset(0 0 0 0); } to { clip-path: inset(0 0 100% 0); } }
+@keyframes menu-item-in { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .menu, .menu > *, .menu-programs li { animation: none; }
+}
 .site-head.is-scrolled + .menu { top: var(--nav-h); }
 .menu-open .nav { background: var(--paper); border-bottom-color: var(--line); }
 .menu-group h2 {

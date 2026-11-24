@@ -143,10 +143,14 @@ function siteHead(key) {
 const SUBNAV = {
   microschool: [['#pathways', 'Pathways'], ['#world', 'A week'], ['#day', 'A day'], ['#domains', 'Subjects'], ['#visit', 'Waitlist']],
   about: [['#name', 'Our name'], ['#believe', 'What we believe'], ['#create', 'CREATE'], ['#apart', 'Nine things'], ['#founder', 'Founder'], ['#familycoachmd', 'FamilyCoachMD'], ['#partners', 'Partners'], ['#visit', 'Contact']],
+  // Enrichment's top already lists each afternoon (day strip), so its row
+  // stays one level up; the phone menu still lists the afternoons.
+  enrichment: [['#enrichment', 'Afternoons'], ['#how', 'How it works'], ['#faq', 'FAQ'], ['#visit', 'Sign up']],
+  summer: [['#summer', 'Summer camp'], ['#summer-favorites', 'Favorites'], ['#visit', 'Get updates']],
 };
 
 function onThisPage(key) {
-  if (SUBNAV[key]) return SUBNAV[key];
+  if (SUBNAV[key] && key !== 'enrichment' && key !== 'summer') return SUBNAV[key];
   if (key === 'enrichment') {
     return [
       ...openDays().map((d) => [`#${d.anchor}`, d.key === 't6' ? 'T6 Golf & Finance' : d.name]),

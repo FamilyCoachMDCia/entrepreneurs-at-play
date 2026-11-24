@@ -97,13 +97,23 @@ function menu({ lenis }) {
   const behind = () => [document.getElementById('main'), document.querySelector('.foot'), document.querySelector('.ticker'), document.querySelector('.nav-brand')].filter(Boolean);
   const focusables = () => [burger, ...sheet.querySelectorAll('a, button')];
 
-  const set = (open, { restoreFocus = true } = {}) => {
+  let closing = 0;
+  const set = (open, { restoreFocus = true, animate = true } = {}) => {
     burger.setAttribute('aria-expanded', String(open));
     burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     document.body.classList.toggle('menu-open', open);
     behind().forEach((el) => { el.inert = open; });
     document.documentElement.style.overflow = open ? 'hidden' : '';
-    sheet.hidden = !open;
+    // Opening: the CSS keyframes roll the sheet down as soon as it shows.
+    // Closing from the burger or Escape: roll it back up, then hide it.
+    // A link closes it at once, because the page moves on anyway.
+    clearTimeout(closing);
+    sheet.classList.remove('is-closing');
+    if (open || !animate || matchMedia('(prefers-reduced-motion: reduce)').matches) sheet.hidden = !open;
+    else {
+      sheet.classList.add('is-closing');
+      closing = setTimeout(() => { sheet.hidden = true; sheet.classList.remove('is-closing'); }, 260);
+    }
     if (open) {
       lenis?.stop();
       // Focus the sheet itself (tabindex="-1", no ring): the next Tab reaches
@@ -118,7 +128,7 @@ function menu({ lenis }) {
   burger.addEventListener('click', () => set(!isOpen()));
   // A link closes the menu without stealing focus back: the anchor handler
   // moves focus to the destination section, or the page transition takes over.
-  sheet.addEventListener('click', (e) => { if (e.target.closest('a[href]:not([href^="mailto:"])')) set(false, { restoreFocus: false }); });
+  sheet.addEventListener('click', (e) => { if (e.target.closest('a[href]:not([href^="mailto:"])')) set(false, { restoreFocus: false, animate: false }); });
   document.addEventListener('keydown', (e) => {
     if (!isOpen()) return;
     if (e.key === 'Escape') { set(false); return; }
@@ -131,7 +141,7 @@ function menu({ lenis }) {
   // Leaving the phone layout with the menu open: close it cleanly.
   matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
     if (!e.matches || !isOpen()) return;
-    set(false, { restoreFocus: false });
+    set(false, { restoreFocus: false, animate: false });
     document.querySelector('.nav-brand').focus({ preventScroll: true });
   });
 }

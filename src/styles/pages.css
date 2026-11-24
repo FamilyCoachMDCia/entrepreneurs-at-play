@@ -213,18 +213,20 @@ html.is-leaving body { pointer-events: none; }
 .subnav-list li:last-child a { border-color: var(--marigold); }
 @media (max-width: 1023px) {
   .subnav .wrap { padding-right: 0; }
-  .subnav-list { padding-right: var(--gutter); scroll-padding-left: 0; }
+  .subnav-list { padding-right: var(--gutter); scroll-padding-left: 0; padding-block: 7px; }
+  .subnav-list a { min-height: 36px; padding: 0 14px; font-size: .84rem; }
 }
-@media (min-width: 1024px) {
-  .subnav { position: sticky; top: var(--nav-h); transition: top .35s var(--ease-soft), transform .35s var(--ease-soft), opacity .3s; }
-  html.head-hidden .subnav { top: 0; }
-  .subnav::before {
-    content: ''; position: absolute; inset: 0; z-index: -1; border-bottom: 1px solid var(--line);
-    background: color-mix(in srgb, var(--paper) 90%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  }
-  .subnav.is-tucked { transform: translateY(-115%); opacity: 0; pointer-events: none; }
-  html.has-subnav main section[id] { scroll-margin-top: calc(var(--nav-h) + 70px); }
+/* The section row sticks under the header on every screen size, and rises
+   to the very top when the header hides on scroll down. */
+.subnav { position: sticky; top: var(--nav-h); transition: top .35s var(--ease-soft), transform .35s var(--ease-soft), opacity .3s; }
+html.head-hidden .subnav { top: 0; }
+.subnav::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 90%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
+.subnav.is-tucked { transform: translateY(-115%); opacity: 0; pointer-events: none; }
+html.has-subnav main section[id] { scroll-margin-top: calc(var(--nav-h) + 64px); }
+.subnav + .page-top { padding-top: clamp(18px, 3vw, 40px); }
 
 /* ---------- Floating call to action (phones and tablets) ---------- */
 .sticky-cta {

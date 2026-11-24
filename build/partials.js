@@ -157,16 +157,24 @@ function onThisPage(key) {
   return [];
 }
 
+// The big blocks at the top of the menu: the three programs, then who we are.
+const MENU_BLOCKS = [
+  ['enrichment', '01 · Try it', 'After-school afternoons, open to all kids'],
+  ['summer', '02 · Go deeper', 'Longer days of hands-on adventure'],
+  ['microschool', '03 · All in', 'Ages 2–12 · Fall 2027 waitlist'],
+  ['about', 'Meet us', 'Our name, what we believe and our founder', 'var(--tint-clay)'],
+];
+
 function menu(key) {
   const p = PAGES[key];
   const here = onThisPage(key);
-  const more = [['/', 'Home', 'home'], ['/about/', 'Who we are', 'about'], ['/about/#partners', 'Partner with us', 'partners']]
+  const more = [['/', 'Home', 'home'], ['/about/#partners', 'Partner with us', 'partners']]
     .filter(([, , k]) => k !== key && !(key === 'about' && k === 'partners'));
   return `<nav class="menu" id="menu" aria-label="Main menu" tabindex="-1" data-lenis-prevent hidden>
-  <div class="menu-group">
-    <h2>Programs</h2>
-    <ul class="menu-links menu-programs">
-      ${PROGRAM_KEYS.map((k) => `<li><a href="${PAGES[k].path}" style="--door: ${PAGES[k].tint}"${cur(k === key)}><small aria-hidden="true">${PAGES[k].num}</small>${PAGES[k].name}</a></li>`).join('\n      ')}
+  <div class="menu-group menu-group-main">
+    <h2>Explore</h2>
+    <ul class="menu-programs">
+      ${MENU_BLOCKS.map(([k, top, line, tint]) => `<li><a href="${PAGES[k].path}" style="--door: ${tint || PAGES[k].tint}"${cur(k === key)}><small aria-hidden="true">${top}</small><strong>${PAGES[k].name}</strong><span>${line}</span>${use('d-chev').replace('<svg', '<svg class="menu-go"')}</a></li>`).join('\n      ')}
     </ul>
   </div>${here.length ? `
   <div class="menu-group">

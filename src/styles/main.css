@@ -2,7 +2,7 @@
 
 /* ---------- Tokens ---------- */
 :root {
-  --paper: #FFFFFF;
+  --paper: #F6F2EA;
   --paper-2: #EDE6D8;
   --ink: #23261F;
   --ink-soft: #4A4D44;
@@ -28,7 +28,7 @@
 
   /* Math-notebook grid */
   --grid-size: 24px;
-  --grid-ink: transparent; /* plain white pages: no notebook grid on light backgrounds */
+  --grid-ink: rgba(107, 112, 85, .085);
   --grid-ink-dark: rgba(246, 242, 234, .07);
   --grid: linear-gradient(var(--grid-ink) 1px, transparent 1px), linear-gradient(90deg, var(--grid-ink) 1px, transparent 1px);
   --grid-dark: linear-gradient(var(--grid-ink-dark) 1px, transparent 1px), linear-gradient(90deg, var(--grid-ink-dark) 1px, transparent 1px);
@@ -184,7 +184,6 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 /* ---------- Grain ---------- */
 .grain {
   position: fixed; inset: 0; z-index: 90; pointer-events: none; opacity: .03; mix-blend-mode: multiply;
-  display: none; /* paper grain off: the background is plain white */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 

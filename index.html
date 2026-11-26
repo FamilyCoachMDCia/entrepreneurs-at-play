@@ -8,11 +8,23 @@
 <body>
 <!--@body-start-->
 
-<!-- 00 · Loader: the FamilyCoachMD logo grows (first visit from outside only) -->
+<!-- 00 · Loader: the Arch & Sun draws itself, then the name (first visit from outside only; see loader.js) -->
 <div class="loader" id="loader">
   <div class="loader-inner" aria-hidden="true">
-    <div class="loader-logo"><!--logo-anim--></div>
-    <p class="loader-line">Entrepreneurs at Play · A FamilyCoachMD program</p>
+    <svg class="loader-mark" viewBox="-8 -8 216 256" focusable="false">
+      <defs><clipPath id="lm-ground"><rect x="-8" y="-8" width="216" height="248"/></clipPath></defs>
+      <g clip-path="url(#lm-ground)"><path class="lm-sun" fill="#B78B4F" d="M54 240a46 46 0 0 1 92 0z"/></g>
+      <g class="lm-rays" fill="none" stroke="#B78B4F" stroke-width="10" stroke-linecap="round">
+        <path class="lm-ray" d="M51.5 212L35.9 203"/><path class="lm-ray" d="M72 191.5L63 175.9"/><path class="lm-ray" d="M100 184L100 166"/><path class="lm-ray" d="M128 191.5L137 175.9"/><path class="lm-ray" d="M148.5 212L164.1 203"/>
+      </g>
+      <g class="lm-strokes" fill="none" stroke="#3B5E1A" stroke-width="26">
+        <path class="lm-arch" pathLength="1" d="M13 240V100A87 87 0 0 1 100 13"/>
+        <path class="lm-arch" pathLength="1" d="M187 240V100A87 87 0 0 0 100 13"/>
+      </g>
+      <path class="lm-full" fill="#3B5E1A" d="M0 240V100a100 100 0 0 1 200 0v140h-26V100a74 74 0 0 0-148 0v140z"/>
+    </svg>
+    <p class="loader-word">Entrepreneurs <em>at Play</em></p>
+    <p class="loader-line">A FamilyCoachMD program</p>
   </div>
   <button class="loader-skip" type="button">Skip intro</button>
 </div>

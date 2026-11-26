@@ -103,7 +103,7 @@ section { position: relative; }
   font-variation-settings: 'opsz' 120, 'SOFT' 50;
   max-width: 18ch;
 }
-h1 em, h2 em, .h2 em, .foot-word em, .nav-word em {
+h1 em, h2 em, .h2 em, .foot-word em, .nav-word em, .loader-word em {
   font-style: italic;
   color: var(--forest);
   font-variation-settings: 'SOFT' 100, 'WONK' 1;
@@ -174,9 +174,17 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
   background-image: var(--grid);
   background-size: var(--grid-size) var(--grid-size);
 }
-.loader-inner { display: grid; justify-items: center; gap: 18px; width: min(72vw, 640px); }
-.loader-logo { width: 100%; }
-.loader-logo svg { width: 100%; height: auto; overflow: visible; }
+.loader-inner { display: grid; justify-items: center; gap: 14px; width: min(86vw, 640px); text-align: center; }
+.loader-mark { height: 117px; width: auto; aspect-ratio: 216 / 256; overflow: visible; margin-bottom: 8px; }
+@media (min-width: 768px) { .loader-mark { height: 150px; margin-bottom: 14px; } }
+/* Start states: the script (loader.js) animates them in; hidden until then. */
+.lm-arch { stroke-dasharray: 1 2; stroke-dashoffset: 1; }
+.lm-full, .lm-sun, .lm-ray { opacity: 0; }
+.loader-word {
+  font-family: var(--f-display); font-weight: 600; font-size: clamp(1.7rem, 1.2rem + 2.2vw, 2.6rem);
+  line-height: 1.05; letter-spacing: -.02em; color: var(--ink); opacity: 0; text-wrap: balance;
+  font-variation-settings: 'opsz' 120, 'SOFT' 50;
+}
 .loader-line { font-size: .9rem; letter-spacing: .04em; color: var(--olive); opacity: 0; }
 .loader-skip { position: absolute; right: var(--gutter); bottom: 24px; min-height: 44px; padding: 0 18px; border-radius: 999px;
   border: 1.5px solid var(--line); background: var(--paper); font-weight: 600; font-size: .9rem; color: var(--ink-soft); }
@@ -215,11 +223,16 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 .site-head.is-scrolled .nav { border-bottom-color: var(--line); }
 .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: auto; }
 .nav-symbol { width: 120px; height: auto; }
+.nav-mark { display: none; height: 34px; width: 28.33px; flex: none; }
+/* Header mark test (?mark=arch, build/partials.js head script): the Arch & Sun replaces the FamilyCoachMD logo. */
+html[data-mark="arch"] .nav-symbol { display: none; }
+html[data-mark="arch"] .nav-mark { display: block; }
 .nav-word { font-family: var(--f-display); font-weight: 600; font-size: 1.15rem; line-height: 1; letter-spacing: -.01em; }
 /* Phones: a slimmer header leaves more of the screen to the page. */
 @media (max-width: 767px) {
   :root { --nav-h: 56px; }
   .nav-symbol { width: 92px; }
+  .nav-mark { height: 30px; width: 25px; }
   .nav-word { font-size: 1rem; }
 }
 .nav-links { display: none; align-items: center; gap: clamp(14px, 1.35vw, 28px); white-space: nowrap; }
@@ -636,7 +649,7 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 .micro-stem svg { width: 22px; height: 22px; transition: translate .3s var(--ease-soft); }
 .micro-stem:hover svg { translate: 0 4px; }
 .paths-eyebrow { display: flex; align-items: baseline; gap: 10px; }
-.micro-paths svg { width: 26px; height: 23px; overflow: visible; transform-origin: 0% 100%; }
+.micro-paths svg { width: auto; height: 24px; flex: none; overflow: visible; transform-origin: 50% 100%; }
 .micro-side { display: grid; gap: 18px; }
 .micro-timeline {
   position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
@@ -659,7 +672,7 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
   .micro-paths { gap: 6px; margin-top: 12px; }
   .micro-paths a { gap: 6px; padding: 4px 10px 4px 6px; font-size: .82rem; }
   .micro-stem { margin-left: 28px; font-size: 1.2rem; }
-  .micro-paths svg { width: 20px; height: 18px; }
+  .micro-paths svg { height: 22px; }
   .micro-side { gap: 14px; }
   .micro-timeline { padding: 14px 14px 12px; }
   .mt-line { left: 23px; top: 18px; width: calc(50% - 8px); }
@@ -698,10 +711,10 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 .path-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.25) contrast(.95); transform: scale(1.04); transition: filter .7s, transform 1s var(--ease-soft); }
 .path-studio .path-photo img { object-position: center 25%; }
 .path.is-active .path-photo img { filter: none; transform: scale(1); }
-.path-body { position: relative; padding: 24px; display: grid; gap: 10px; justify-items: start; background: linear-gradient(var(--accent-soft), var(--accent-soft)) 0 0 / 100% 0 no-repeat; transition: background-size .6s var(--ease-soft); }
+.path-body { position: relative; padding: 24px; display: grid; align-content: start; gap: 10px; justify-items: start; background: linear-gradient(var(--accent-soft), var(--accent-soft)) 0 0 / 100% 0 no-repeat; transition: background-size .6s var(--ease-soft); }
 .path.is-active .path-body { background-size: 100% 100%; }
-.path-leaf { position: absolute; right: 22px; top: -30px; width: 64px; height: 56px; transform-origin: 0% 100%; }
-.path-age { font-weight: 700; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-ink); }
+.path-mark { height: 40px; width: 33.33px; flex: none; transform-origin: 50% 100%; }
+.path-age { display: flex; white-space: nowrap; align-items: center; gap: 10px; font-weight: 700; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-ink); }
 .path h3 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.7rem, 1.4rem + 1vw, 2.2rem); line-height: 1; letter-spacing: -.02em; }
 .path-words { display: flex; gap: 8px; flex-wrap: wrap; }
 .path-words li {
@@ -771,7 +784,6 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
   .path.is-active { flex-grow: 1.55; }
   .path-photo { aspect-ratio: auto; height: clamp(250px, 32vw, 380px); }
   .path-body { padding: 22px 28px 24px; gap: 8px; }
-  .path-leaf { width: 52px; height: 46px; top: -26px; }
   .path-text, .path-soon { font-size: .95rem; line-height: 1.45; }
   .path-btn { margin-top: 2px; }
   .age-helper { margin-top: 16px; padding: 22px 36px; }

@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { SITE, dayOf, openDays, SCHEDULE } from './src/site-config.js';
 import { renderPartial } from './build/partials.js';
@@ -60,7 +59,7 @@ function socialLinks() {
 }
 
 // For each page: fills the shared partials (<!--@name-->, see build/partials.js),
-// inlines the logo and social links, fills {{tokens}} and expands
+// inlines the social links, fills {{tokens}} and expands
 // <img data-photo="name" ...> into src/srcset/size attributes.
 function sitePartials() {
   return {
@@ -68,10 +67,8 @@ function sitePartials() {
     transformIndexHtml(html) {
       const page = html.match(/<html[^>]*\bdata-page="(\w+)"/)?.[1];
       if (!page) throw new Error('Every page needs <html data-page="...">');
-      const logo = readFileSync(new URL('./src/partials/logo-anim.svg', import.meta.url), 'utf8');
       return html
         .replace(/<!--@([\w-]+)-->/g, (m, name) => renderPartial(name, page))
-        .replace('<!--logo-anim-->', logo)
         .replaceAll('<!--social-links-->', socialLinks())
         .replace(/\{\{(\w+)\}\}/g, (m, key) => {
           if (!(key in TOKENS)) throw new Error(`Unknown token: ${m}`);

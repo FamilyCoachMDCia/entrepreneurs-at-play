@@ -340,7 +340,7 @@ function microschoolCard({ gsap, reduce }) {
     .fromTo(card.querySelector('.mt-line'), { scaleX: 0 }, { scaleX: 1, transformOrigin: '0% 50%', duration: 0.6, ease: 'power2.inOut', clearProps: 'transform' }, 0.62)
     .fromTo(card.querySelectorAll('.mt-step b, .mt-step span'), { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.08, ease: 'power3.out', clearProps: CLEAR }, 0.55)
     .fromTo(card.querySelectorAll('.micro-paths li'), { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.12, ease: 'power3.out', clearProps: CLEAR }, 0.7)
-    .fromTo(card.querySelectorAll('.micro-paths svg'), { scale: 0.2, rotation: -30 }, { scale: 1, rotation: 0, duration: 1, stagger: 0.15, ease: 'elastic.out(1, 0.5)', clearProps: 'transform' }, 0.8);
+    .fromTo(card.querySelectorAll('.micro-paths svg'), { scale: 0.2, y: 6 }, { scale: 1, y: 0, duration: 1, stagger: 0.15, ease: 'elastic.out(1, 0.5)', clearProps: 'transform' }, 0.8);
 }
 
 /* ---------- 07b · A week in the microschool ---------- */

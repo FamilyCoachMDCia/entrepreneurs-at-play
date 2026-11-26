@@ -12,8 +12,8 @@ const use = (id) => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
 /* ---------- Head ---------- */
 
 // Runs before the first paint: decides whether this page arrives under its
-// curtain, applies the background test (?paper=) and the Summer color test
-// (?summer=yellow|brown|off), and reverts to plain HTML
+// curtain, applies the background test (?paper=), the Summer color test
+// (?summer=yellow|brown|off) and the header mark test (?mark=arch|off), and reverts to plain HTML
 // if the app script never starts. Keep it dependency-free.
 const HEAD_SCRIPT = `<script>
 (function () {
@@ -34,6 +34,10 @@ const HEAD_SCRIPT = `<script>
     if (s) sessionStorage.setItem('ep-summer', s);
     s = sessionStorage.getItem('ep-summer');
     if (s && s !== 'off') h.setAttribute('data-summer', s);
+    var m = new URLSearchParams(location.search).get('mark');
+    if (m) sessionStorage.setItem('ep-mark', m);
+    m = sessionStorage.getItem('ep-mark');
+    if (m === 'arch') h.setAttribute('data-mark', 'arch');
   } catch (e) {}
   setTimeout(function () {
     if (!h.classList.contains('app-ready')) {
@@ -75,11 +79,12 @@ function head(key) {
 <meta property="og:site_name" content="Entrepreneurs at Play">
 <meta property="og:title" content="${esc(ogTitle)}">
 <meta property="og:description" content="${esc(p.description)}">
-<meta property="og:image" content="${SITE.url}/og-image.jpg">
+<meta property="og:image" content="${SITE.url}/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Entrepreneurs at Play, a FamilyCoachMD program in Omaha">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="${SITE.url}/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..800,0..100,0..1;1,9..144,400..800,0..100,0..1&display=swap">
@@ -134,6 +139,8 @@ function siteHead(key) {
   <nav class="nav" aria-label="Main">
     <a href="/" class="nav-brand" aria-label="Entrepreneurs at Play, home"${cur(key === 'home')}>
       <img class="nav-symbol" src="/logo/familycoachmd-logo.svg" alt="FamilyCoachMD" width="120" height="40">
+      <!-- Arch & Sun header test: shown only with ?mark=arch (see the head script) -->
+      <svg class="nav-mark" viewBox="0 0 200 240" width="28" height="34" aria-hidden="true" focusable="false"><path fill="#3B5E1A" d="M0 240V100a100 100 0 0 1 200 0v140h-40V100a60 60 0 0 0-120 0v140z"/><path fill="#B78B4F" d="M52 240a48 48 0 0 1 96 0z"/></svg>
       <span class="nav-word">Entrepreneurs <em>at Play</em></span>
     </a>
     <ul class="nav-links">

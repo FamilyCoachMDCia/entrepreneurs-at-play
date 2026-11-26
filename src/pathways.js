@@ -40,7 +40,7 @@ export function initPathways({ gsap, reduce }) {
         const on = p.dataset.path === visual;
         p.classList.toggle('is-active', on);
         if (on && !reduce) {
-          gsap.fromTo(p.querySelector('.path-leaf'), { scale: 0.4, rotation: -30 }, { scale: 1, rotation: 0, duration: 0.9, ease: 'elastic.out(1, 0.5)' });
+          gsap.fromTo(p.querySelector('.path-mark'), { scale: 0.4, y: 6 }, { scale: 1, y: 0, duration: 0.9, ease: 'elastic.out(1, 0.5)' });
           gsap.fromTo(p.querySelectorAll('.path-words li'), { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.07, ease: 'power3.out', clearProps: 'transform,opacity' });
         }
       });

@@ -912,6 +912,7 @@ html[data-mark="arch"] .nav-mark { display: block; }
 .day-steps h3 { font-family: var(--f-display); font-weight: 600; font-size: 1.5rem; }
 .day-steps p { color: var(--ink-soft); }
 .day-steps .day-openmic-photo, .day.is-pinned .day-photos .day-openmic-photo { object-position: center 25%; }
+.day-steps .day-prep-photo, .day.is-pinned .day-photos .day-prep-photo { object-position: center 10%; }
 .day-steps img { width: 100%; max-width: 420px; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--r-photo); margin-top: 8px; }
 .day-foot { font-size: .9rem; color: var(--ink-soft); margin-top: 8px; }
 
@@ -961,6 +962,7 @@ html[data-mark="arch"] .nav-mark { display: block; }
 .compare { --pos: 50%; position: relative; aspect-ratio: 4 / 5; max-height: calc(100svh - 280px); width: 100%; border-radius: var(--r-card); overflow: hidden; user-select: none; }
 .compare figure { position: absolute; inset: 0; }
 .compare img { width: 100%; height: 100%; object-fit: cover; }
+.compare-a img { object-position: 55% center; } /* 4:5 phone crop: keep the right-hand faces under the 50% split */
 .compare-b { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
 .compare-cap {
   position: absolute; bottom: 16px; max-width: min(46%, 300px); padding: 14px 16px; border-radius: 18px;

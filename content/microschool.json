@@ -31,12 +31,12 @@
     "photoAlt": "Three children building robotics kits together at a table"
   },
   "morning": {
-    "text": "Children learn in small groups through Socratic discussions.",
+    "text": "Children learn through Socratic discussions in small groups.",
     "photo": {
       "discriminant": "library",
-      "value": "morning-discussion"
+      "value": "mentoring"
     },
-    "photoAlt": "Two children looking through a book together at a classroom desk"
+    "photoAlt": "A mentoring activity"
   },
   "afternoon": {
     "text": "Children build practical life skills through community projects. They start businesses and learn alongside experts.",
@@ -141,68 +141,68 @@
   "subjects": [
     {
       "name": "Math and Me",
-      "area": "Mathematics",
       "short": "Plant: Spring 2027",
+      "area": "Mathematics",
       "details": "Small groups, each child at their own level."
     },
     {
       "name": "Literature Is Lit",
-      "area": "Language Arts and Literature",
       "short": "Plant: Spring 2027",
+      "area": "Language Arts and Literature",
       "details": "Reading groups, essays and Socratic discussion."
     },
     {
       "name": "Sciencey Stuff",
-      "area": "Science and Animal Studies",
       "short": "Plant: Spring 2027",
+      "area": "Science and Animal Studies",
       "details": "Experiments, animals and how the world works."
     },
     {
       "name": "Engage and Engineer",
-      "area": "Engineering and Design",
       "short": "Plant: Spring 2027",
+      "area": "Engineering and Design",
       "details": "Builds, prototypes and hackathons."
     },
     {
       "name": "Heart and Soil",
-      "area": "Nature, Mindfulness and SEL",
       "short": "Plant: Spring 2027",
+      "area": "Nature, Mindfulness and SEL",
       "details": "Outdoors, calm minds and emotional skills."
     },
     {
       "name": "Finance Is Fun",
-      "area": "Finance and Entrepreneurship",
       "short": "Plant: Spring 2027",
+      "area": "Finance and Entrepreneurship",
       "details": "A student store and a stock market game."
     },
     {
       "name": "Culture and Cuisine",
-      "area": "World Cultures, Languages and Life Skills",
       "short": "Plant: Spring 2027",
+      "area": "World Cultures, Languages and Life Skills",
       "details": "French, ASL and cooking from around the world."
     },
     {
       "name": "Soulful Sounds",
-      "area": "Arts, Theater, Music and Spirituality",
       "short": "Plant: Spring 2027",
+      "area": "Arts, Theater, Music and Spirituality",
       "details": "Music, choir, theater and reflection."
     },
     {
       "name": "Humane Tech",
-      "area": "Technology and Media",
       "short": "Plant: Spring 2027",
+      "area": "Technology and Media",
       "details": "From the typewriter to the podcast studio."
     },
     {
       "name": "Ubuntu",
-      "area": "Leadership and Self-Governance",
       "short": "Plant: Spring 2027",
+      "area": "Leadership and Self-Governance",
       "details": "“I am because we are.”"
     },
     {
       "name": "Play",
-      "area": "Guided and Free Play, Health and PE",
       "short": "Plant: Spring 2027",
+      "area": "Guided and Free Play, Health and PE",
       "details": "Every day, rain or shine."
     }
   ]

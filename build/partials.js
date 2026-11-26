@@ -175,7 +175,7 @@ function siteHead(key) {
   </div>
   <nav class="nav" aria-label="Main">
     <a href="/" class="nav-brand" aria-label="Entrepreneurs at Play, home"${cur(key === 'home')}>
-      <img class="nav-mark" src="/logo/arch-sun-bricks.svg" alt="" width="38" height="38">
+      <img class="nav-mark" src="/logo/arch-sun-bricks.svg" alt="" width="58" height="58">
       <span class="nav-word">Entrepreneurs <em>at Play</em></span>
     </a>
     <ul class="nav-links">
@@ -267,7 +267,7 @@ function siteFoot(key) {
 <footer class="foot">
   <div class="wrap foot-grid">
     <div class="foot-brand">
-      <img class="foot-mark" src="/logo/arch-sun-bricks.svg" alt="" width="60" height="60" loading="lazy">
+      <img class="foot-mark" src="/logo/arch-sun-bricks.svg" alt="" width="128" height="128" loading="lazy">
       <p class="foot-word">Entrepreneurs <em>at Play</em></p>
       <p>${esc(site.footerLine)}</p>
     </div>

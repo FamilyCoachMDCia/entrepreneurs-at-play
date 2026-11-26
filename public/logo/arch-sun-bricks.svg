@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="146 116 68 68">
+  <style>
+    @media (prefers-reduced-motion: no-preference) {
+      .arch { animation: form .5s ease-out both; transform-origin: 180px 180px; }
+      .sun { animation: rise .65s .2s cubic-bezier(.2,.8,.3,1) both; }
+      .sun path { animation: glow .4s .55s ease-out both; }
+      @keyframes form { from { opacity: 0; transform: scale(.9); } }
+      @keyframes rise { from { transform: translateY(26px); } }
+      @keyframes glow { from { opacity: 0; } }
+    }
+  </style>
+  <defs><clipPath id="sun-window"><path d="M161,180 V150 A19,19 0 0 1 199,150 V180 Z"/></clipPath></defs>
+  <path class="arch" fill="#3B5E1A" d="M150,180 V150 A30,30 0 0 1 210,150 V180 H199 V150 A19,19 0 0 0 161,150 V180 Z"/>
+  <g clip-path="url(#sun-window)">
+    <g class="sun" fill="#B78B4F">
+      <circle cx="180" cy="180" r="11.4"/>
+      <path d="M194.05,179.39 L205.06,178.91 A25.08,25.08 0 0 0 203.57,171.42 L193.21,175.19 A14.06,14.06 0 0 1 194.05,179.39Z"/>
+      <path d="M192.74,174.06 L202.73,169.40 A25.08,25.08 0 0 0 198.49,163.06 L190.37,170.50 A14.06,14.06 0 0 1 192.74,174.06Z"/>
+      <path d="M189.50,169.63 L196.94,161.51 A25.08,25.08 0 0 0 190.60,157.27 L185.94,167.26 A14.06,14.06 0 0 1 189.50,169.63Z"/>
+      <path d="M184.81,166.79 L188.58,156.43 A25.08,25.08 0 0 0 181.09,154.94 L180.61,165.95 A14.06,14.06 0 0 1 184.81,166.79Z"/>
+      <path d="M179.39,165.95 L178.91,154.94 A25.08,25.08 0 0 0 171.42,156.43 L175.19,166.79 A14.06,14.06 0 0 1 179.39,165.95Z"/>
+      <path d="M174.06,167.26 L169.40,157.27 A25.08,25.08 0 0 0 163.06,161.51 L170.50,169.63 A14.06,14.06 0 0 1 174.06,167.26Z"/>
+      <path d="M169.63,170.50 L161.51,163.06 A25.08,25.08 0 0 0 157.27,169.40 L167.26,174.06 A14.06,14.06 0 0 1 169.63,170.50Z"/>
+      <path d="M166.79,175.19 L156.43,171.42 A25.08,25.08 0 0 0 154.94,178.91 L165.95,179.39 A14.06,14.06 0 0 1 166.79,175.19Z"/>
+    </g>
+  </g>
+</svg>

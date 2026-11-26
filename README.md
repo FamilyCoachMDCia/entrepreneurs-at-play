@@ -153,6 +153,23 @@ small Arch & Sun mark beside "Entrepreneurs at Play" instead (kept for the sessi
 `build/partials.js`); the mark is `.nav-mark` in the header partial, styled in `main.css`.
 To adopt it, drop the `.nav-symbol` image and the `html[data-mark]` rules.
 
+## Hero child test (`?kid=1`)
+
+A small animated character for the home hero, for the client to approve before it becomes default.
+Add `?kid=1` to the home address (kept for the session; `?kid=off` removes it). The switch is
+`data-kid="1"` on `<html>` (head script in `build/partials.js`). Without it nothing changes: the
+character lives in `src/hero-kid.js`, which `src/hero-toys.js` only requests when the switch is on.
+
+It is a chubby toddler with a small afro and a forest-green romper, built in Three.js from simple
+primitives in the toys' matte style (no images, no models). On desktop it waddles from toy to toy, reaches
+out, the toy pops and spins, a "hehe!" bubble appears, and it moves on. On phones a smaller one stands
+between the two toys beside "at Play" and taps them in turn. With reduced motion it stands still beside the
+toys, smiling. It pauses with the hero (off-screen, hidden tab, "pause motion").
+
+Stills for approval: `?kid=1&kidpose=front`, `kidpose=side` or `kidpose=reach` freezes the character in that
+pose (reach also shows the bubble). Take the screenshot at 1280 px wide or more. Any other value
+(`kidpose=off`, a typo) is ignored and the child animates normally.
+
 ## Summer color test
 
 `--door-summer` (main.css, default = `--sky`) paints the Summer door, card, menu

@@ -156,7 +156,8 @@ function buildToy(key) {
 // isPaused: the page-wide "pause motion" switch; the scene freezes while true.
 // Returns dispose(), which stops rendering, frees GPU memory and removes the
 // canvas and listeners (used when the layout crosses the phone breakpoint).
-export function initToys(stage, { compact = false, isPaused = () => false } = {}) {
+// reduced: reduced motion; only the ?kid=1 test mounts a (still) scene then.
+export function initToys(stage, { compact = false, isPaused = () => false, reduced = false } = {}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -199,6 +200,8 @@ export function initToys(stage, { compact = false, isPaused = () => false } = {}
   const layoutCompact = [[-0.46, -0.04], [0.5, 0.02]];
   let halfW = 1;
   let halfH = 1;
+  let kid = null; // the ?kid=1 test character (see hero-kid.js)
+  let lastLayout = null;
   function resize() {
     const w = stage.clientWidth;
     const h = stage.clientHeight;
@@ -216,6 +219,8 @@ export function initToys(stage, { compact = false, isPaused = () => false } = {}
       toy.userData.home.set(spot[0] * halfW * 0.82, spot[1] * halfH * 0.8, (i % 3) * -0.6);
       toy.scale.setScalar(scale);
     });
+    lastLayout = { halfW, halfH, toyScale: scale, compact };
+    kid?.layout(lastLayout);
   }
   resize();
   const resizeObs = new ResizeObserver(resize);
@@ -274,16 +279,20 @@ export function initToys(stage, { compact = false, isPaused = () => false } = {}
   let last = performance.now();
   let drawn = false;
   const tmp = new THREE.Vector3();
-  renderer.setAnimationLoop(() => {
-    const now = performance.now();
-    const dt = Math.min(0.1, (now - last) / 1000);
-    last = now;
-    if (!visible || document.hidden) return;
-    if (isPaused()) {
-      if (!drawn) { renderer.render(scene, camera); drawn = true; }
-      return;
-    }
-    t += dt;
+
+  // Test only (?kid=1 sets data-kid on <html>): without it hero-kid.js is never
+  // requested and nothing below runs.
+  let kidGone = false;
+  if (document.documentElement.getAttribute('data-kid') === '1') {
+    import('./hero-kid.js').then((m) => {
+      if (kidGone) return;
+      kid = m.createKid({ scene, stage, toys, compact, reduced });
+      if (lastLayout) kid.layout(lastLayout);
+      drawn = false; // repaint once even while paused (reduced motion)
+    }).catch(() => {});
+  }
+
+  const placeToys = () => {
     toys.forEach((toy) => {
       if (!toy.visible) return;
       const u = toy.userData;
@@ -310,6 +319,25 @@ export function initToys(stage, { compact = false, isPaused = () => false } = {}
         u.mesh.rotation.z = u.baseRot.z + k * 2;
       }
     });
+  };
+
+  renderer.setAnimationLoop(() => {
+    const now = performance.now();
+    const dt = Math.min(0.1, (now - last) / 1000);
+    last = now;
+    if (!visible || document.hidden) return;
+    if (isPaused()) {
+      if (!drawn) {
+        if (reduced) placeToys(); // still scene: toys at their spots
+        kid?.update(0, t, scrollP);
+        renderer.render(scene, camera);
+        drawn = true;
+      }
+      return;
+    }
+    t += dt;
+    placeToys();
+    kid?.update(dt, t, scrollP);
     renderer.render(scene, camera);
     drawn = true;
   });
@@ -323,6 +351,8 @@ export function initToys(stage, { compact = false, isPaused = () => false } = {}
     stage.removeEventListener('pointerleave', onLeave);
     stage.removeEventListener('click', onClick);
     clearTimeout(tipTimer);
+    kidGone = true;
+    kid?.dispose();
     scene.traverse((o) => {
       o.geometry?.dispose();
       const mats = Array.isArray(o.material) ? o.material : o.material ? [o.material] : [];

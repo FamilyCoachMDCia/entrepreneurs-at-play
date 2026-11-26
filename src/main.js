@@ -104,7 +104,10 @@ function heroIntro() {
 // rotation) disposes the scene and rebuilds it in the right host. Each host
 // hides its SVG fallback only while it actually holds a scene.
 function loadToys() {
-  if (reduce || !hasWebGL()) return;
+  // Test only: with ?kid=1 reduced motion still gets a still scene (the child
+  // standing beside the toys); without it nothing changes.
+  const kid = html.getAttribute('data-kid') === '1';
+  if ((reduce && !kid) || !hasWebGL()) return;
   const phone = window.matchMedia('(max-width: 767px)');
   let dispose = null;
   let host = null;
@@ -116,7 +119,7 @@ function loadToys() {
     const compact = phone.matches;
     host = document.querySelector(compact ? '.hero-toyslot' : '#hero-stage');
     if (!host || !initToys) return;
-    dispose = initToys(host, { compact, isPaused: () => motionState.paused });
+    dispose = initToys(host, { compact, isPaused: () => reduce || motionState.paused, reduced: reduce });
     host.classList.add('has-scene');
   };
 

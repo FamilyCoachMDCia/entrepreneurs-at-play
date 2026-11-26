@@ -17,7 +17,7 @@ const use = (id) => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
 
 // Runs before the first paint: decides whether this page arrives under its
 // curtain, applies the background test (?paper=), the Summer color test
-// (?summer=yellow|brown|off) and the header mark test (?mark=arch|off), and reverts to plain HTML
+// (?summer=yellow|brown|off) and the header mark test (?mark=arch|off) and the hero child test (?kid=1|off), and reverts to plain HTML
 // if the app script never starts. Keep it dependency-free.
 const HEAD_SCRIPT = `<script>
 (function () {
@@ -42,6 +42,10 @@ const HEAD_SCRIPT = `<script>
     if (m) sessionStorage.setItem('ep-mark', m);
     m = sessionStorage.getItem('ep-mark');
     if (m === 'arch') h.setAttribute('data-mark', 'arch');
+    var k = new URLSearchParams(location.search).get('kid');
+    if (k) sessionStorage.setItem('ep-kid', k);
+    k = sessionStorage.getItem('ep-kid');
+    if (k === '1') h.setAttribute('data-kid', '1');
   } catch (e) {}
   setTimeout(function () {
     if (!h.classList.contains('app-ready')) {

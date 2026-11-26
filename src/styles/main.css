@@ -380,6 +380,19 @@ html[data-mark="arch"] .nav-mark { display: block; }
   pointer-events: none; opacity: 0; translate: -50% calc(-100% - 18px);
 }
 .toy-tip strong { display: block; font-family: var(--f-display); font-size: 1.05rem; }
+/* "hehe!" over the hero child (test: ?kid=1, see src/hero-kid.js). */
+.kid-bubble {
+  position: absolute; z-index: 3; left: 0; top: 0; padding: 2px 14px 4px; border-radius: 18px; white-space: nowrap;
+  background: var(--paper); box-shadow: 0 8px 22px rgba(31, 42, 23, .16); color: var(--clay);
+  font-family: var(--f-hand); font-size: 1.6rem; line-height: 1.2; pointer-events: none;
+  opacity: 0; translate: -50% calc(-100% - 6px) 0; transform: scale(.7); transform-origin: 50% 100%;
+  transition: opacity .18s, transform .28s cubic-bezier(.3, 1.6, .5, 1);
+}
+.kid-bubble::after {
+  content: ''; position: absolute; left: 50%; bottom: -6px; width: 12px; height: 12px; background: inherit;
+  transform: translateX(-50%) rotate(45deg); border-radius: 0 0 4px 0;
+}
+.kid-bubble.on { opacity: 1; transform: scale(1); }
 
 .scroll-cue { display: none; }
 

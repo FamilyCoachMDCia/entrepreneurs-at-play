@@ -204,7 +204,7 @@ function buildKid() {
   return { root, body, torso, head, legs, arms, eyes, smile, open };
 }
 
-// Returns the scene's layout, animation and interaction controls.
+// Coordinates the character’s walk, toy interactions and belly tickle.
 export function createKid({ scene, stage, toys, camera, compact, reduced, repaint }) {
   const parts = buildKid();
   const group = new THREE.Group();

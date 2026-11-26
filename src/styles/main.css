@@ -372,7 +372,7 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
   pointer-events: none; opacity: 0; translate: -50% calc(-100% - 18px);
 }
 .toy-tip strong { display: block; font-family: var(--f-display); font-size: 1.05rem; }
-/* The projected button follows the belly and supports touch and keyboard. */
+/* A projected hit area lets visitors tickle the character by touch or keyboard. */
 .kid-touch {
   position: absolute; z-index: 2; transform: translate(-50%, -50%);
   border: 0; border-radius: 50%; padding: 0; background: transparent; cursor: pointer;

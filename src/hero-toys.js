@@ -156,7 +156,7 @@ function buildToy(key) {
 // isPaused: the page-wide "pause motion" switch; the scene freezes while true.
 // Returns dispose(), which stops rendering, frees GPU memory and removes the
 // canvas and listeners (used when the layout crosses the phone breakpoint).
-// reduced: reduced motion; only the ?kid=1 test mounts a (still) scene then.
+// Reduced motion uses a still scene with a manual reaction to the belly button.
 export function initToys(stage, { compact = false, isPaused = () => false, reduced = false } = {}) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
@@ -200,7 +200,7 @@ export function initToys(stage, { compact = false, isPaused = () => false, reduc
   const layoutCompact = [[-0.46, -0.04], [0.5, 0.02]];
   let halfW = 1;
   let halfH = 1;
-  let kid = null; // the ?kid=1 test character (see hero-kid.js)
+  let kid = null;
   let lastLayout = null;
   function resize() {
     const w = stage.clientWidth;
@@ -208,18 +208,23 @@ export function initToys(stage, { compact = false, isPaused = () => false, reduc
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    camera.updateMatrixWorld();
     halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
     halfW = halfH * camera.aspect;
     const layout = compact ? layoutCompact : layoutDesktop;
-    const scale = compact ? halfH * 1.05 : Math.min(1.55, halfW / 3.2);
+    // The canvas spans the entrance path. Keep the toys in their original area.
+    const leftInset = Number.parseFloat(getComputedStyle(stage).getPropertyValue('--toy-area-left')) / 100 || 0;
+    const playHalfW = halfW * (1 - leftInset);
+    const playCenter = halfW * leftInset;
+    const scale = compact ? halfH * 1.05 : Math.min(1.55, playHalfW / 3.2);
     toys.forEach((toy, i) => {
       const spot = layout[i];
       toy.visible = !!spot;
       if (!spot) return;
-      toy.userData.home.set(spot[0] * halfW * 0.82, spot[1] * halfH * 0.8, (i % 3) * -0.6);
+      toy.userData.home.set(playCenter + spot[0] * playHalfW * 0.82, spot[1] * halfH * 0.8, (i % 3) * -0.6);
       toy.scale.setScalar(scale);
     });
-    lastLayout = { halfW, halfH, toyScale: scale, compact };
+    lastLayout = { halfW, halfH, playCenter, playHalfW, toyScale: scale, compact };
     kid?.layout(lastLayout);
   }
   resize();
@@ -241,9 +246,12 @@ export function initToys(stage, { compact = false, isPaused = () => false, reduc
 
   let tipTimer;
   const onClick = (e) => {
+    if (e.target.closest('.kid-touch')) return;
     toWorld(e);
     raycaster.setFromCamera(pointer, camera);
     const hit = raycaster.intersectObjects(toys.filter((t) => t.visible), true)[0];
+    const childHit = kid?.hit(raycaster);
+    if (childHit && (!hit || childHit.distance < hit.distance) && kid.poke()) return;
     if (!hit) return;
     let toy = hit.object;
     while (toy.parent && !toys.includes(toy)) toy = toy.parent;
@@ -280,13 +288,12 @@ export function initToys(stage, { compact = false, isPaused = () => false, reduc
   let drawn = false;
   const tmp = new THREE.Vector3();
 
-  // Test only (?kid=1 sets data-kid on <html>): without it hero-kid.js is never
-  // requested and nothing below runs.
+  // Allow ?kid=off to skip the separate character bundle for this session.
   let kidGone = false;
   if (document.documentElement.getAttribute('data-kid') === '1') {
     import('./hero-kid.js').then((m) => {
       if (kidGone) return;
-      kid = m.createKid({ scene, stage, toys, compact, reduced });
+      kid = m.createKid({ scene, stage, toys, camera, compact, reduced, repaint: () => { drawn = false; } });
       if (lastLayout) kid.layout(lastLayout);
       drawn = false; // repaint once even while paused (reduced motion)
     }).catch(() => {});
@@ -329,7 +336,7 @@ export function initToys(stage, { compact = false, isPaused = () => false, reduc
     if (isPaused()) {
       if (!drawn) {
         if (reduced) placeToys(); // still scene: toys at their spots
-        kid?.update(0, t, scrollP);
+        kid?.update(0, scrollP);
         renderer.render(scene, camera);
         drawn = true;
       }
@@ -337,7 +344,7 @@ export function initToys(stage, { compact = false, isPaused = () => false, reduc
     }
     t += dt;
     placeToys();
-    kid?.update(dt, t, scrollP);
+    kid?.update(dt, scrollP);
     renderer.render(scene, camera);
     drawn = true;
   });

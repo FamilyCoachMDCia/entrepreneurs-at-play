@@ -13,7 +13,7 @@ npm run build    # outputs dist/
 | Path | File | What it holds |
 |---|---|---|
 | `/` | `index.html` | Hero with the 3D toys, the three program doors, "What's in a name?" (short), contact |
-| `/enrichment/` | `enrichment/index.html` | T6 Golf & Finance, the weekday cards, how it works, questions, contact |
+| `/enrichment/` | `enrichment/index.html` | Golf (key `golf`, anchor `#golf`), the weekday cards, how it works, questions, contact |
 | `/summer/` | `summer/index.html` | Summer camp, the after-school favorites all day, contact |
 | `/microschool/` | `microschool/index.html` | Beta at capacity, The Hatch and The Studio, the week, the sun-dial day, subjects, promises, practical part, questions, waitlist |
 | `/about/` | `about/index.html` | Who we are: the name, CREATE flow, why EP, nine things, founder, FamilyCoachMD, partners, contact |
@@ -36,6 +36,14 @@ changing its `weekday` there: the enrichment day strip and cards, the microschoo
 week, the sample day ("Follow the sun through a …"), the form and every sentence
 that names the day follow. Vite fills the `{{tokens}}` in the HTML from it.
 
+The golf program uses the key `golf` (SCHEDULE key, form value, `data-program-cta`,
+`#golf` anchor, `.golf-*` classes, `{{golf_day}}` token). An activity with
+`soon: true` is not confirmed yet: its card shows a "Coming soon" tag instead of
+hours, its button reads "Get updates", the home week says "Coming soon" and the
+form option ends in "· coming soon". Remove the flag when a partner confirms.
+The Hatch is a form program of its own (`hatch`, "The Hatch · updates", ages 2–6)
+while it is "coming soon".
+
 ## Page transitions
 
 `src/transitions.js`. A click on a door opens it and its color fills the screen;
@@ -51,6 +59,14 @@ Add `?paper=linen` or `?paper=milk` to any address; the choice stays while you
 move between pages. `?paper=off` returns to the current background. The colors
 are in `src/styles/pages.css` (end of file).
 
+## Summer color test
+
+`--door-summer` (main.css, default = `--sky`) paints the Summer door, card, menu
+block and curtain. Add `?summer=yellow` or `?summer=brown` to any address to try
+the other colors (kept for the session); `?summer=off` returns to blue. The
+colors and the text adjustments are at the end of `src/styles/pages.css`. To adopt
+one, change the `--door-summer` default and drop the test block.
+
 ## Program requests
 
 Program links preselect the corresponding request, also across pages. The
@@ -61,7 +77,7 @@ visitor sends the email from that app.
 ## Publishing extras
 
 `public/robots.txt`, `public/sitemap.xml`, `public/404.html` and `vercel.json`
-(short links `/t6`, `/waitlist`, `/contact`) assume the current domain
+(short links `/golf`, `/t6` (old, same target), `/waitlist`, `/contact`) assume the current domain
 (https://entrepreneurs-at-play.vercel.app). Update them and `url` in
 `src/site-config.js` when the final domain is chosen. Old links to `/#section`
 are forwarded to the new pages by a small script in the home page head.

@@ -190,6 +190,8 @@ function magnetic({ gsap }) {
 // opens on that page's own program; a program button clicked on another page
 // wins (transitions.js carries it over).
 const NO_CHILD = ['general', 'partner'];
+// Programs with their own age range (the microschool takes 2–12).
+const AGES = { golf: [8, 12], hatch: [2, 6] };
 const samePage = (a) => new URL(a.href, location.href).pathname.replace(/index\.html$/, '') === location.pathname.replace(/index\.html$/, '');
 
 function form() {
@@ -229,14 +231,14 @@ function form() {
     const childless = NO_CHILD.includes(program.value);
     ageField.hidden = childless;
     age.required = !childless;
-    const min = program.value === 't6' ? 8 : 2;
-    const restricted = !childless && (program.value === 't6' || program.value === 'microschool');
+    const [min, max] = AGES[program.value] || [2, 12];
+    const restricted = !childless && (program.value in AGES || program.value === 'microschool');
     [...age.options].slice(1).forEach((option) => {
-      option.disabled = restricted && (option.value === 'other' || Number(option.value) < min);
+      option.disabled = restricted && (option.value === 'other' || Number(option.value) < min || Number(option.value) > max);
     });
     if (age.selectedOptions[0]?.disabled) age.value = '';
     ageNote.hidden = !restricted;
-    ageNote.textContent = restricted ? `This program is for ages ${min}–12.` : '';
+    ageNote.textContent = restricted ? `This program is for ages ${min}–${max}.` : '';
     age.dispatchEvent(new Event('change'));
   };
 

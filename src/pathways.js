@@ -9,7 +9,7 @@
 const STORE_KEY = 'ep-pathway';
 const AGE_KEY = 'ep-child-age';
 export const PATHS = {
-  hatch: { name: 'The Hatch', ages: '2–6' },
+  hatch: { name: 'The Hatch', ages: '2–6', status: 'coming soon' },
   studio: { name: 'The Studio', ages: '7–12' },
 };
 export const pathFor = (age) => (Number(age) <= 6 ? 'hatch' : 'studio');
@@ -50,7 +50,7 @@ export function initPathways({ gsap, reduce }) {
       const edge = { 6: ' Turning 7 this year?', 7: ' Just turned 7?' }[state.age];
       out.textContent = state.age;
       helper.dataset.path = key;
-      note.innerHTML = `Your child would join <strong>${PATHS[key].name}</strong>.${edge ? `${edge} Talk to us, and we’ll find the right fit.` : ''}`;
+      note.innerHTML = `Your child would join <strong>${PATHS[key].name}${PATHS[key].status ? ` · ${PATHS[key].status}` : ''}</strong>.${edge ? `${edge} Talk to us, and we’ll find the right fit.` : ''}`;
     } else {
       out.textContent = '–';
       delete helper.dataset.path;

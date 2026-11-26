@@ -225,7 +225,7 @@ html.head-hidden .subnav { top: 0; }
   background: color-mix(in srgb, var(--paper) 90%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
 .subnav.is-tucked { transform: translateY(-115%); opacity: 0; pointer-events: none; }
-html.has-subnav main section[id] { scroll-margin-top: calc(var(--nav-h) + 64px); }
+html.has-subnav main [id] { scroll-margin-top: calc(var(--nav-h) + 64px); }
 .subnav + .page-top { padding-top: clamp(18px, 3vw, 40px); }
 
 /* ---------- Floating call to action (phones and tablets) ---------- */
@@ -454,6 +454,24 @@ html[data-paper="milk"] {
   --tint-dusk: #F9EFDB; --tint-dawn: #FDF8EA; --card-paper: #FFFFFF;
 }
 html[data-paper] .grain { opacity: .02; }
+
+/* ---------- Summer color proofs (?summer=yellow | ?summer=brown | ?summer=off) ----------
+   --door-summer (main.css) paints the Summer door, card, menu block and curtain.
+   --summer-accent: the numeral, seal and knob. --summer-accent-text: small text
+   that needs 4.5:1 on the new color (checked: yellow 4.99, brown 5.08).
+   Yellow: ink 11.7, body grey 6.6. Brown: ink 7.8; body grey is 4.4, so the
+   proof uses ink for the Summer paragraphs. */
+html[data-summer="yellow"] { --door-summer: #F6DFA0; --summer-accent: #B78B4F; --summer-accent-text: #7A5714; }
+html[data-summer="brown"] { --door-summer: #D2B48C; --summer-accent: #744A26; --summer-accent-text: #5E3A1C; --summer-text: var(--ink); }
+html[data-summer] .door-summer .door-num, html[data-summer] .summer .program-num { color: var(--summer-accent); }
+html[data-summer] .door-summer .door-status { box-shadow: inset 0 0 0 1.5px var(--summer-accent); }
+html[data-summer] .door-summer .door-kicker, html[data-summer] .menu-programs a[href="/summer/"] small { color: var(--summer-accent-text); }
+html[data-summer] .door-summer .door-line, html[data-summer] .menu-programs a[href="/summer/"] span,
+html[data-summer] .summer-card .program-copy p:not(.eyebrow) { color: var(--summer-text, var(--ink-soft)); }
+/* Brown: marigold alone vanishes on tan (1.06:1), so the sun gets a clay outline and clay rays and path */
+html[data-summer="brown"] .door-summer .art-sunball circle { fill: var(--marigold); stroke: #744A26; stroke-width: 2; }
+html[data-summer="brown"] .door-summer .art-rays path, html[data-summer="brown"] .door-summer .art-track { stroke: #744A26; opacity: 1; }
+html[data-summer] .summer-card .eyebrow { color: var(--summer-accent-text); }
 html[data-paper] body { background-color: var(--paper); }
 
 /* ---------- Who we are: what we believe ---------- */
@@ -492,6 +510,10 @@ html[data-paper] body { background-color: var(--paper); }
 .hw-day strong { font-family: var(--f-display); font-size: 1.15rem; line-height: 1.2; }
 .hw-time { font-size: .9rem; color: var(--ink-soft); }
 .hw-day:not(.is-open) > div { opacity: .8; }
+.hw-time.hw-soon {
+  justify-self: start; padding: 2px 10px 3px; border-radius: 999px; background: rgba(242, 179, 61, .26);
+  color: var(--clay); font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; line-height: 1.3;
+}
 
 .dates { padding: 0 0 var(--section-space); }
 .date-list { list-style: none; padding: 0; margin: clamp(24px, 4vw, 44px) 0 0; display: grid; gap: 12px; }
@@ -517,12 +539,15 @@ html[data-paper] body { background-color: var(--paper); }
   .hw-day b { grid-area: day; font-size: .66rem; }
   .hw-day strong { grid-area: name; font-size: 1rem; }
   .hw-time { grid-area: time; font-size: .82rem; text-align: right; }
+  .hw-time.hw-soon { justify-self: end; font-size: .66rem; }
 }
 
-.t6-sessions { display: grid; gap: .8rem; margin: 1rem 0 1.4rem; }
-.t6-sessions > div { border-inline-start: 3px solid var(--forest); padding-inline-start: .9rem; }
-.t6-sessions dt { font-family: var(--f-display); font-weight: 700; }
-.t6-sessions dd { margin: .22em 0 0; }
+.golf-sessions { display: grid; gap: .8rem; margin: 1rem 0 1.4rem; }
+.golf-sessions > div { border-inline-start: 3px solid var(--forest); padding-inline-start: .9rem; }
+.golf-sessions dt { font-family: var(--f-display); font-weight: 700; }
+.golf-sessions dd { margin: .22em 0 0; }
+.golf-sessions > .is-soon { border-inline-start: 3px dashed var(--ochre); }
+.golf-sessions .soon-tag { margin-top: 0; }
 .micro-questions { padding-block: 2rem; }
 .day-lettering { display: grid; place-items: center; text-align: center; padding: 1rem; width: 100%; max-width: 420px; aspect-ratio: 4/3; border: 1px solid var(--forest); border-radius: var(--r-photo); background: var(--tint-green); color: var(--forest); font: italic 600 clamp(1.4rem,4vw,3rem)/1.1 var(--f-display); }
 .day.is-pinned .day-photos .day-lettering { position: absolute; inset: 0; height: 100%; }

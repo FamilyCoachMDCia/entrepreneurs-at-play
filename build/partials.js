@@ -12,7 +12,8 @@ const use = (id) => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
 /* ---------- Head ---------- */
 
 // Runs before the first paint: decides whether this page arrives under its
-// curtain, applies the background test (?paper=), and reverts to plain HTML
+// curtain, applies the background test (?paper=) and the Summer color test
+// (?summer=yellow|brown|off), and reverts to plain HTML
 // if the app script never starts. Keep it dependency-free.
 const HEAD_SCRIPT = `<script>
 (function () {
@@ -29,6 +30,10 @@ const HEAD_SCRIPT = `<script>
     if (p) sessionStorage.setItem('ep-paper', p);
     p = sessionStorage.getItem('ep-paper');
     if (p && p !== 'off') h.setAttribute('data-paper', p);
+    var s = new URLSearchParams(location.search).get('summer');
+    if (s) sessionStorage.setItem('ep-summer', s);
+    s = sessionStorage.getItem('ep-summer');
+    if (s && s !== 'off') h.setAttribute('data-summer', s);
   } catch (e) {}
   setTimeout(function () {
     if (!h.classList.contains('app-ready')) {
@@ -40,9 +45,11 @@ const HEAD_SCRIPT = `<script>
 </script>`;
 
 // Links shared before the site had pages (flyers, posts) point at /#section.
-// The server never sees the hash, so the home page forwards them.
+// The server never sees the hash, so the home page forwards them. The
+// retired T6 anchor is rebuilt in the script ('t' + 6) so the old name leaves
+// the built HTML and still lands on golf.
 const OLD_ANCHORS = {
-  enrichment: '/enrichment/', t6: '/enrichment/#t6', 'enr-podcast': '/enrichment/#enr-podcast',
+  enrichment: '/enrichment/', golf: '/enrichment/#golf', 'enr-podcast': '/enrichment/#enr-podcast',
   'enr-create': '/enrichment/#enr-create', 'enr-cuisine': '/enrichment/#enr-cuisine', summer: '/summer/',
   microschool: '/microschool/', pathways: '/microschool/#pathways', day: '/microschool/#day',
   world: '/microschool/#world', ages: '/microschool/#pathways', domains: '/microschool/#domains',
@@ -76,7 +83,7 @@ function head(key) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..800,0..100,0..1;1,9..144,400..800,0..100,0..1&display=swap">
-${key === 'home' ? `<script>(function () { var to = ${JSON.stringify(OLD_ANCHORS)}[location.hash.slice(1)]; if (to && to !== '/' + location.hash) location.replace(to); })();</script>\n` : ''}${HEAD_SCRIPT}${key === 'home' ? `
+${key === 'home' ? `<script>(function () { var id = location.hash.slice(1); if (id === 't' + 6) id = 'golf'; var to = ${JSON.stringify(OLD_ANCHORS)}[id]; if (to && to !== '/' + location.hash) location.replace(to); })();</script>\n` : ''}${HEAD_SCRIPT}${key === 'home' ? `
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -118,7 +125,7 @@ function siteHead(key) {
 <header class="site-head" id="site-head">
   <div class="ticker" role="region" aria-label="Announcements">
     <ul class="ticker-list">
-      <li><a href="/enrichment/#t6">T6 golf starts January 5</a></li>
+      <li><a href="/enrichment/#golf">Golf starts January 5 · Sign up now</a></li>
       <li><a href="/enrichment/">After-school enrichment in Omaha</a></li>
       <li><a href="/microschool/#visit" data-program-cta="microschool">Microschool waitlist · Fall 2027</a></li>
     </ul>
@@ -153,7 +160,7 @@ function onThisPage(key) {
   if (SUBNAV[key] && key !== 'enrichment' && key !== 'summer') return SUBNAV[key];
   if (key === 'enrichment') {
     return [
-      ...openDays().map((d) => [`#${d.anchor}`, d.key === 't6' ? 'T6 Golf & Finance' : d.name]),
+      ...openDays().map((d) => [`#${d.anchor}`, d.chip || d.name]),
       ['#faq', 'FAQ'], ['#visit', 'Sign up'],
     ];
   }
@@ -251,7 +258,7 @@ function stickyCta(key) {
 
 const DOORS = {
   enrichment: {
-    line: 'After-school sessions open to all kids.', status: 'T6 starts Jan 5',
+    line: 'After-school sessions open to all kids.', status: 'Golf starts Jan 5',
     art: `<svg class="door-art art-putt" viewBox="0 0 160 84" aria-hidden="true"><path class="art-track" d="M14 66 C 52 44, 92 80, 128 64"/><ellipse class="art-hole" cx="132" cy="65" rx="11" ry="3.5"/><path class="art-pole" d="M132 64 V 16"/><path class="art-flag" d="M132 17 C 141 19, 148 22, 158 24 C 149 28, 141 31, 132 34 z"/><circle class="art-ball" cx="14" cy="62" r="5.5"/></svg>`,
   },
   summer: {
@@ -326,17 +333,17 @@ const short = (weekday) => weekday.slice(0, 3);
 function dayStrip() {
   return `<ol class="day-strip" aria-label="Enrichment by day">
         ${openDays().map((d) => `<li><a href="#${d.anchor}" data-day-pill><b>${short(d.weekday)}</b><span>${esc(d.strip || d.name)}</span></a></li>`).join('\n        ')}
-        <li class="strip-signup"><a href="#visit" data-program-cta="t6"><b aria-hidden="true">${use('d-chev').replace('<svg', '<svg class="strip-go"')}</b><span>Sign up for an afternoon</span></a></li>
+        <li class="strip-signup"><a href="#visit" data-program-cta="golf"><b aria-hidden="true">${use('d-chev').replace('<svg', '<svg class="strip-go"')}</b><span>Sign up for an afternoon</span></a></li>
       </ol>`;
 }
 
 function dayCards() {
-  const cards = openDays().filter((d) => d.key !== 't6');
+  const cards = openDays().filter((d) => d.key !== 'golf');
   return `<div class="program-week" aria-label="Planned enrichment activities">
       ${cards.map((d) => `<article class="day-card" id="${d.anchor}" style="--tint:${d.tint}; --tab:${d.tab}">
         <p class="cal-tab"><span>${d.weekday}</span></p>
         <svg class="day-card-icon" aria-hidden="true"><use href="#${d.icon}"/></svg>
-        <h3>${esc(d.title || d.name)}</h3>
+        <h3>${esc(d.title || d.name)}</h3>${d.soon ? '<span class="soon-tag">Coming soon</span>' : ''}
         <p>${esc(d.blurb)}</p>
         <a class="link link-go" href="#visit" data-program-cta="${d.key}">${esc(d.ask)}<svg aria-hidden="true"><use href="#d-chev"/></svg></a>
       </article>`).join('\n      ')}
@@ -366,7 +373,7 @@ function summerFavorites() {
         <h2 class="h2" id="favorites-title">Summer <em>activities</em></h2>
       </div>
       <ul class="favorites-list">
-        <li><div><svg aria-hidden="true"><use href="#d-flag"/></svg><span>Golf &amp; Finance</span><small>Practice your swing and explore how money works.</small></div></li>
+        <li><div><svg aria-hidden="true"><use href="#d-flag"/></svg><span>Golf</span><small>Practice your swing and explore how money works.</small></div></li>
         <li><div><svg aria-hidden="true"><use href="#d-hammer"/></svg><span>CREATE</span><small>Design, build and test a hands-on project.</small></div></li>
         <li><div><svg aria-hidden="true"><use href="#i-talker"/></svg><span>Podcasting</span><small>Prepare questions and record an interview.</small></div></li>
         <li><div><svg aria-hidden="true"><use href="#d-whisk"/></svg><span>Culture &amp; Cuisine</span><small>Cook together and discover the culture behind each dish.</small></div></li>
@@ -416,7 +423,7 @@ function faqEnrichment() {
     <h2 class="h2" id="faq-title" data-split>Questions parents <em>ask</em></h2>
     <div class="faq-list">
       <details><summary>What is EP?</summary><div class="faq-a"><p>Entrepreneurs at Play is a physician-founded program. It offers after-school enrichment, summer camp and a mixed-age microschool.</p></div></details>
-      <details><summary>Who can join after-school enrichment?</summary><div class="faq-a"><p>Children from local schools and homeschool families can join. T6 Golf &amp; Finance is for ages 8–12. Ask about ages and schedules for the other activities.</p></div></details>
+      <details><summary>Who can join after-school enrichment?</summary><div class="faq-a"><p>Children from local schools and homeschool families can join. Golf is for ages 8–12. Ask about ages and schedules for the other afternoons.</p></div></details>
       <details><summary>Where?</summary><div class="faq-a"><p>EP is based in the Omaha metropolitan area. A Lincoln location is coming soon.</p></div></details>
       <details><summary>How much does it cost?</summary><div class="faq-a"><p>Fees vary by program. <a class="link" href="mailto:{{email}}">Email us</a> for current fees.</p></div></details>
     </div>
@@ -429,13 +436,13 @@ function faqEnrichment() {
 const VISIT = {
   home: {
     title: 'Find your <em>next step.</em>',
-    intro: 'Request a T6 spot, ask about another enrichment activity, get summer updates or join the Fall 2027 microschool waitlist. We’ll reply by email with availability and next steps.',
+    intro: 'Request a golf spot, ask about another afternoon, get summer updates or join the Fall 2027 microschool waitlist. We’ll reply by email with availability and next steps.',
     show: ['enrichment', 'summer', 'microschool', 'other'], def: '',
   },
   enrichment: {
     title: 'Save a spot <em>after school.</em>',
-    intro: 'Request a T6 spot or ask about another afternoon. We’ll reply by email with availability and next steps.',
-    show: ['enrichment'], def: 't6',
+    intro: 'Request a golf spot or ask about another afternoon. We’ll reply by email with availability and next steps.',
+    show: ['enrichment'], def: 'golf',
   },
   summer: {
     title: 'Be first to hear about <em>summer.</em>',
@@ -460,7 +467,7 @@ const PICK_GROUPS = {
   enrichment: () => `<div class="pick-group pick-enrichment" role="group" aria-labelledby="pick-enr">
             <p class="pick-label" id="pick-enr">Enrichment</p>
             <div class="pick-row">
-              ${openDays().map((d) => pick(d.key, d.icon, d.name, d.weekday)).join('\n              ')}
+              ${openDays().map((d) => pick(d.key, d.icon, d.chip || d.name, d.chipNote || `${d.weekday}${d.soon ? ' · coming soon' : ''}`)).join('\n              ')}
             </div>
           </div>`,
   summer: () => `<div class="pick-group" role="group" aria-labelledby="pick-sum">
@@ -469,7 +476,10 @@ const PICK_GROUPS = {
           </div>`,
   microschool: () => `<div class="pick-group" role="group" aria-labelledby="pick-mic">
             <p class="pick-label" id="pick-mic">Microschool</p>
-            ${pick('microschool', 'i-sprout', 'Fall 2027 waitlist', 'The Hatch & The Studio')}
+            <div class="pick-row pick-row-2">
+              ${pick('microschool', 'i-sprout', 'Fall 2027 waitlist', 'The Hatch & The Studio')}
+              ${pick('hatch', 'i-sprout', 'The Hatch · updates', 'Ages 2–6 · coming soon')}
+            </div>
           </div>`,
   other: () => `<div class="pick-group pick-other" role="group" aria-labelledby="pick-oth">
             <p class="pick-label" id="pick-oth">Talk with us</p>
@@ -487,8 +497,8 @@ function contact(key) {
   const rest = GROUP_ORDER.filter((g) => !v.show.includes(g)).map((g) => PICK_GROUPS[g]()).join('\n            ');
   const options = [
     ['', 'Select a program'],
-    ...openDays().map((d) => [d.key, d.key === 't6' ? d.name : `${d.weekday} ${d.name}`]),
-    ['summer', 'Summer camp updates'], ['microschool', 'Fall 2027 microschool waitlist'],
+    ...openDays().map((d) => [d.key, d.key === 'golf' ? d.name : `${d.weekday} ${d.name}${d.soon ? ' · coming soon' : ''}`]),
+    ['summer', 'Summer camp updates'], ['microschool', 'Fall 2027 microschool waitlist'], ['hatch', 'The Hatch · updates'],
     ['general', 'General question'], ['partner', 'Partner with EP'],
   ];
   return `<!-- Contact: every page ends here -->
@@ -594,16 +604,23 @@ function manifesto() {
 
 /* ---------- Home: the week at a glance and the dates to remember ---------- */
 
+// Monday is microschool only, golf has its start date, the rest are not confirmed.
+const hwTime = (d) => {
+  if (!d.open) return '<span class="hw-time">Microschool only</span>';
+  if (d.soon) return '<span class="hw-time hw-soon">Coming soon</span>';
+  return `<span class="hw-time">${esc(d.startsLine || d.hours || '')}</span>`;
+};
+
 function homeWeek() {
   return `<!-- A week at EP: every afternoon, from SCHEDULE in site-config.js -->
 <section class="home-week" id="week" aria-labelledby="home-week-title">
   <div class="wrap">
     <p class="eyebrow">A week at EP</p>
     <h2 class="h2" id="home-week-title" data-split>Something new <em>every afternoon.</em></h2>
-    <p class="sub">Four afternoons a week are open to all kids after school. Pick the one your child will love.</p>
+    <p class="sub">After school, children pick the afternoon they love. Golf opens in January; more afternoons are coming soon.</p>
     <ol class="hw-list">
       ${week().map((d) => {
-        const inner = `<svg class="hw-icon" aria-hidden="true"><use href="#${d.icon}"/></svg><b>${d.weekday}</b><strong>${esc(d.title || d.name)}</strong>${d.open ? `<span class="hw-time">${esc(d.hours || '')}</span>` : '<span class="hw-time">Microschool only</span>'}`;
+        const inner = `<svg class="hw-icon" aria-hidden="true"><use href="#${d.icon}"/></svg><b>${d.weekday}</b><strong>${esc(d.title || d.name)}</strong>${hwTime(d)}`;
         return d.open
           ? `<li class="hw-day is-open" style="--tint:${d.tint || 'var(--tint-sun)'}" data-reveal><a href="/enrichment/#${d.anchor}">${inner}</a></li>`
           : `<li class="hw-day" data-reveal><div>${inner}</div></li>`;
@@ -616,7 +633,7 @@ function homeWeek() {
 
 const DATES = [
   ['Jan 4', '2027', 'Our doors open', 'The spring semester begins in the Omaha area.', '/microschool/'],
-  ['Jan 5', '2027', 'T6 golf starts', 'January golf at The Back Nine. Finance joins in February.', '/enrichment/#t6'],
+  ['Jan 5', '2027', 'Golf starts', 'Tuesday afternoons at The Back Nine.', '/enrichment/#golf'],
   ['Summer', '2027', 'Summer camp', 'Longer days of building, cooking and projects together.', '/summer/'],
   ['Fall', '2027', 'Microschool waitlist', 'Enrollment is at capacity. Join the waitlist.', '/microschool/#visit'],
 ];

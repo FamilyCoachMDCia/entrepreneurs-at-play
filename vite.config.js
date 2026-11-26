@@ -35,7 +35,7 @@ const TOKENS = {
   year: String(SITE.copyrightYear),
   email: SITE.email,
   // Weekdays come from SCHEDULE, so moving an activity updates every sentence.
-  t6_day: dayOf('t6'),
+  golf_day: dayOf('golf'),
   cuisine_day: dayOf('cuisine'),
   sample_day: SCHEDULE.find((d) => d.sampleDay).weekday,
   open_days: `${open[0].weekday} through ${open[open.length - 1].weekday}`,

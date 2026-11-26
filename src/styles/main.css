@@ -14,13 +14,14 @@
   --clay: #744A26;
   --marigold: #F2B33D;
   --sky: #CFE0DF;
+  --door-summer: var(--sky); /* the Summer door, card and menu block; ?summer= tests other colors */
   --line: rgba(35, 38, 31, .12);
   --tint-2: rgba(217, 203, 176, .31); /* reads as --paper-2 over --paper, lets the grid through */
 
   /* Program and card tints (one place, so the background test can move them) */
   --tint-green: #E8EFE0;   /* Microschool, The Studio */
   --tint-sun:   #F7E6C4;   /* The Hatch, podcasting */
-  --tint-sand:  #F2E6D3;   /* Enrichment, T6, the FamilyCoachMD book */
+  --tint-sand:  #F2E6D3;   /* Enrichment, golf, the FamilyCoachMD book */
   --tint-clay:  #F3E3D6;   /* Culture & Cuisine */
   --tint-dawn:  #FBF3DC;   /* the sun-dial's morning */
   --tint-dusk:  #F3E2C4;   /* the sun-dial's late afternoon */
@@ -440,35 +441,42 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 @keyframes flash { 0%, 60% { box-shadow: 0 0 0 4px var(--marigold); } 100% { box-shadow: 0 0 0 4px rgba(242, 179, 61, 0); } }
 @media (prefers-reduced-motion: reduce) { .is-flash { box-shadow: 0 0 0 4px var(--marigold); } }
 
-/* T6 feature card: the signature moment */
+/* Golf feature card: the signature moment */
 .enrichment-feature { margin-top: clamp(20px, 3vw, 36px); background: var(--tint-sand); }
-.t6-photo { position: relative; overflow: hidden; border-radius: var(--r-card) var(--r-card) 0 0; aspect-ratio: 16 / 9; }
-.t6-photo img { width: 100%; height: 100%; object-fit: cover; }
-.t6-putt { position: absolute; right: 4%; bottom: 4%; width: 52%; height: auto; overflow: visible; }
+.golf-photo { position: relative; overflow: hidden; border-radius: var(--r-card) var(--r-card) 0 0; aspect-ratio: 16 / 9; }
+.golf-photo img { width: 100%; height: 100%; object-fit: cover; }
+.golf-putt { position: absolute; right: 4%; bottom: 4%; width: 52%; height: auto; overflow: visible; }
 .putt-path { stroke: var(--paper); stroke-width: 3; stroke-dasharray: .1 9; stroke-linecap: round; }
 .putt-hole { fill: #1F2A17; opacity: .8; }
 .putt-pole { stroke: var(--paper); stroke-width: 3; stroke-linecap: round; }
 .putt-flag { fill: var(--marigold); stroke: #1F2A17; stroke-width: 1.5; stroke-linejoin: round; }
 .putt-ball { fill: #fff; stroke: #1F2A17; stroke-width: 1.5; }
-.t6-badge {
+.golf-badge {
   position: absolute; z-index: 2; left: -10px; top: -14px; width: 92px; height: 92px; border-radius: 50%;
   background: var(--marigold); color: var(--forest-deep); display: grid; place-items: center;
   box-shadow: 0 10px 24px rgba(31, 42, 23, .2); rotate: -8deg;
 }
-.t6-badge-ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 22s linear infinite; }
-.t6-badge-ring text { font: 700 10.5px var(--f-body); letter-spacing: .06em; fill: currentColor; }
-.t6-badge-core { font-family: var(--f-display); font-weight: 800; font-size: 1.35rem; line-height: 1; }
+.golf-badge-ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 22s linear infinite; }
+.golf-badge-ring text { font: 700 10.5px var(--f-body); letter-spacing: .06em; fill: currentColor; }
+.golf-badge-core { width: 1.9rem; height: 1.9rem; color: var(--forest-deep); }
 @keyframes spin { to { transform: rotate(360deg); } }
 .enrichment-feature .program-copy { padding-top: clamp(20px, 3vw, 52px); }
-.t6-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-.t6-chips li { padding: 5px 12px; border-radius: 999px; background: var(--paper); font-size: .84rem; font-weight: 600; color: var(--forest); }
-.t6-chips li:first-child { background: var(--forest); color: var(--paper); }
-.t6-recipe { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 14px !important; font-family: var(--f-hand); font-size: 1.3rem; line-height: 1; color: var(--clay) !important; }
-.t6-recipe i { font-style: normal; color: var(--olive); }
-.t6-ing { display: inline-flex; align-items: center; gap: 6px; }
-.t6-ing svg { width: 34px; height: 34px; padding: 6px; border-radius: 50%; background: var(--paper); color: var(--forest); box-shadow: 0 4px 10px rgba(31, 42, 23, .1); }
-.t6-ing:nth-of-type(1) svg { rotate: -8deg; } .t6-ing:nth-of-type(3) svg { rotate: 10deg; color: var(--clay); }
-.t6-ing:nth-of-type(2) svg { color: var(--ochre); }
+.golf-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.golf-chips li { padding: 5px 12px; border-radius: 999px; background: var(--paper); font-size: .84rem; font-weight: 600; color: var(--forest); }
+.golf-chips li:first-child { background: var(--forest); color: var(--paper); }
+.golf-recipe { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 14px !important; font-family: var(--f-hand); font-size: 1.3rem; line-height: 1; color: var(--clay) !important; }
+.golf-recipe i { font-style: normal; color: var(--olive); }
+.golf-ing { display: inline-flex; align-items: center; gap: 6px; }
+.golf-ing svg { width: 34px; height: 34px; padding: 6px; border-radius: 50%; background: var(--paper); color: var(--forest); box-shadow: 0 4px 10px rgba(31, 42, 23, .1); }
+.golf-ing:nth-of-type(1) svg { rotate: -8deg; } .golf-ing:nth-of-type(3) svg { rotate: 10deg; color: var(--clay); }
+.golf-ing:nth-of-type(2) svg { color: var(--ochre); }
+
+/* "Coming soon": a marigold tag with a dashed edge, like a pencilled-in date */
+.soon-tag {
+  display: inline-block; margin-top: 8px; padding: 3px 11px 4px; border-radius: 999px;
+  background: rgba(242, 179, 61, .26); border: 1.5px dashed var(--ochre); color: var(--clay);
+  font-size: .74rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; line-height: 1.3;
+}
 
 /* Day cards with a calendar tab */
 .program-week { display: grid; gap: 14px; margin-top: 30px; }
@@ -499,28 +507,28 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 }
 @keyframes wiggle { 25% { transform: rotate(-12deg) scale(1.08); } 60% { transform: rotate(9deg) scale(1.08); } }
 
-/* Phones: a shorter T6 card */
+/* Phones: a shorter golf card */
 @media (max-width: 767px) {
-  .t6-photo { aspect-ratio: 2 / 1; }
+  .golf-photo { aspect-ratio: 2 / 1; }
   .enrichment-feature .program-copy { padding: 18px 18px 22px; }
   .program-copy h3 { font-size: 1.75rem; }
   .day-card > p:not(.cal-tab) { font-size: .95rem; line-height: 1.5; }
   .day-card-icon { width: 32px; height: 32px; right: 14px; top: 14px; }
   /* Badge sits inside the photo's top-right corner (clear of the club head
      and the gutter) with a shorter, larger ring text. */
-  .t6-badge { left: auto; right: 8px; top: 8px; width: 82px; height: 82px; rotate: 6deg; }
-  .t6-badge-core { font-size: 1.25rem; }
-  .t6-badge-ring .ring-long { display: none; }
-  .t6-badge-ring text { font-size: 16px; letter-spacing: .03em; }
+  .golf-badge { left: auto; right: 8px; top: 8px; width: 82px; height: 82px; rotate: 6deg; }
+  .golf-badge-core { width: 1.6rem; height: 1.6rem; }
+  .golf-badge-ring .ring-long { display: none; }
+  .golf-badge-ring text { font-size: 16px; letter-spacing: .03em; }
 }
-.t6-badge-ring .ring-short { display: none; }
-@media (max-width: 767px) { .t6-badge-ring .ring-short { display: inline; } }
+.golf-badge-ring .ring-short { display: none; }
+@media (max-width: 767px) { .golf-badge-ring .ring-short { display: inline; } }
 /* Small phones: each ingredient stacks icon over word so the recipe fits one line. */
 @media (max-width: 380px) {
-  .t6-recipe { flex-wrap: nowrap; align-items: flex-start; gap: 6px; font-size: 1.15rem; }
-  .t6-recipe i { align-self: center; margin-top: -14px; }
-  .t6-ing { flex-direction: column; gap: 4px; white-space: nowrap; }
-  .t6-ing svg { width: 30px; height: 30px; padding: 5px; }
+  .golf-recipe { flex-wrap: nowrap; align-items: flex-start; gap: 6px; font-size: 1.15rem; }
+  .golf-recipe i { align-self: center; margin-top: -14px; }
+  .golf-ing { flex-direction: column; gap: 4px; white-space: nowrap; }
+  .golf-ing svg { width: 30px; height: 30px; padding: 5px; }
 }
 /* Phones and tablets: the day cards swipe sideways (3 columns only from 1024px) */
 @media (max-width: 1023px) {
@@ -538,10 +546,10 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 @media (min-width: 1024px) { .day-dots { display: none; } }
 @media (min-width: 768px) {
   .enrichment-feature { grid-template-columns: 1.05fr 1fr; }
-  .t6-photo { aspect-ratio: auto; min-height: 100%; border-radius: var(--r-card) 0 0 var(--r-card); }
-  .t6-badge { width: 116px; height: 116px; left: -18px; top: -22px; }
-  .t6-badge-core { font-size: 1.7rem; }
-  .t6-putt { width: 46%; }
+  .golf-photo { aspect-ratio: auto; min-height: 100%; border-radius: var(--r-card) 0 0 var(--r-card); }
+  .golf-badge { width: 116px; height: 116px; left: -18px; top: -22px; }
+  .golf-badge-core { width: 2.4rem; height: 2.4rem; }
+  .golf-putt { width: 46%; }
 }
 @media (min-width: 1024px) {
   .program-week { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
@@ -549,7 +557,7 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 }
 
 /* Summer */
-.summer-card { background: var(--sky); }
+.summer-card { background: var(--door-summer); }
 .summer .program-copy { position: relative; }
 .summer-plane { position: absolute; right: clamp(8px, 2vw, 24px); top: clamp(6px, 1.6vw, 20px); width: clamp(110px, 16vw, 200px); height: auto; overflow: visible; pointer-events: none; }
 .plane-path { stroke: var(--olive); stroke-width: 2.2; stroke-dasharray: .1 8; stroke-linecap: round; opacity: .8; }
@@ -686,6 +694,7 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 }
 .path.is-active { border-color: var(--accent); box-shadow: 0 24px 60px rgba(31, 42, 23, .14); }
 .path-photo { position: relative; aspect-ratio: 16 / 10; overflow: hidden; }
+.path-stamp { position: absolute; z-index: 2; left: 14px; top: 14px; padding: 7px 13px 6px; border-width: 3px; font-size: .95rem; background: rgba(255, 253, 248, .95); }
 .path-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.25) contrast(.95); transform: scale(1.04); transition: filter .7s, transform 1s var(--ease-soft); }
 .path-studio .path-photo img { object-position: center 25%; }
 .path.is-active .path-photo img { filter: none; transform: scale(1); }
@@ -1430,7 +1439,7 @@ details[open] summary::after { transform: rotate(45deg); background: var(--marig
 
 /* Global "pause motion": stop decorative loops (WCAG 2.2.2). */
 .motion-paused .fb, .motion-paused .scroll-cue svg,
-.motion-paused .t6-badge-ring, .motion-paused .summer-sun svg { animation-play-state: paused !important; }
+.motion-paused .golf-badge-ring, .motion-paused .summer-sun svg { animation-play-state: paused !important; }
 .motion-paused .bubble-typing span { animation: none; }
 
 /* Manifesto highlight: a marigold underline that draws in on scroll. */

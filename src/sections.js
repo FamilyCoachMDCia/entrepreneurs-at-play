@@ -215,7 +215,7 @@ function nameEquation({ gsap, reduce }) {
 
 function programs(ctx) {
   dayStrip(ctx);
-  t6Card(ctx);
+  golfCard(ctx);
   summerCard(ctx);
   microschoolCard(ctx);
 }
@@ -261,7 +261,7 @@ function dayStrip({ reduce }) {
   update();
 }
 
-// A photo reveal shared by T6 and summer: a clip-path wipe, the photo settling
+// A photo reveal shared by golf and summer: a clip-path wipe, the photo settling
 // from a gentle zoom, then a slow parallax drift while it crosses the screen.
 function photoReveal(gsap, frame, img, tl, from) {
   tl.fromTo(frame, { clipPath: from }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'power3.inOut', clearProps: 'clipPath' }, 0)
@@ -272,13 +272,13 @@ function photoReveal(gsap, frame, img, tl, from) {
   });
 }
 
-function t6Card({ gsap, reduce }) {
-  const card = document.getElementById('t6');
+function golfCard({ gsap, reduce }) {
+  const card = document.getElementById('golf');
   if (!card) return;
   const week = gsap.utils.toArray('.day-card');
   if (reduce) return;
 
-  const photo = card.querySelector('.t6-photo');
+  const photo = card.querySelector('.golf-photo');
   const ball = card.querySelector('.putt-ball');
   const track = card.querySelector('.putt-path');
   const flag = card.querySelector('.putt-flag');
@@ -287,8 +287,8 @@ function t6Card({ gsap, reduce }) {
 
   const tl = gsap.timeline({ scrollTrigger: { trigger: card, start: 'top 75%', once: true } });
   photoReveal(gsap, photo, photo.querySelector('img'), tl, 'inset(0% 100% 0% 0%)');
-  tl.fromTo(card.querySelector('.t6-badge'), { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: 0.9, ease: 'back.out(2)', clearProps: 'transform' }, 0.45)
-    .fromTo(card.querySelectorAll('.t6-chips li'), { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.06, ease: 'power3.out', clearProps: CLEAR }, 0.4)
+  tl.fromTo(card.querySelector('.golf-badge'), { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: 0.9, ease: 'back.out(2)', clearProps: 'transform' }, 0.45)
+    .fromTo(card.querySelectorAll('.golf-chips li'), { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.06, ease: 'power3.out', clearProps: CLEAR }, 0.4)
     // The putt: flag pops up, the dotted line draws, the ball rolls in and drops.
     .from(card.querySelectorAll('.putt-pole, .putt-flag, .putt-hole'), { scaleY: 0, transformOrigin: '50% 100%', duration: 0.5, ease: 'back.out(2)' }, 0.8)
     .fromTo(card.querySelector('.putt-reveal'), { drawSVG: '0%' }, { drawSVG: '100%', duration: 1.1, ease: 'power1.inOut' }, 1)
@@ -407,7 +407,7 @@ const LEARNERS = {
   explorer: { title: 'The explorer', text: 'Afternoons out in Omaha: farms, college campuses, flight decks and nature, rain or shine.' },
   artist: { title: 'The artist', text: 'Music, choir, theater and art with local studios, plus world cuisines in the kitchen.' },
   thinker: { title: 'The deep thinker', text: 'Socratic reading groups, advanced academics at their own pace, and MAP Growth testing to prove it.' },
-  littlest: { title: 'The littlest one', text: 'The Hatch, from age 2: free play, sign language, gentle routines, and big kids from The Studio who mentor them every day.' },
+  littlest: { title: 'The littlest one', text: 'The Hatch, for ages 2–6, is coming soon: free play, sign language, gentle routines, and big kids from The Studio who mentor them. Join the list and we’ll share the details first.' },
 };
 
 function learner({ gsap, reduce, ScrollTrigger }) {

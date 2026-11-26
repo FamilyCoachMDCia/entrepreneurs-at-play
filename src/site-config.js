@@ -19,6 +19,8 @@ export const SITE = {
 // - open:      also open to other children after school (the marigold dot)
 // - sampleDay: the day "Follow the sun" walks through
 // - anchor:    the id of its card on /enrichment/
+// - soon:      not confirmed yet: cards show a "Coming soon" badge instead of the
+//              hours, the buttons read "Get updates" and the form says "coming soon"
 export const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 export const SCHEDULE = [
@@ -26,31 +28,31 @@ export const SCHEDULE = [
     key: 'arts', weekday: 'Monday', name: 'Fine arts', week: 'Fine arts', icon: 'i-artist', open: false,
   },
   {
-    key: 't6', weekday: 'Tuesday', name: 'T6 Golf & Finance', week: 'Golf & Finance', strip: 'T6', icon: 'd-flag', open: true,
-    anchor: 't6', hours: 'See dates and times',
+    key: 'golf', weekday: 'Tuesday', name: 'Golf · Tuesdays from Jan 5', title: 'Golf', chip: 'Golf', chipNote: 'Tuesdays from Jan 5', week: 'Golf', strip: 'Golf', icon: 'd-flag', open: true,
+    anchor: 'golf', hours: 'See dates and times', startsLine: 'Starts January 5',
   },
   // 14/11/2026, Dr. Che's voice note: the makerspace partners can host on
   // Wednesdays, so CREATE moves there and Thursday becomes Tech Thursday
   // (humane tech and the podcast). Golf stays on Tuesday.
   {
     key: 'create', weekday: 'Wednesday', name: 'CREATE', week: 'CREATE · Makerspace', icon: 'd-hammer', open: true,
-    anchor: 'enr-create', hours: '4–6 PM', tint: 'var(--tint-green)', tab: '#3B5E1A',
+    anchor: 'enr-create', hours: '4–6 PM', soon: true, tint: 'var(--tint-green)', tab: '#3B5E1A',
     title: 'CREATE: makerspace day',
-    blurb: 'Children make and test their own ideas in the makerspace: art, sewing, woodworking and engineering.',
-    ask: 'Ask about CREATE',
+    blurb: 'Children make and test their own ideas: art, sewing, woodworking and engineering, for example.',
+    ask: 'Get updates',
   },
   {
     key: 'podcast', weekday: 'Thursday', name: 'Podcasting', week: 'Tech Thursday · Podcast', icon: 'i-talker', open: true, sampleDay: true,
-    anchor: 'enr-podcast', hours: '4–5 PM', tint: 'var(--tint-sun)', tab: '#744A26',
+    anchor: 'enr-podcast', hours: '4–5 PM', soon: true, tint: 'var(--tint-sun)', tab: '#744A26',
     title: 'Tech Thursday: podcasting',
     blurb: 'Humane tech and our podcast. Children practice interviewing and speaking. In 3-3-3 LIFT, local business owners share lessons, setbacks, first steps and tips for grown-ups.',
-    ask: 'Ask about podcasting',
+    ask: 'Get updates',
   },
   {
     key: 'cuisine', weekday: 'Friday', name: 'Culture & Cuisine', week: 'Culture & Cuisine', icon: 'd-whisk', open: true,
-    anchor: 'enr-cuisine', hours: '4–6 PM', tint: 'var(--tint-clay)', tab: '#B8894C',
+    anchor: 'enr-cuisine', hours: '4–6 PM', soon: true, tint: 'var(--tint-clay)', tab: '#B8894C',
     blurb: 'Children cook together and explore the stories and traditions behind dishes from around the world.',
-    ask: 'Ask about Culture & Cuisine',
+    ask: 'Get updates',
   },
 ];
 

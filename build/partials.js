@@ -18,7 +18,7 @@ const use = (id) => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
 // Runs before the first paint: decides whether this page arrives under its
 // curtain, applies the background test (?paper=), the Summer color test
 // (?summer=yellow|brown|off).
-// The home hero child is enabled by default. Keep this script dependency-free.
+// The home hero child is enabled by default. Keep the head script dependency-free.
 const HEAD_SCRIPT = `<script>
 (function () {
   var h = document.documentElement, page = h.getAttribute('data-page');

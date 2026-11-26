@@ -212,7 +212,7 @@ export function initToys(stage, { compact = false, isPaused = () => false, reduc
     halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z;
     halfW = halfH * camera.aspect;
     const layout = compact ? layoutCompact : layoutDesktop;
-    // The canvas spans the entrance path. Keep the toys in their original area.
+    // Use the full canvas for the entrance while the toys stay on the right.
     const leftInset = Number.parseFloat(getComputedStyle(stage).getPropertyValue('--toy-area-left')) / 100 || 0;
     const playHalfW = halfW * (1 - leftInset);
     const playCenter = halfW * leftInset;

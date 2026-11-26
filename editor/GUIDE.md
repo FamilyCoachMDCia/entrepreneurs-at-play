@@ -5,7 +5,7 @@ When you press **Save**, the change goes live on the website in about 1 to 2 min
 
 ## 1. Sign in
 
-1. Open the editor: **[EDITOR LINK, to be added]**
+1. Open the editor: **[Open the EP editor](https://entrepreneurs-at-play-editor.vercel.app/keystatic)**
 2. Click **Sign in** and use the email you created your Keystatic account with.
 3. On the left you will see the pages: Home page, Enrichment, Summer, Microschool,
    Who we are, and "Whole site" and "Colors".

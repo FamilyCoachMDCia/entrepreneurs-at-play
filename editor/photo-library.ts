@@ -1,0 +1,37 @@
+// The photos already on the site (originals in img/, exported by tools/images.py
+// to public/img/<name>-sm.webp and -lg.webp). The editor offers them next to
+// "Upload a new photo". Keep this list in step with public/img when a library
+// photo is added by hand.
+export const PHOTO_LIBRARY: Array<{ value: string; label: string }> = [
+  { value: 'afternoon-making', label: 'Three children smiling at an outdoor table' },
+  { value: 'baking-licensed', label: 'Girl rolling out dough in a kitchen' },
+  { value: 'business-fair', label: 'Young entrepreneur at a business fair' },
+  { value: 'capitol', label: 'Toddler at the Nebraska State Capitol' },
+  { value: 'cooking', label: 'Children preparing food together' },
+  { value: 'cuisine', label: 'Culture and cuisine' },
+  { value: 'day-lunch', label: 'Two children eating sandwiches on the grass' },
+  { value: 'day-math', label: 'Children arranging colorful numbers' },
+  { value: 'day-mindful', label: 'Child sitting on a rug, mindfulness' },
+  { value: 'day-money', label: 'Child counting coins' },
+  { value: 'day-openmic', label: 'Child holding a microphone (portrait)' },
+  { value: 'day-prep', label: 'Two children writing in notebooks outdoors' },
+  { value: 'day-reading', label: 'Two children reading under a blanket fort' },
+  { value: 'day-uplift', label: 'Children celebrating with high fives' },
+  { value: 'flight', label: 'Children in a flight simulator' },
+  { value: 'garden', label: 'Garden' },
+  { value: 'golf', label: 'Golf club and ball on the green' },
+  { value: 'guitar', label: 'Acoustic guitar' },
+  { value: 'guitar-detail', label: 'Detail of an acoustic guitar' },
+  { value: 'hatch-blocks', label: 'Young child playing with wooden blocks' },
+  { value: 'hens', label: 'Child feeding hens on a grassy hill' },
+  { value: 'horse', label: 'Child with a white horse on a farm' },
+  { value: 'mentoring', label: 'Mentoring' },
+  { value: 'morning-discussion', label: 'Two children with a book at a desk' },
+  { value: 'nature-play', label: 'Child and a cat watching the sky' },
+  { value: 'podcast', label: 'Podcast microphone on a stand (portrait)' },
+  { value: 'speaking', label: 'Child speaking' },
+  { value: 'studio-making', label: 'Three children building robotics kits' },
+  { value: 'studio-robot', label: 'Robot built by children' },
+  { value: 'surprise', label: 'Surprise' },
+  { value: 'typewriter', label: 'Typewriter' },
+];

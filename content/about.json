@@ -1,0 +1,188 @@
+{
+  "lede": "Entrepreneurs at Play is a physician-founded enrichment program. Children learn through real-world experiences after school, at summer camp and in our mixed-age microschool.",
+  "beliefs": [
+    {
+      "title": "Children are capable and can lead",
+      "text": "Every child holds a treasure trove of creativity. Play, exploration, real-world experiences, failures and successes all bring it to life. When children own their learning, they own the results."
+    },
+    {
+      "title": "Learning is fastest when the whole child is involved",
+      "text": "The brain learns best by doing: hands busy, senses awake, heart engaged."
+    },
+    {
+      "title": "Real life is the curriculum",
+      "text": "Children learn to fix what breaks at home, adapt when plans fall apart, and pivot when things go awry."
+    },
+    {
+      "title": "Local collaboration is our teacher and our guide",
+      "text": "We work hand in hand with local businesses and institutions of excellence. Their people, their workplaces and their wisdom enrich everything our children learn."
+    },
+    {
+      "title": "Children can contribute now, at any age",
+      "text": "To their families, their neighborhoods and the world."
+    },
+    {
+      "title": "Our word matters",
+      "text": "Children learn to make promises and keep them, to do their work well, to treat people fairly and to be trustworthy. Every week they set goals, pledge them to a partner and follow through."
+    },
+    {
+      "title": "Failure is a teacher",
+      "text": "We don’t shield children from it; we help them learn from it and try again."
+    },
+    {
+      "title": "Friendships matter",
+      "text": "Children’s friendships are not trivial, and we nurture them. Friendship is where peace begins."
+    },
+    {
+      "title": "There is strength in diversity of thought and expression",
+      "text": "Loud or quiet, talkative or reflective, energetic or calm, each child’s nature is an asset to society, and that is reflected in how every child is treated at EP."
+    },
+    {
+      "title": "Civic responsibility is a core tenet",
+      "text": "Children learn to speak up, listen and serve the common good, in communication coaching, children’s Town Hall meetings, Model UN, our podcast and daily reflection."
+    },
+    {
+      "title": "We are a global village",
+      "text": "Children grow into good neighbors at home and good citizens of their communities and the world, with empathy for the whole human family."
+    },
+    {
+      "title": "School can spark joy",
+      "text": "Learning, even when it gets hard or dull, can bring flow, creativity and anticipation when it’s paired with exploration, purpose and real-world immersion."
+    }
+  ],
+  "create": [
+    {
+      "name": "Creativity & civility",
+      "text": "Bold ideas, civility nurtured."
+    },
+    {
+      "name": "Responsibility",
+      "text": "Owning their work and their word."
+    },
+    {
+      "name": "Engagement",
+      "text": "Hands on, minds on."
+    },
+    {
+      "name": "Agency",
+      "text": "Kids own their choices."
+    },
+    {
+      "name": "Teamwork",
+      "text": "Mixed-age kids, side by side."
+    },
+    {
+      "name": "Exploration",
+      "text": "Curiosity and wonder in the real world."
+    }
+  ],
+  "nineThings": [
+    {
+      "title": "Bringing the world to our city",
+      "text": "Through EP Model United Nations, kids 9 and up step into the shoes of world diplomats.",
+      "photo": {
+        "discriminant": "none"
+      },
+      "photoAlt": "",
+      "frontNote": "Model UN",
+      "story": "In Nebraska, Model United Nations has mostly lived on college campuses and at a high school conference. EP is bringing it to younger kids.",
+      "storyNote": "future diplomats"
+    },
+    {
+      "title": "Real-life entrepreneurship",
+      "text": "Kids learn the virtues of an entrepreneur through real-life practice: running a business and creating real solutions at home and in the world.",
+      "photo": {
+        "discriminant": "library",
+        "value": "business-fair"
+      },
+      "photoAlt": "A young entrepreneur explaining his product to a customer at a business fair",
+      "frontNote": "",
+      "story": "One of our young entrepreneurs at a real business fair: greeting customers, explaining his product, making the sale himself.",
+      "storyNote": "he did the math himself!"
+    },
+    {
+      "title": "Financial literacy",
+      "text": "Saving, spending and investing, learned by doing and by immersion.",
+      "photo": {
+        "discriminant": "none"
+      },
+      "photoAlt": "",
+      "frontNote": "save · spend · invest",
+      "story": "",
+      "storyNote": ""
+    },
+    {
+      "title": "Golf",
+      "text": "Weekly coaching builds focus, patience, honesty, self-control and the resilience to recover from a bad shot.",
+      "photo": {
+        "discriminant": "none"
+      },
+      "photoAlt": "",
+      "frontNote": "Tee time",
+      "story": "Golf builds focus, patience, honesty and self-control, and it’s a game they can share with mentors for life.",
+      "storyNote": "fore!"
+    },
+    {
+      "title": "Podcasting and communication",
+      "text": "Kids host their own podcast, interviewing local businesses and changemakers, and learn to use technology humanely.",
+      "photo": {
+        "discriminant": "none"
+      },
+      "photoAlt": "",
+      "frontNote": "On the mic",
+      "story": "Children interview local business owners, record their conversations and learn how an episode comes together.",
+      "storyNote": "on air!"
+    },
+    {
+      "title": "Making and building",
+      "text": "Practical life skills, from sewing and woodworking to prototyping their imaginations.",
+      "photo": {
+        "discriminant": "none"
+      },
+      "photoAlt": "",
+      "frontNote": "measure twice",
+      "story": "",
+      "storyNote": ""
+    },
+    {
+      "title": "Arts and humanities",
+      "text": "Art, music and theater, fully engaged, bringing out creativity and wonder without limits.",
+      "photo": {
+        "discriminant": "library",
+        "value": "guitar-detail"
+      },
+      "photoAlt": "Detail of an acoustic guitar",
+      "frontNote": "",
+      "story": "Children explore music, choir and theater through practice and performance.",
+      "storyNote": "first chords"
+    },
+    {
+      "title": "Culture and cuisine",
+      "text": "Children explore the world through food and immerse themselves in another language that day.",
+      "photo": {
+        "discriminant": "library",
+        "value": "baking-licensed"
+      },
+      "photoAlt": "A girl rolling out dough in a kitchen",
+      "frontNote": "",
+      "story": "Every dish comes with its own words, stories and manners. On {{cuisine_day}}s, Culture & Cuisine brings those traditions into the kitchen.",
+      "storyNote": "bon appétit!"
+    },
+    {
+      "title": "Nature and play",
+      "text": "Daily free play, plus intentional time in nature through our signature Heart and Soil program.",
+      "photo": {
+        "discriminant": "library",
+        "value": "nature-play"
+      },
+      "photoAlt": "A child and a cat watching the sky together in a field",
+      "frontNote": "",
+      "story": "Childhood is for getting your hands dirty and your mind inspired. Real work outdoors, rain or shine, builds grit.",
+      "storyNote": "under the open sky"
+    }
+  ],
+  "founder": {
+    "quote": "Childhood is not merely a holding space for adulthood. The time is now; the time is here; Entrepreneurs are at play.",
+    "bio": "My background informs my passion for raising resilient and capable kids who learn to harness the power of failure and success alike. Emotional health, calm guidance and character are built into every day, alongside rigorous academics."
+  }
+}

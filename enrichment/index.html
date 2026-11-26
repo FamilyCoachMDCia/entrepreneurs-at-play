@@ -22,14 +22,14 @@
       <div>
         <p class="eyebrow program-eyebrow"><span class="program-num" aria-hidden="true">01</span>Try it · After school in Omaha</p>
         <h1 class="h2" id="enrichment-title" data-split><em>Enrichment</em></h1>
-        <p class="sub">After-school sessions open to all kids. We start in January with golf on {{golf_day}}s. More afternoons are coming soon.</p>
+        <p class="sub">{{enrichment.intro}}</p>
       </div>
       <!-- Day strip: each pill jumps to (and highlights) that day's card (from SCHEDULE) -->
       <!--@day-strip-->
     </div>
     <article class="enrichment-feature" id="golf" aria-labelledby="golf-title">
       <figure class="golf-photo">
-        <img data-photo="golf" sizes="(max-width: 767px) 100vw, 640px" alt="A golf club and ball on the green" fetchpriority="high">
+        <img data-photo="{{photo:enrichment.golf.photo}}" sizes="(max-width: 767px) 100vw, 640px" alt="{{enrichment.golf.photoAlt}}" fetchpriority="high">
         <!-- A little putt rolls into the hole when the card comes into view -->
         <svg class="golf-putt" viewBox="0 0 300 110" aria-hidden="true">
           <defs><mask id="putt-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="300" height="110"><path class="putt-reveal" d="M22 86 C 80 58, 150 106, 246 90" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round"/></mask></defs>
@@ -45,15 +45,14 @@
         <svg class="golf-badge-core"><use href="#d-flag"/></svg>
       </div>
       <div class="program-copy">
-        <h3 id="golf-title">Golf &amp; Finance</h3>
+        <h3 id="golf-title">{{enrichment.golf.title}}</h3>
         <ul class="golf-chips">
-          <li>Ages 8–12</li><li>{{golf_day}}s</li><li>From Jan 5, 2027</li><li>Clubs provided</li>
+          <!--@golf-chips-->
         </ul>
         <dl class="golf-sessions">
-          <div><dt>January · Golf</dt><dd>Jan 5, 12, 19 &amp; 26 · 4–5 p.m.</dd><dd><a class="link" href="https://thebackninegolf.com/local/omahane/">The Back Nine</a></dd></div>
-          <div class="is-soon"><dt>February · Finance</dt><dd><span class="soon-tag">Coming soon</span></dd></div>
+          <!--@golf-sessions-->
         </dl>
-        <a class="btn btn-primary" href="#visit" data-program-cta="golf"><span>Request a golf spot</span><i class="btn-dot"></i></a>
+        <a class="btn btn-primary" href="#visit" data-program-cta="golf"><span>{{enrichment.golf.button}}</span><i class="btn-dot"></i></a>
       </div>
     </article>
     <!-- Day cards and dots (from SCHEDULE) -->

@@ -1,5 +1,5 @@
 import { currentPathway } from './pathways.js';
-import { SITE } from './site-config.js';
+import { SITE } from './site-facts.js';
 import { takeProgramChoice } from './transitions.js';
 
 // Chrome around the content: ticker, nav, menu, magnetic buttons,

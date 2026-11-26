@@ -1,0 +1,26 @@
+{
+  "name": "ep-editor",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/run.mjs dev",
+    "build": "astro build",
+    "preview": "node scripts/run.mjs preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/react": "7.1.9",
+    "@astrojs/vercel": "11.0.22",
+    "@keystatic/astro": "6.0.0",
+    "@keystatic/core": "0.6.10",
+    "astro": "7.4.13",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.3",
+    "@types/react-dom": "19.3.0",
+    "typescript": "5.9.3"
+  }
+}

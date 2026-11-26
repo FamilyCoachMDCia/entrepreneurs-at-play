@@ -1,0 +1,19 @@
+{
+  "tagline": "The world is our canvas, Play is our guide.",
+  "ticker": {
+    "golf": "Golf starts January 5 · Sign up now",
+    "afterSchool": "After-school enrichment in Omaha",
+    "microschool": "Microschool waitlist · Fall 2027"
+  },
+  "headerCta": {
+    "home": "Golf sign-up",
+    "enrichment": "Golf sign-up",
+    "summer": "Get summer updates",
+    "microschool": "Join the waitlist",
+    "about": "Contact us"
+  },
+  "footerLine": "Inspiring thinkers, crafting nation builders.",
+  "socials": {
+    "substack": "https://larisachemd.substack.com/"
+  }
+}

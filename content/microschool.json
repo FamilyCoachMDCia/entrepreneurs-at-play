@@ -1,0 +1,209 @@
+{
+  "intro": "Monday–Friday, 9 a.m.–4 p.m. Our spring beta opens {{opening_long}}. Older children mentor younger ones, and each child learns at their own pace. Families can request a place on the Fall 2027 waitlist.",
+  "hatch": {
+    "text": "Where it all starts: free and guided play, sign language, music, nature and gentle routines, with big kids as mentors.",
+    "words": [
+      "Play",
+      "Wonder",
+      "Grow"
+    ],
+    "comingSoon": true,
+    "soonNote": "The Hatch is coming soon. Join the list and we’ll share the details first.",
+    "button": "Get Hatch updates",
+    "photo": {
+      "discriminant": "library",
+      "value": "hatch-blocks"
+    },
+    "photoAlt": "A young child playing with wooden blocks"
+  },
+  "studio": {
+    "text": "Advanced academics every morning; real businesses, podcasts and adventures out in the community every afternoon.",
+    "words": [
+      "Build",
+      "Speak",
+      "Lead"
+    ],
+    "button": "Join The Studio waitlist",
+    "photo": {
+      "discriminant": "library",
+      "value": "studio-making"
+    },
+    "photoAlt": "Three children building robotics kits together at a table"
+  },
+  "morning": {
+    "text": "Children learn in small groups through Socratic discussions.",
+    "photo": {
+      "discriminant": "library",
+      "value": "morning-discussion"
+    },
+    "photoAlt": "Two children looking through a book together at a classroom desk"
+  },
+  "afternoon": {
+    "text": "Children build practical life skills through community projects. They start businesses and learn alongside experts.",
+    "photo": {
+      "discriminant": "library",
+      "value": "afternoon-making"
+    },
+    "photoAlt": "Three children smiling together at an outdoor table with snacks and lemonade"
+  },
+  "sampleDay": [
+    {
+      "time": "9:00",
+      "title": "Mindfulness and check-in",
+      "text": "A calm start together before the morning lessons.",
+      "photo": {
+        "discriminant": "library",
+        "value": "day-mindful"
+      },
+      "photoAlt": "A child sitting cross-legged on a rug with eyes closed during a mindfulness moment"
+    },
+    {
+      "time": "9:10",
+      "title": "Math and Me",
+      "text": "Small groups, each child at their own level.",
+      "photo": {
+        "discriminant": "library",
+        "value": "day-math"
+      },
+      "photoAlt": "Children arranging colorful numbers to practice math"
+    },
+    {
+      "time": "10:15",
+      "title": "Literature Is Lit",
+      "text": "Reading groups and Socratic questions: think, discuss, defend.",
+      "photo": {
+        "discriminant": "library",
+        "value": "day-reading"
+      },
+      "photoAlt": "Two children reading a book together under a blanket fort"
+    },
+    {
+      "time": "11:00",
+      "title": "Money and leadership",
+      "text": "Financial literacy, plus Model UN coaching for older learners.",
+      "photo": {
+        "discriminant": "library",
+        "value": "day-money"
+      },
+      "photoAlt": "A child counting and saving coins in a jar"
+    },
+    {
+      "time": "12:00",
+      "title": "Lunch and free play",
+      "text": "Time to eat, rest and play freely.",
+      "photo": {
+        "discriminant": "library",
+        "value": "day-lunch"
+      },
+      "photoAlt": "Two children eating sandwiches together on the grass"
+    },
+    {
+      "time": "1:00",
+      "title": "Podcast prep",
+      "text": "Children prepare questions and practice interviewing.",
+      "photo": {
+        "discriminant": "library",
+        "value": "day-prep"
+      },
+      "photoAlt": "Two children writing in their notebooks side by side outdoors"
+    },
+    {
+      "time": "2:30",
+      "title": "Take the mic",
+      "text": "Children interview a local business owner for 3-3-3 LIFT and record the conversation.",
+      "photo": {
+        "discriminant": "library",
+        "value": "podcast"
+      },
+      "photoAlt": "A podcast microphone on a stand"
+    },
+    {
+      "time": "3:30",
+      "title": "Group uplift",
+      "text": "We close the school day lifting each other up.",
+      "photo": {
+        "discriminant": "library",
+        "value": "day-uplift"
+      },
+      "photoAlt": "Children celebrating together with high fives"
+    },
+    {
+      "time": "4:00",
+      "title": "Open mic: friends join in",
+      "text": "Until 5 PM, children from other schools learn to podcast with us and add their voice to the episode.",
+      "photo": {
+        "discriminant": "library",
+        "value": "day-openmic"
+      },
+      "photoAlt": "A child holding a microphone at a community event"
+    }
+  ],
+  "subjects": [
+    {
+      "name": "Math and Me",
+      "area": "Mathematics",
+      "short": "Plant: Spring 2027",
+      "details": "Small groups, each child at their own level."
+    },
+    {
+      "name": "Literature Is Lit",
+      "area": "Language Arts and Literature",
+      "short": "Plant: Spring 2027",
+      "details": "Reading groups, essays and Socratic discussion."
+    },
+    {
+      "name": "Sciencey Stuff",
+      "area": "Science and Animal Studies",
+      "short": "Plant: Spring 2027",
+      "details": "Experiments, animals and how the world works."
+    },
+    {
+      "name": "Engage and Engineer",
+      "area": "Engineering and Design",
+      "short": "Plant: Spring 2027",
+      "details": "Builds, prototypes and hackathons."
+    },
+    {
+      "name": "Heart and Soil",
+      "area": "Nature, Mindfulness and SEL",
+      "short": "Plant: Spring 2027",
+      "details": "Outdoors, calm minds and emotional skills."
+    },
+    {
+      "name": "Finance Is Fun",
+      "area": "Finance and Entrepreneurship",
+      "short": "Plant: Spring 2027",
+      "details": "A student store and a stock market game."
+    },
+    {
+      "name": "Culture and Cuisine",
+      "area": "World Cultures, Languages and Life Skills",
+      "short": "Plant: Spring 2027",
+      "details": "French, ASL and cooking from around the world."
+    },
+    {
+      "name": "Soulful Sounds",
+      "area": "Arts, Theater, Music and Spirituality",
+      "short": "Plant: Spring 2027",
+      "details": "Music, choir, theater and reflection."
+    },
+    {
+      "name": "Humane Tech",
+      "area": "Technology and Media",
+      "short": "Plant: Spring 2027",
+      "details": "From the typewriter to the podcast studio."
+    },
+    {
+      "name": "Ubuntu",
+      "area": "Leadership and Self-Governance",
+      "short": "Plant: Spring 2027",
+      "details": "“I am because we are.”"
+    },
+    {
+      "name": "Play",
+      "area": "Guided and Free Play, Health and PE",
+      "short": "Plant: Spring 2027",
+      "details": "Every day, rain or shine."
+    }
+  ]
+}

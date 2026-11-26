@@ -1,0 +1,23 @@
+{
+  "hoursFrom": "9 a.m.",
+  "hoursTo": "3 p.m.",
+  "intro": "Planned camp hours are 9 a.m. to 3 p.m. Join our list for dates, ages and fees.",
+  "activities": [
+    {
+      "name": "Golf",
+      "text": "Practice your swing and explore how money works."
+    },
+    {
+      "name": "CREATE",
+      "text": "Design, build and test a hands-on project."
+    },
+    {
+      "name": "Podcasting",
+      "text": "Prepare questions and record an interview."
+    },
+    {
+      "name": "Culture & Cuisine",
+      "text": "Cook together and discover the culture behind each dish."
+    }
+  ]
+}

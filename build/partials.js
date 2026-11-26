@@ -4,8 +4,12 @@
 import { readFileSync } from 'node:fs';
 import { PAGES, PROGRAM_KEYS, curtainHTML } from '../src/pages.js';
 import { SITE, week, openDays } from '../src/site-config.js';
+import { content, esc, rich, safeUrl, themeSettings, SWATCHES, DOOR_DEFAULTS, BACKGROUNDS } from './content.js';
+import { photoName } from './photos.js';
 
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// The copy lives in content/*.json (see build/content.js).
+const { site, home, enrichment, summer, microschool, about } = content;
+const pad2 = (n) => String(n).padStart(2, '0');
 const cur = (on) => (on ? ' aria-current="page"' : '');
 const use = (id) => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
 
@@ -61,16 +65,46 @@ const OLD_ANCHORS = {
   why: '/about/#apart', apart: '/about/#apart', founder: '/#founder', familycoachmd: '/about/#familycoachmd',
 };
 
+/* ---------- Theme (content/theme.json: door colors and background) ---------- */
+
+// Attributes for <html>. Only what differs from the look in the CSS is written,
+// so the default theme adds nothing. data-bg reuses the ?paper= linen / milk variables.
+export function themeAttrs() {
+  const t = themeSettings();
+  return t.background !== 'cream' ? ` data-bg="${t.background}"` : '';
+}
+
+// Doors, menu blocks and cards painted Sun or Tan get data-tone="sun|tan": pages.css
+// then darkens their small text and accents (4.5:1). Other swatches need nothing.
+export function toneAttr(program) {
+  const id = themeSettings().doors[program];
+  return id === 'sun' || id === 'tan' ? ` data-tone="${id}"` : '';
+}
+// The card at the top of each program page (class -> program), for data-tone.
+export const TONE_CARDS = { 'enrichment-feature': 'enrichment', 'summer-card': 'summer', 'microschool-card': 'microschool' };
+
+// The door colors that are not the CSS default, as a <style> in the head.
+// `html:root` outranks main.css whatever the order; the Summer rule steps aside
+// while a ?summer= test is active.
+function themeStyle() {
+  const t = themeSettings();
+  const rules = [];
+  const vars = ['enrichment', 'microschool'].filter((k) => t.doors[k] !== DOOR_DEFAULTS[k]).map((k) => `--door-${k}: ${SWATCHES[t.doors[k]].hex}`);
+  if (vars.length) rules.push(`html:root { ${vars.join('; ')}; }`);
+  if (t.doors.summer !== DOOR_DEFAULTS.summer) rules.push(`html:root:not([data-summer]) { --door-summer: ${SWATCHES[t.doors.summer].hex}; }`);
+  return rules.length ? `<style id="theme">\n${rules.join('\n')}\n</style>\n` : '';
+}
+
 function head(key) {
   const p = PAGES[key];
   const url = SITE.url + p.path;
-  const ogTitle = key === 'home' ? 'Entrepreneurs at Play · The world is our canvas, Play is our guide.' : p.title;
+  const ogTitle = key === 'home' ? `Entrepreneurs at Play · ${site.tagline}` : p.title;
   return `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(p.title)}</title>
 <meta name="description" content="${esc(p.description)}">
 <link rel="canonical" href="${url}">
-<meta name="theme-color" content="#F6F2EA">
+<meta name="theme-color" content="${BACKGROUNDS[themeSettings().background].paper}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -85,7 +119,7 @@ function head(key) {
 <meta property="og:image:alt" content="Entrepreneurs at Play, a FamilyCoachMD program in Omaha">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${SITE.url}/og-image.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+${themeStyle()}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..800,0..100,0..1;1,9..144,400..800,0..100,0..1&display=swap">
 ${key === 'home' ? `<script>(function () { var id = location.hash.slice(1); if (id === 't' + 6) id = 'golf'; var to = ${JSON.stringify(OLD_ANCHORS)}[id]; if (to && to !== '/' + location.hash) location.replace(to); })();</script>\n` : ''}${HEAD_SCRIPT}${key === 'home' ? `
@@ -130,9 +164,9 @@ function siteHead(key) {
 <header class="site-head" id="site-head">
   <div class="ticker" role="region" aria-label="Announcements">
     <ul class="ticker-list">
-      <li><a href="/enrichment/#golf">Golf starts January 5 · Sign up now</a></li>
-      <li><a href="/enrichment/">After-school enrichment in Omaha</a></li>
-      <li><a href="/microschool/#visit" data-program-cta="microschool">Microschool waitlist · Fall 2027</a></li>
+      <li><a href="/enrichment/#golf">${esc(site.ticker.golf)}</a></li>
+      <li><a href="/enrichment/">${esc(site.ticker.afterSchool)}</a></li>
+      <li><a href="/microschool/#visit" data-program-cta="microschool">${esc(site.ticker.microschool)}</a></li>
     </ul>
     <button class="ticker-pause" type="button" aria-pressed="false" aria-label="Pause all motion"><span></span><span></span></button>
   </div>
@@ -192,7 +226,7 @@ function menu(key) {
   <div class="menu-group menu-group-main">
     <h2>Explore</h2>
     <ul class="menu-programs">
-      ${MENU_BLOCKS.map(([k, top, line, tint]) => `<li><a href="${PAGES[k].path}" style="--door: ${tint || PAGES[k].tint}"${cur(k === key)}><small aria-hidden="true">${top}</small><strong>${PAGES[k].name}</strong><span>${line}</span>${use('d-chev').replace('<svg', '<svg class="menu-go"')}</a></li>`).join('\n      ')}
+      ${MENU_BLOCKS.map(([k, top, line, tint]) => `<li><a href="${PAGES[k].path}" style="--door: ${tint || PAGES[k].tint}"${PROGRAM_KEYS.includes(k) ? toneAttr(k) : ''}${cur(k === key)}><small aria-hidden="true">${top}</small><strong>${PAGES[k].name}</strong><span>${line}</span>${use('d-chev').replace('<svg', '<svg class="menu-go"')}</a></li>`).join('\n      ')}
     </ul>
   </div>${here.length ? `
   <div class="menu-group">
@@ -234,7 +268,7 @@ function siteFoot(key) {
     <div class="foot-brand">
       <img src="/logo/familycoachmd-logo.svg" alt="FamilyCoachMD" width="240" height="79" loading="lazy">
       <p class="foot-word">Entrepreneurs <em>at Play</em></p>
-      <p>Inspiring thinkers, crafting nation builders.</p>
+      <p>${esc(site.footerLine)}</p>
     </div>
     <nav class="foot-links" aria-label="Footer">
       ${links.map(([href, label, k]) => `<a href="${href}"${cur(k === key)}>${label}</a>`).join('')}
@@ -247,7 +281,7 @@ function siteFoot(key) {
     </div>
   </div>
   <div class="wrap foot-bottom">
-    <p>© {{year}} Entrepreneurs at Play · FamilyCoachMD · “The world is our canvas, Play is our guide.”</p>
+    <p>© {{year}} Entrepreneurs at Play · FamilyCoachMD · “${esc(site.tagline)}”</p>
     <p>Site by <a href="https://www.haderach.com.br" rel="noopener">Haderach Solutions</a></p>
   </div>
 </footer>`;
@@ -263,26 +297,25 @@ function stickyCta(key) {
 
 /* ---------- Doors: the three programs ---------- */
 
+// Words come from content/home.json; the drawings and the "stamp" are code.
 const DOORS = {
   enrichment: {
-    line: 'After-school sessions open to all kids.', status: 'Golf starts Jan 5',
     art: `<svg class="door-art art-putt" viewBox="0 0 160 84" aria-hidden="true"><path class="art-track" d="M14 66 C 52 44, 92 80, 128 64"/><ellipse class="art-hole" cx="132" cy="65" rx="11" ry="3.5"/><path class="art-pole" d="M132 64 V 16"/><path class="art-flag" d="M132 17 C 141 19, 148 22, 158 24 C 149 28, 141 31, 132 34 z"/><circle class="art-ball" cx="14" cy="62" r="5.5"/></svg>`,
   },
   summer: {
-    line: 'Longer days of hands-on adventure.', status: 'Summer 2027',
     art: `<svg class="door-art art-sun" viewBox="0 0 160 84" aria-hidden="true"><path class="art-track" d="M10 80 C 40 6, 120 6, 150 80"/><g class="art-sunball" transform="translate(27 46)"><g class="art-rays"><path d="M0 -17v5M0 12v5M-17 0h5M12 0h5M-12 -12l3.5 3.5M8.5 8.5l3.5 3.5M-12 12l3.5 -3.5M8.5 -8.5l3.5 -3.5"/></g><circle r="9"/></g></svg>`,
   },
   microschool: {
-    line: 'Full days of experiential learning. Fall 2027 waitlist open.', status: 'At capacity', stamp: true,
+    stamp: true,
     art: `<svg class="door-art art-school" viewBox="0 0 160 84" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M35 74h92M48 72V42l32-26 32 26v30M39 46l41-34 41 34M73 73V54h14v19M56 50h9v10h-9zM95 50h9v10h-9z"/><circle cx="80" cy="36" r="6"/></svg>`,
   },
 };
 
 function door(k, { compact = false, label = '' } = {}) {
   const p = PAGES[k];
-  const d = DOORS[k];
+  const d = { ...DOORS[k], ...home.doors[k] };
   const kicker = label || p.kicker;
-  return `<a class="door door-${k}${compact ? ' door--compact' : ''}" href="${p.path}" data-door="${k}" style="--door: ${p.tint}" aria-label="${esc(`${p.name}: ${d.line} ${d.stamp ? 'Enrollment at capacity.' : `${d.status}.`}`)}">
+  return `<a class="door door-${k}${compact ? ' door--compact' : ''}" href="${p.path}" data-door="${k}"${toneAttr(k)} style="--door: ${p.tint}" aria-label="${esc(`${p.name}: ${d.line} ${d.stamp ? 'Enrollment at capacity.' : `${d.status}.`}`)}">
           <span class="door-inside" aria-hidden="true"><strong>${p.name}</strong></span>
           <span class="door-leaf">
             <span class="door-top"><span class="door-num">${p.num}</span><span class="door-status${d.stamp ? ' door-stamp' : ''}">${d.status}</span></span>
@@ -371,6 +404,8 @@ function weekRhythm() {
       </ul>`;
 }
 
+const SUMMER_ICONS = ['d-flag', 'd-hammer', 'i-talker', 'd-whisk']; // one per activity (code)
+
 function summerFavorites() {
   return `<!-- Summer takes the after-school favorites and gives them whole days -->
 <section class="summer-favorites" id="summer-favorites" aria-labelledby="favorites-title">
@@ -380,10 +415,7 @@ function summerFavorites() {
         <h2 class="h2" id="favorites-title">Summer <em>activities</em></h2>
       </div>
       <ul class="favorites-list">
-        <li><div><svg aria-hidden="true"><use href="#d-flag"/></svg><span>Golf</span><small>Practice your swing and explore how money works.</small></div></li>
-        <li><div><svg aria-hidden="true"><use href="#d-hammer"/></svg><span>CREATE</span><small>Design, build and test a hands-on project.</small></div></li>
-        <li><div><svg aria-hidden="true"><use href="#i-talker"/></svg><span>Podcasting</span><small>Prepare questions and record an interview.</small></div></li>
-        <li><div><svg aria-hidden="true"><use href="#d-whisk"/></svg><span>Culture &amp; Cuisine</span><small>Cook together and discover the culture behind each dish.</small></div></li>
+        ${summer.activities.map((a, i) => `<li><div><svg aria-hidden="true"><use href="#${SUMMER_ICONS[i]}"/></svg><span>${esc(a.name)}</span><small>${esc(a.text)}</small></div></li>`).join('\n        ')}
       </ul>
     </div>
   </div>
@@ -405,7 +437,7 @@ function nameStrip() {
         <span class="ns-op" aria-hidden="true">+</span><span class="sr-only">plus</span>
         <span class="ns-term ns-play">at <em>Play</em></span>
         <span class="ns-op" aria-hidden="true">=</span><span class="sr-only">equals</span>
-        <span class="ns-result">kids who are curious, bold and versatile, playing their way into real solutions.</span>
+        <span class="ns-result">${esc(home.nameStrip.result)}</span>
       </span>
       <span class="name-strip-detail">
           <span class="door-kicker">Our story</span>
@@ -429,10 +461,7 @@ function faqEnrichment() {
     <p class="eyebrow">Quick answers</p>
     <h2 class="h2" id="faq-title" data-split>Questions parents <em>ask</em></h2>
     <div class="faq-list">
-      <details><summary>What is EP?</summary><div class="faq-a"><p>Entrepreneurs at Play is a physician-founded program. It offers after-school enrichment, summer camp and a mixed-age microschool.</p></div></details>
-      <details><summary>Who can join after-school enrichment?</summary><div class="faq-a"><p>Children from local schools and homeschool families can join. Golf is for ages 8–12. Ask about ages and schedules for the other afternoons.</p></div></details>
-      <details><summary>Where?</summary><div class="faq-a"><p>EP is based in the Omaha metropolitan area. A Lincoln location is coming soon.</p></div></details>
-      <details><summary>How much does it cost?</summary><div class="faq-a"><p>Fees vary by program. <a class="link" href="mailto:{{email}}">Email us</a> for current fees.</p></div></details>
+      ${enrichment.faq.map((f) => `<details><summary>${esc(f.q)}</summary><div class="faq-a"><p>${rich(f.a)}</p></div></details>`).join('\n      ')}
     </div>
   </div>
 </section>`;
@@ -588,8 +617,8 @@ function founder(key) {
         <li>Certified Positive Discipline parent educator</li>
         <li>Mom</li>
       </ul>
-      <blockquote class="quote" data-lines>“Childhood is not merely a holding space for adulthood. The time is now; the time is here; Entrepreneurs are at play.”</blockquote>
-      <p>My background informs my passion for raising resilient and capable kids who learn to harness the power of failure and success alike. Emotional health, calm guidance and character are built into every day, alongside rigorous academics.</p>
+      <blockquote class="quote" data-lines>“${esc(about.founder.quote)}”</blockquote>
+      <p>${esc(about.founder.bio)}</p>
       <p class="signature">— Dr. Larisa Che</p>${key === 'home' ? `
       <p class="founder-more"><a class="link link-go" href="/about/">More about EP<svg aria-hidden="true"><use href="#d-chev"/></svg></a></p>` : ''}
       <!--social-links-->
@@ -624,7 +653,7 @@ function homeWeek() {
   <div class="wrap">
     <p class="eyebrow">A week at EP</p>
     <h2 class="h2" id="home-week-title" data-split>Something new <em>every afternoon.</em></h2>
-    <p class="sub">After school, children pick the afternoon they love. Golf opens in January; more afternoons are coming soon.</p>
+    <p class="sub">${esc(home.week.subtitle)}</p>
     <ol class="hw-list">
       ${week().map((d) => {
         const inner = `<svg class="hw-icon" aria-hidden="true"><use href="#${d.icon}"/></svg><b>${d.weekday}</b><strong>${esc(d.title || d.name)}</strong>${hwTime(d)}`;
@@ -638,13 +667,6 @@ function homeWeek() {
 </section>`;
 }
 
-const DATES = [
-  ['Jan 4', '2027', 'Our doors open', 'The spring semester begins in the Omaha area.', '/microschool/'],
-  ['Jan 5', '2027', 'Golf starts', 'Tuesday afternoons at The Back Nine.', '/enrichment/#golf'],
-  ['Summer', '2027', 'Summer camp', 'Longer days of building, cooking and projects together.', '/summer/'],
-  ['Fall', '2027', 'Microschool waitlist', 'Enrollment is at capacity. Join the waitlist.', '/microschool/#visit'],
-];
-
 function dates() {
   return `<!-- Dates to remember -->
 <section class="dates" aria-labelledby="dates-title">
@@ -652,10 +674,122 @@ function dates() {
     <p class="eyebrow">Mark your calendar</p>
     <h2 class="h2" id="dates-title" data-split>Dates to <em>remember.</em></h2>
     <ol class="date-list">
-      ${DATES.map(([d, y, t, p, href]) => `<li data-reveal><a href="${href}"><span class="date-chip"><b>${d}</b><small>${y}</small></span><span class="date-copy"><strong>${t}</strong><span>${p}</span></span><svg class="date-go" aria-hidden="true"><use href="#d-chev"/></svg></a></li>`).join('\n      ')}
+      ${home.dates.map((d) => `<li data-reveal><a href="${esc(safeUrl(d.link) || '/')}"><span class="date-chip"><b>${esc(d.date)}</b><small>${esc(d.year)}</small></span><span class="date-copy"><strong>${esc(d.title)}</strong><span>${esc(d.text)}</span></span><svg class="date-go" aria-hidden="true"><use href="#d-chev"/></svg></a></li>`).join('\n      ')}
     </ol>
   </div>
 </section>`;
+}
+
+/* ---------- Enrichment: the golf block ---------- */
+
+function golfChips() {
+  return enrichment.golf.chips.map((c) => `<li>${esc(c)}</li>`).join('');
+}
+
+function golfSessions() {
+  return enrichment.golf.sessions.map((s) => {
+    if (s.comingSoon) return `<div class="is-soon"><dt>${esc(s.month)}</dt><dd><span class="soon-tag">Coming soon</span></dd></div>`;
+    const url = safeUrl(s.placeLink);
+    const place = s.place ? `<dd>${url ? `<a class="link" href="${esc(url)}">${esc(s.place)}</a>` : esc(s.place)}</dd>` : '';
+    return `<div><dt>${esc(s.month)}</dt>${s.dates ? `<dd>${esc(s.dates)}</dd>` : ''}${place}</div>`;
+  }).join('\n          ');
+}
+
+/* ---------- Microschool ---------- */
+
+// The two pathways: words, "coming soon" pieces.
+function pathWords(key, arg) {
+  const words = microschool[arg].words;
+  const label = words.map((w, i) => (i ? w.toLowerCase() : w)).join(', ');
+  return `<ul class="path-words" aria-label="${esc(label)}">${words.map((w) => `<li>${esc(w)}</li>`).join('')}</ul>`;
+}
+const hatchStamp = () => (microschool.hatch.comingSoon ? '<p class="eyebrow stamp path-stamp">Coming soon</p>' : '');
+const hatchSoonNote = () => (microschool.hatch.comingSoon && microschool.hatch.soonNote ? `<p class="path-soon">${esc(microschool.hatch.soonNote)}</p>` : '');
+
+// Photos whose crop needs a nudge, and the narrow ones that stay at 60vw (see main.css).
+const DAY_PHOTO_CLASS = { 'day-prep': 'day-prep-photo', 'day-openmic': 'day-openmic-photo' };
+const DAY_PHOTO_NARROW = new Set(['day-money', 'podcast']);
+
+function sampleDaySteps() {
+  return microschool.sampleDay.map((s) => {
+    const name = photoName(s.photo);
+    const cls = DAY_PHOTO_CLASS[name] ? ` class="${DAY_PHOTO_CLASS[name]}"` : '';
+    const sizes = DAY_PHOTO_NARROW.has(name) ? '60vw' : '100vw';
+    return `<li><time>${esc(s.time)}</time><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p><img data-photo="${name}"${cls} sizes="(max-width: 767px) ${sizes}, 420px" alt="${esc(s.photoAlt)}" loading="lazy"></li>`;
+  }).join('\n          ');
+}
+
+// One icon per subject; the seventh also shows a photo on its back (code).
+const SUBJECT_ICONS = ['i-builder', 'i-thinker', 'd-sparkle', 'd-plane', 'd-leaf', 'p-chart', 'i-explorer', 'i-artist', 'i-talker', 'p-adults', 'd-sun'];
+const SUBJECT_PHOTO = { 6: { name: 'cuisine' } };
+
+function subjects() {
+  return microschool.subjects.map((s, i) => {
+    const n = i + 1;
+    const photo = SUBJECT_PHOTO[i];
+    const back = photo
+      ? `<div class="packet-back packet-back-photo" id="pk-${n}" aria-hidden="true" inert>
+            <img data-photo="${photo.name}" sizes="(max-width: 767px) 50vw, 300px" alt="" loading="lazy">
+            <strong>${esc(s.area)}</strong>
+            <span>${esc(s.details)}</span>
+          </div>`
+      : `<div class="packet-back" id="pk-${n}" aria-hidden="true" inert><strong>${esc(s.area)}</strong><span>${esc(s.details)}</span></div>`;
+    return `<li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-n" aria-hidden="true">${pad2(n)}</span><svg aria-hidden="true"><use href="#${SUBJECT_ICONS[i]}"/></svg><strong>${esc(s.name)}</strong><small>${esc(s.short)}</small></div>
+          ${back}
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="pk-${n}"><span class="sr-only">${esc(s.name)}: show details</span></button>
+      </li>`;
+  }).join('\n      ');
+}
+
+/* ---------- Who we are ---------- */
+
+function beliefs() {
+  return about.beliefs.map((b, i) => `<li class="belief" data-reveal><span class="belief-n" aria-hidden="true">${pad2(i + 1)}</span><h3>${esc(b.title)}</h3><p>${esc(b.text)}</p></li>`).join('\n      ');
+}
+
+// CREATE: the first letter of each word is the letter on the packet. The home
+// hero cycles through the same six words.
+function createPackets() {
+  return about.create.map((c, i) => `<li class="packet">
+        <div class="packet-card">
+          <div class="packet-front"><span class="packet-letter" aria-hidden="true">${esc(c.name.charAt(0).toUpperCase())}</span><strong>${esc(c.name)}</strong></div>
+          <div class="packet-back" id="cr-${i + 1}" aria-hidden="true" inert><strong>${esc(c.name)}</strong><span>${esc(c.text)}</span></div>
+        </div>
+        <button class="packet-toggle" type="button" aria-expanded="false" aria-controls="cr-${i + 1}"><span class="sr-only">${esc(c.name.replace(/&/g, 'and'))}: show details</span></button>
+      </li>`).join('\n      ');
+}
+const rotWords = () => about.create.map((c) => `<span class="rot-word">${esc(c.name)}</span>`).join('');
+const rotSr = () => `${esc(about.create.map((c) => c.name).join(', '))}.`;
+
+// The nine cards. A card with a photo shows it; without one it shows a doodle
+// (icon and tint by position, code). The story on the back is optional.
+const NINE_ART = [['i-explorer', 'green'], ['d-sparkle', 'green'], ['d-coin', 'sun'], ['d-flag', 'green'], ['i-talker', 'green'], ['d-hammer', 'green'], ['d-sparkle', 'green'], ['d-sparkle', 'green'], ['d-sparkle', 'green']];
+const NINE_STICKERS = [null, 'sparkle', null, null, 'star', null, null, null, 'sun'];
+
+function nineThings() {
+  return about.nineThings.map((c, i) => {
+    const n = i + 1;
+    const name = photoName(c.photo);
+    const [icon, tint] = NINE_ART[i];
+    const front = name
+      ? `<figure class="card-front"><img data-photo="${name}" sizes="(max-width: 767px) 78vw, 380px" alt="${esc(c.photoAlt || '')}" loading="lazy"></figure>`
+      : `<div class="card-front card-art" style="--art: var(--tint-${tint})" aria-hidden="true"><svg><use href="#${icon}"/></svg><span class="doodle-note">${esc(c.frontNote || '')}</span></div>`;
+    const back = c.story
+      ? `
+          <div class="card-back" id="story-${n}" aria-hidden="true" inert><p>${esc(c.story)}</p><span class="doodle-note">${esc(c.storyNote || '')}</span></div>
+          <button class="cam" type="button" aria-expanded="false" aria-controls="story-${n}" aria-label="Read the story behind this card"><svg aria-hidden="true"><use href="#d-camera"/></svg></button>`
+      : '';
+    const sticker = NINE_STICKERS[i] ? ` data-sticker="${NINE_STICKERS[i]}"` : '';
+    return `<li class="card"${sticker}>
+        <div class="card-inner">
+          ${front}${back}
+        </div>
+        <span class="card-num">${pad2(n)}</span><h3>${esc(c.title)}</h3><p>${esc(c.text)}</p>
+      </li>`;
+  }).join('\n      ');
 }
 
 /* ---------- Registry ---------- */
@@ -665,11 +799,16 @@ const PARTIALS = {
   doors, 'next-step': nextStep, 'name-strip': nameStrip, contact, founder, manifesto, 'home-week': homeWeek, dates,
   'day-strip': dayStrip, 'day-cards': dayCards, 'week-rhythm': weekRhythm,
   'summer-favorites': summerFavorites, 'faq-enrichment': faqEnrichment,
+  'golf-chips': golfChips, 'golf-sessions': golfSessions,
+  'path-words': pathWords, 'hatch-stamp': hatchStamp, 'hatch-soon-note': hatchSoonNote,
+  'sample-day-steps': sampleDaySteps, subjects,
+  beliefs, 'create-packets': createPackets, 'rot-words': rotWords, 'rot-sr': rotSr, 'nine-things': nineThings,
 };
 
-export function renderPartial(name, key) {
+// <!--@name--> or <!--@name:arg--> (the argument picks a variant, e.g. path-words:hatch).
+export function renderPartial(name, key, arg) {
   const fn = PARTIALS[name];
   if (!fn) throw new Error(`Unknown partial: <!--@${name}--> in page "${key}"`);
   if (!PAGES[key]) throw new Error(`Unknown page: ${key}`);
-  return fn(key);
+  return fn(key, arg);
 }

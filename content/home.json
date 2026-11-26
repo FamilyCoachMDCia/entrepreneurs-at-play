@@ -1,0 +1,56 @@
+{
+  "heroLede": "A physician-founded enrichment program where children build practical life skills through play and real-world experiences, locally and globally. Here, learning is lifelong, meaningful and joyful.",
+  "doors": {
+    "enrichment": {
+      "kicker": "Try it",
+      "line": "After-school sessions open to all kids.",
+      "status": "Golf starts Jan 5"
+    },
+    "summer": {
+      "kicker": "Go deeper",
+      "line": "Longer days of hands-on adventure.",
+      "status": "Summer 2027"
+    },
+    "microschool": {
+      "kicker": "All in",
+      "line": "Full days of experiential learning. Fall 2027 waitlist open.",
+      "status": "At capacity"
+    }
+  },
+  "nameStrip": {
+    "result": "kids who are curious, bold and versatile, playing their way into real solutions."
+  },
+  "week": {
+    "subtitle": "After school, children pick the afternoon they love. Golf opens in January; more afternoons are coming soon."
+  },
+  "dates": [
+    {
+      "date": "Jan 4",
+      "year": "2027",
+      "title": "Our doors open",
+      "text": "The spring semester begins in the Omaha area.",
+      "link": "/microschool/"
+    },
+    {
+      "date": "Jan 5",
+      "year": "2027",
+      "title": "Golf starts",
+      "text": "Tuesday afternoons at The Back Nine.",
+      "link": "/enrichment/#golf"
+    },
+    {
+      "date": "Summer",
+      "year": "2027",
+      "title": "Summer camp",
+      "text": "Longer days of building, cooking and projects together.",
+      "link": "/summer/"
+    },
+    {
+      "date": "Fall",
+      "year": "2027",
+      "title": "Microschool waitlist",
+      "text": "Enrollment is at capacity. Join the waitlist.",
+      "link": "/microschool/#visit"
+    }
+  ]
+}

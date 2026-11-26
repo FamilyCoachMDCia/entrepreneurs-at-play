@@ -4,7 +4,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "photos": "node tools/build-photos.mjs",
+    "predev": "node tools/build-photos.mjs",
     "dev": "vite",
+    "prebuild": "node tools/build-photos.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -14,6 +17,7 @@
     "three": "0.170.0"
   },
   "devDependencies": {
+    "sharp": "0.35.5",
     "vite": "6.3.5"
   }
 }

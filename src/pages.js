@@ -1,6 +1,12 @@
 // The five pages of the site. Shared by the build (vite.config.js and
 // build/partials.js) and the browser (transitions.js), so the curtain a page
 // leaves with is the same one the next page arrives under.
+//
+// The header button labels and the door kickers are copy (content/site.json and
+// content/home.json); the door colors are tokens (--door-<program>, main.css) so
+// the editor's color choice reaches every door, the menu and the curtain.
+import { headerCta } from '../content/site.json';
+import { doors } from '../content/home.json';
 
 export const PAGES = {
   home: {
@@ -10,37 +16,37 @@ export const PAGES = {
     tint: 'var(--paper)',
     title: 'Entrepreneurs at Play · Enrichment, summer camp and microschool in Omaha',
     description: 'A physician-founded enrichment center in Omaha offering after-school enrichment, summer camp and a mixed-age microschool.',
-    cta: { label: 'Golf sign-up', program: 'golf' },
+    cta: { label: headerCta.home, program: 'golf' },
   },
   enrichment: {
     path: '/enrichment/',
     num: '01',
-    kicker: 'Try it',
+    kicker: doors.enrichment.kicker,
     name: 'Enrichment',
-    tint: 'var(--tint-sand)',
+    tint: 'var(--door-enrichment)',
     title: 'After-school enrichment in Omaha · Entrepreneurs at Play',
     description: 'After-school enrichment in Omaha. Golf starts January 5. More afternoons coming soon. Open to all kids.',
-    cta: { label: 'Golf sign-up', program: 'golf' },
+    cta: { label: headerCta.enrichment, program: 'golf' },
   },
   summer: {
     path: '/summer/',
     num: '02',
-    kicker: 'Go deeper',
+    kicker: doors.summer.kicker,
     name: 'Summer',
     tint: 'var(--door-summer)',
     title: 'Summer camp in Omaha · Entrepreneurs at Play',
     description: 'Longer days of hands-on adventure, 9 a.m. to 3 p.m. Get summer 2027 updates from Entrepreneurs at Play.',
-    cta: { label: 'Get summer updates', program: 'summer' },
+    cta: { label: headerCta.summer, program: 'summer' },
   },
   microschool: {
     path: '/microschool/',
     num: '03',
-    kicker: 'All in',
+    kicker: doors.microschool.kicker,
     name: 'Microschool',
-    tint: 'var(--tint-green)',
+    tint: 'var(--door-microschool)',
     title: 'Microschool in Omaha, ages 2–12 · Entrepreneurs at Play',
     description: 'A mixed-age microschool with two pathways, The Hatch and The Studio. Join the Fall 2027 waitlist.',
-    cta: { label: 'Join the waitlist', program: 'microschool' },
+    cta: { label: headerCta.microschool, program: 'microschool' },
   },
   about: {
     path: '/about/',
@@ -49,7 +55,7 @@ export const PAGES = {
     tint: 'var(--paper-2)',
     title: 'Who we are · Entrepreneurs at Play',
     description: 'Why we are called Entrepreneurs at Play, what we believe, and the physician who founded it.',
-    cta: { label: 'Contact us', program: 'general' },
+    cta: { label: headerCta.about, program: 'general' },
   },
 };
 

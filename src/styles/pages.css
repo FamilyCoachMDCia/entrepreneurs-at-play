@@ -96,7 +96,7 @@ html.is-leaving body { pointer-events: none; }
   line-height: 1.3; color: var(--forest); white-space: nowrap;
 }
 .door-stamp {
-  background: transparent; border: 2px solid #9C3D22; border-radius: 6px; color: #9C3D22; rotate: -4deg;
+  background: transparent; border: 2px solid var(--stamp-ink, #9C3D22); border-radius: 6px; color: var(--stamp-ink, #9C3D22); rotate: -4deg;
   font-size: .66rem; letter-spacing: .14em; text-transform: uppercase;
 }
 .door-kicker { margin-top: 18px; font-family: var(--f-hand); font-size: 1.4rem; line-height: 1; color: var(--clay); }
@@ -441,19 +441,22 @@ html.has-subnav main [id] { scroll-margin-top: calc(var(--nav-h) + 64px); }
 /* ---------- Footer ---------- */
 .foot-links a[aria-current="page"] { color: var(--forest); font-weight: 700; }
 
-/* ---------- Lighter background test (?paper=linen | ?paper=milk | ?paper=off) ---------- */
-html[data-paper="linen"] {
+/* ---------- Background: lighter variants ----------
+   Test: ?paper=linen | ?paper=milk | ?paper=off (kept for the session).
+   Site setting: content/theme.json -> the build writes data-bg="linen|milk" on <html>
+   (the cream default writes nothing). A test in progress wins over the setting. */
+html[data-paper="linen"], html[data-bg="linen"]:not([data-paper]) {
   --paper: #FAF8F3; --paper-2: #F2EDE2; --tint-2: rgba(217, 203, 176, .22);
   --grid-ink: rgba(107, 112, 85, .07);
   --tint-sand: #F6EEDF; --tint-dusk: #F7EBD3; --tint-dawn: #FCF6E6; --card-paper: #FFFEFB;
 }
-html[data-paper="milk"] {
+html[data-paper="milk"], html[data-bg="milk"]:not([data-paper]) {
   --paper: #FDFCF9; --paper-2: #F5F1E8; --tint-2: rgba(217, 203, 176, .16);
   --grid-ink: rgba(107, 112, 85, .055);
   --tint-sand: #F8F2E6; --tint-sun: #FAEDCF; --tint-green: #EDF3E6; --tint-clay: #F7ECE2;
   --tint-dusk: #F9EFDB; --tint-dawn: #FDF8EA; --card-paper: #FFFFFF;
 }
-html[data-paper] .grain { opacity: .02; }
+html[data-paper] .grain, html[data-bg] .grain { opacity: .02; }
 
 /* ---------- Summer color proofs (?summer=yellow | ?summer=brown | ?summer=off) ----------
    --door-summer (main.css) paints the Summer door, card, menu block and curtain.
@@ -472,7 +475,23 @@ html[data-summer] .summer-card .program-copy p:not(.eyebrow) { color: var(--summ
 html[data-summer="brown"] .door-summer .art-sunball circle { fill: var(--marigold); stroke: #744A26; stroke-width: 2; }
 html[data-summer="brown"] .door-summer .art-rays path, html[data-summer="brown"] .door-summer .art-track { stroke: #744A26; opacity: 1; }
 html[data-summer] .summer-card .eyebrow { color: var(--summer-accent-text); }
-html[data-paper] body { background-color: var(--paper); }
+html[data-paper] body, html[data-bg] body { background-color: var(--paper); }
+
+/* ---------- Sun and Tan on any door (content/theme.json) ----------
+   The build writes data-tone="sun|tan" on the doors, menu blocks and top cards painted
+   with that swatch. Inside, the small-text colors are redefined (so every rule that uses
+   them follows), checked at 4.5:1 on the swatch:
+   Sun  #F6DFA0: --olive/--clay #7A5714 5.0, --ink-soft 6.6, --forest 5.7
+   Tan  #D2B48C: --olive/--clay #5E3A1C 5.1, --ink-soft = ink 7.8, --forest #2F4C14 4.9, stamp #7A2A12 4.9
+   --ochre (big numerals and the dash in the camp hours, 3:1 for large text) is the accent: Sun #946A1F 3.7, Tan #744A26 3.9. */
+[data-tone="sun"] { --ochre: #946A1F; --olive: #7A5714; --clay: #7A5714; }
+[data-tone="tan"] { --ochre: #744A26; --olive: #5E3A1C; --clay: #5E3A1C; --ink-soft: var(--ink); --forest: #2F4C14; --stamp-ink: #7A2A12; }
+[data-tone] .door-status:not(.door-stamp) { box-shadow: inset 0 0 0 1.5px var(--ochre); }
+.menu-programs a[data-tone] small { color: var(--olive); }
+/* The drawings: the sun and its rays, the dotted paths, get an outline that shows on the swatch */
+[data-tone] .art-sunball circle { stroke: var(--clay); stroke-width: 2; }
+[data-tone] .art-rays path, [data-tone] .art-track { stroke: var(--clay); opacity: 1; }
+[data-tone] .art-sunball circle { fill: var(--marigold); }
 
 /* ---------- Who we are: what we believe ---------- */
 .beliefs { padding: clamp(36px, 5vw, 72px) 0 clamp(48px, 7vw, 100px); }

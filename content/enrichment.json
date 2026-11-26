@@ -1,0 +1,89 @@
+{
+  "intro": "After-school sessions open to all kids. We start in January with golf on {{golf_day}}s. More afternoons are coming soon.",
+  "golf": {
+    "title": "Golf & Finance",
+    "chips": [
+      "Ages 8–12",
+      "{{golf_day}}s",
+      "From Jan 5, 2027",
+      "Clubs provided"
+    ],
+    "sessions": [
+      {
+        "month": "January · Golf",
+        "dates": "Jan 5, 12, 19 & 26 · 4–5 p.m.",
+        "place": "The Back Nine",
+        "placeLink": "https://thebackninegolf.com/local/omahane/",
+        "comingSoon": false
+      },
+      {
+        "month": "February · Finance",
+        "comingSoon": true
+      }
+    ],
+    "button": "Request a golf spot",
+    "photo": {
+      "discriminant": "library",
+      "value": "golf"
+    },
+    "photoAlt": "A golf club and ball on the green"
+  },
+  "afternoons": {
+    "arts": {
+      "name": "Fine arts",
+      "weekLabel": "Fine arts"
+    },
+    "golf": {
+      "name": "Golf · Tuesdays from Jan 5",
+      "title": "Golf",
+      "weekLabel": "Golf",
+      "chipNote": "Tuesdays from Jan 5",
+      "startsLine": "Starts January 5"
+    },
+    "create": {
+      "name": "CREATE",
+      "weekLabel": "CREATE · Makerspace",
+      "title": "CREATE: makerspace day",
+      "blurb": "Children make and test their own ideas: art, sewing, woodworking and engineering, for example.",
+      "hours": "4–6 PM",
+      "comingSoon": true,
+      "ask": "Get updates"
+    },
+    "podcast": {
+      "name": "Podcasting",
+      "weekLabel": "Tech Thursday · Podcast",
+      "title": "Tech Thursday: podcasting",
+      "blurb": "Humane tech and our podcast. Children practice interviewing and speaking. In 3-3-3 LIFT, local business owners share lessons, setbacks, first steps and tips for grown-ups.",
+      "hours": "4–5 PM",
+      "comingSoon": true,
+      "ask": "Get updates"
+    },
+    "cuisine": {
+      "name": "Culture & Cuisine",
+      "weekLabel": "Culture & Cuisine",
+      "title": "",
+      "blurb": "Children cook together and explore the stories and traditions behind dishes from around the world.",
+      "hours": "4–6 PM",
+      "comingSoon": true,
+      "ask": "Get updates"
+    }
+  },
+  "faq": [
+    {
+      "q": "What is EP?",
+      "a": "Entrepreneurs at Play is a physician-founded program. It offers after-school enrichment, summer camp and a mixed-age microschool."
+    },
+    {
+      "q": "Who can join after-school enrichment?",
+      "a": "Children from local schools and homeschool families can join. Golf is for ages 8–12. Ask about ages and schedules for the other afternoons."
+    },
+    {
+      "q": "Where?",
+      "a": "EP is based in the Omaha metropolitan area. A Lincoln location is coming soon."
+    },
+    {
+      "q": "How much does it cost?",
+      "a": "Fees vary by program. [Email us](mailto:{{email}}) for current fees."
+    }
+  ]
+}

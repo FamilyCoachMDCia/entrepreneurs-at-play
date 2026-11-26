@@ -180,8 +180,8 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
   background-size: var(--grid-size) var(--grid-size);
 }
 .loader-inner { display: grid; justify-items: center; gap: 14px; width: min(86vw, 640px); text-align: center; }
-.loader-mark { height: 117px; width: auto; aspect-ratio: 216 / 256; overflow: visible; margin-bottom: 8px; }
-@media (min-width: 768px) { .loader-mark { height: 150px; margin-bottom: 14px; } }
+.loader-mark { height: 140px; width: auto; aspect-ratio: 216 / 256; overflow: visible; margin-bottom: 8px; }
+@media (min-width: 768px) { .loader-mark { height: 175px; margin-bottom: 14px; } }
 /* Start states: the script (loader.js) animates them in; hidden until then. */
 .lm-arch { stroke-dasharray: 1 2; stroke-dashoffset: 1; }
 .lm-full, .lm-sun, .lm-ray { opacity: 0; }
@@ -227,12 +227,12 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 }
 .site-head.is-scrolled .nav { border-bottom-color: var(--line); }
 .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: auto; }
-.nav-mark { width: 38px; height: 38px; flex: none; }
+.nav-mark { width: 48px; height: 48px; flex: none; }
 .nav-word { font-family: var(--f-display); font-weight: 600; font-size: 1.15rem; line-height: 1; letter-spacing: -.01em; }
 /* Phones: a slimmer header leaves more of the screen to the page. */
 @media (max-width: 767px) {
   :root { --nav-h: 56px; }
-  .nav-mark { width: 32px; height: 32px; }
+  .nav-mark { width: 42px; height: 42px; }
   .nav-word { font-size: 1rem; }
 }
 .nav-links { display: none; align-items: center; gap: clamp(14px, 1.35vw, 28px); white-space: nowrap; }
@@ -1395,7 +1395,7 @@ details[open] summary::after { transform: rotate(45deg); background: var(--marig
 /* ---------- Footer ---------- */
 .foot { padding: 64px 0 28px; }
 .foot-grid { display: grid; gap: 36px; }
-.foot-brand .foot-mark { width: 60px; height: 60px; margin-bottom: 12px; }
+.foot-brand .foot-mark { width: 92px; height: 92px; margin-bottom: 12px; }
 .foot-word { font-family: var(--f-display); font-weight: 600; font-size: 1.6rem; line-height: 1.1; margin-bottom: 6px; }
 .foot-brand p:last-child, .foot-contact { color: var(--ink-soft); }
 .foot-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }

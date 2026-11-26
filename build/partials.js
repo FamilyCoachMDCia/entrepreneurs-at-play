@@ -17,7 +17,7 @@ const use = (id) => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
 
 // Runs before the first paint: decides whether this page arrives under its
 // curtain, applies the background test (?paper=), the Summer color test
-// (?summer=yellow|brown|off) and the header mark test (?mark=arch|off).
+// (?summer=yellow|brown|off).
 // The home hero child is enabled by default. Keep this script dependency-free.
 const HEAD_SCRIPT = `<script>
 (function () {
@@ -45,10 +45,6 @@ const HEAD_SCRIPT = `<script>
     if (s) sessionStorage.setItem('ep-summer', s);
     s = sessionStorage.getItem('ep-summer');
     if (s && s !== 'off') h.setAttribute('data-summer', s);
-    var m = new URLSearchParams(location.search).get('mark');
-    if (m) sessionStorage.setItem('ep-mark', m);
-    m = sessionStorage.getItem('ep-mark');
-    if (m === 'arch') h.setAttribute('data-mark', 'arch');
   } catch (e) {}
   setTimeout(function () {
     if (!h.classList.contains('app-ready')) {
@@ -179,9 +175,7 @@ function siteHead(key) {
   </div>
   <nav class="nav" aria-label="Main">
     <a href="/" class="nav-brand" aria-label="Entrepreneurs at Play, home"${cur(key === 'home')}>
-      <img class="nav-symbol" src="/logo/familycoachmd-logo.svg" alt="FamilyCoachMD" width="120" height="40">
-      <!-- Arch & Sun header test: shown only with ?mark=arch (see the head script) -->
-      <svg class="nav-mark" viewBox="0 0 200 240" width="28" height="34" aria-hidden="true" focusable="false"><path fill="#3B5E1A" d="M0 240V100a100 100 0 0 1 200 0v140h-40V100a60 60 0 0 0-120 0v140z"/><path fill="#B78B4F" d="M52 240a48 48 0 0 1 96 0z"/></svg>
+      <img class="nav-mark" src="/logo/arch-sun-bricks.svg" alt="" width="38" height="38">
       <span class="nav-word">Entrepreneurs <em>at Play</em></span>
     </a>
     <ul class="nav-links">
@@ -273,7 +267,7 @@ function siteFoot(key) {
 <footer class="foot">
   <div class="wrap foot-grid">
     <div class="foot-brand">
-      <img src="/logo/familycoachmd-logo.svg" alt="FamilyCoachMD" width="240" height="79" loading="lazy">
+      <img class="foot-mark" src="/logo/arch-sun-bricks.svg" alt="" width="60" height="60" loading="lazy">
       <p class="foot-word">Entrepreneurs <em>at Play</em></p>
       <p>${esc(site.footerLine)}</p>
     </div>

@@ -31,12 +31,12 @@
     "photoAlt": "Three children building robotics kits together at a table"
   },
   "morning": {
-    "text": "Children learn through Socratic discussions in small groups.",
+    "text": "Children learn in small groups through Socratic discussions.",
     "photo": {
       "discriminant": "library",
-      "value": "mentoring"
+      "value": "morning-discussion"
     },
-    "photoAlt": "A mentoring activity"
+    "photoAlt": "Two children looking through a book together at a classroom desk"
   },
   "afternoon": {
     "text": "Children build practical life skills through community projects. They start businesses and learn alongside experts.",

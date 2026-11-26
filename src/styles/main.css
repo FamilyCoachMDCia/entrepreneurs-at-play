@@ -174,23 +174,26 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 /* ---------- Loader ---------- */
 .loader { display: none; }
 .js .loader {
-  position: fixed; inset: 0; z-index: 120; display: grid; place-items: center;
+  position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; overflow: hidden;
   background-color: var(--paper);
   background-image: var(--grid);
   background-size: var(--grid-size) var(--grid-size);
 }
-.loader-inner { display: grid; justify-items: center; gap: 14px; width: min(86vw, 640px); text-align: center; }
-.loader-mark { height: 175px; width: auto; aspect-ratio: 216 / 256; overflow: visible; margin-bottom: 10px; }
-@media (min-width: 768px) { .loader-mark { height: clamp(200px, 26vh, 236px); margin-bottom: 16px; } }
+.loader-inner { display: grid; justify-items: center; gap: 16px; width: min(90vw, 720px); padding: 0 8px 44px; text-align: center; }
+.loader-mark { width: clamp(195px, 56vw, 240px); height: auto; aspect-ratio: 1 / 1; overflow: visible; margin-bottom: 4px; }
+@media (min-width: 768px) { .loader-mark { width: clamp(250px, 36vh, 330px); margin-bottom: 10px; } }
 /* Start states: the script (loader.js) animates them in; hidden until then. */
 .lm-arch { stroke-dasharray: 1 2; stroke-dashoffset: 1; }
 .lm-full, .lm-sun, .lm-ray { opacity: 0; }
 .loader-word {
-  font-family: var(--f-display); font-weight: 600; font-size: clamp(1.7rem, 1.2rem + 2.2vw, 2.6rem);
-  line-height: 1.05; letter-spacing: -.02em; color: var(--ink); opacity: 0; text-wrap: balance;
+  font-family: var(--f-display); font-weight: 600; font-size: clamp(1.95rem, 1.3rem + 2.5vw, 3.05rem);
+  line-height: 1.1; letter-spacing: -.02em; color: var(--ink); opacity: 0; text-wrap: balance;
   font-variation-settings: 'opsz' 120, 'SOFT' 50;
 }
-.loader-line { font-size: .9rem; letter-spacing: .04em; color: var(--olive); opacity: 0; }
+.loader-word em { color: var(--forest); font-style: italic; white-space: nowrap; }
+.lm-word-chunk { display: inline-block; white-space: nowrap; }
+.lm-char { display: inline-block; will-change: transform, opacity; }
+.loader-line { font-size: clamp(.88rem, .82rem + .25vw, 1rem); letter-spacing: .05em; color: var(--olive); opacity: 0; }
 .loader-skip { position: absolute; right: var(--gutter); bottom: 24px; min-height: 44px; padding: 0 18px; border-radius: 999px;
   border: 1.5px solid var(--line); background: var(--paper); font-weight: 600; font-size: .9rem; color: var(--ink-soft); }
 .is-loaded .loader { pointer-events: none; }

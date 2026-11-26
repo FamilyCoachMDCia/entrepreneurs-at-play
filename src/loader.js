@@ -1,12 +1,14 @@
-// 00 · Loader: the Arch & Sun draws itself (arch from both feet, the sun rises
-// from the ground line, the rays pop out), then the name appears.
-const HARD_CAP = 3200;   // ms from start: exit no matter what
+// 00 · Loader: the Arch & Sun (bricks) draws itself — arch from both feet,
+// sun rises inside the doorway, 8 brick rays fan outward — then the name
+// springs in letter by letter.
+const HARD_CAP = 3800;   // ms from start: exit no matter what
 const SEEN_KEY = 'ep-loader-seen';
 
 export function runLoader({ gsap, reduce }) {
   const loader = document.getElementById('loader');
   if (!loader) return Promise.resolve();
-  if (import.meta.env.DEV && new URLSearchParams(location.search).has('shot')) {
+  const params = import.meta.env.DEV ? new URLSearchParams(location.search) : null;
+  if (params?.has('shot')) {
     loader.remove(); // headless section screenshots skip the intro
     return Promise.resolve();
   }
@@ -41,29 +43,51 @@ export function runLoader({ gsap, reduce }) {
       .then(() => loader.remove());
   }
 
+  // Split "Entrepreneurs at Play" into word-safe letter spans for a lively
+  // letter-by-letter entrance without awkward mid-word wraps on phones.
+  const chars = splitLoaderChars(word);
+
   // Start states (the stylesheet already hides everything until now).
   gsap.set(arch, { strokeDashoffset: 1 });
-  gsap.set(sun, { y: 48, opacity: 1 });
+  gsap.set(sun, { y: 18, opacity: 1 });
   gsap.set(rays, { opacity: 0 });
-  gsap.set([word, line], { y: 12 });
+  gsap.set(word, { opacity: 1 });
+  gsap.set(chars, { opacity: 0, y: 24, rotate: -6, scale: 0.78 });
+  gsap.set(line, { y: 12, opacity: 0 });
 
   const tl = gsap.timeline();
-  // 1. The arch draws upward from both feet and closes at the top. The solid
-  //    shape (identical outline) takes over so the seam at the top is clean.
-  tl.to(arch, { strokeDashoffset: 0, duration: 0.7, ease: 'power2.inOut' }, 0.05)
-    .set(full, { opacity: 1 }, 0.75)
-    .set(strokes, { opacity: 0 }, 0.76)
-    // 2. The sun rises from behind the ground line (clipped there).
-    .to(sun, { y: 0, duration: 0.7, ease: 'power2.out' }, 0.5)
-    // 3. The rays pop out one by one, from the center outward.
+  // 1. The arch draws upward from both feet and closes cleanly at the crown.
+  tl.to(arch, { strokeDashoffset: 0, duration: 0.65, ease: 'power2.inOut' }, 0.05)
+    .set(full, { opacity: 1 }, 0.7)
+    .set(strokes, { opacity: 0 }, 0.71)
+    // 2. The sun rises from behind the doorway baseline.
+    .to(sun, { y: 0, duration: 0.56, ease: 'power3.out' }, 0.48)
+    // 3. The 8 brick rays fan outward from the center right after the sun rises.
     .fromTo(rays,
-      { opacity: 0, scale: 0.35, svgOrigin: '100 240' },
-      { opacity: 1, scale: 1, svgOrigin: '100 240', duration: 0.3, ease: 'back.out(2.2)', stagger: { each: 0.05, from: 'center' } }, 1.0)
-    // 4. The name, then the program line.
-    .to(word, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 1.3)
-    .to(line, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, 1.5);
+      { opacity: 0, scale: 0.22, svgOrigin: '180 180' },
+      { opacity: 1, scale: 1, svgOrigin: '180 180', duration: 0.34, ease: 'back.out(2.15)', stagger: { each: 0.048, from: 'center' } }, 0.96)
+    // 4. Each letter of "Entrepreneurs at Play" springs up one by one.
+    .to(chars, {
+      opacity: 1, y: 0, rotate: 0, scale: 1,
+      duration: 0.42, ease: 'back.out(1.9)',
+      stagger: 0.035,
+    }, 1.24)
+    // 5. The subtitle settles gently underneath.
+    .to(line, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' }, 2.12)
+    // Brief breath so visitors enjoy the finished lockup before the curtain lifts.
+    .to({}, { duration: 0.28 }, 2.52);
 
-  if (seen) tl.timeScale(2.8);
+  // Dev-only inspection hook: ?loaderAt=<seconds> freezes the timeline at an
+  // exact frame so desktop and mobile screenshots can verify every beat.
+  if (params?.has('loaderAt')) {
+    const t = Number(params.get('loaderAt'));
+    if (Number.isFinite(t)) {
+      tl.pause(Math.max(0, t));
+      return new Promise(() => {});
+    }
+  }
+
+  if (seen) tl.timeScale(2.5);
   onSkip = () => tl.progress(1);
 
   return tl.then(() => ready).then(() => {
@@ -73,6 +97,42 @@ export function runLoader({ gsap, reduce }) {
     // Resolve as the curtain starts lifting so the page can come alive under it.
     return wait(250);
   });
+}
+
+// Wraps each non-space token in a nowrap chunk and each letter in .lm-char,
+// preserving inline elements like <em>at Play</em>.
+function splitLoaderChars(el) {
+  if (!el) return [];
+  const chars = [];
+  const walk = (node) => {
+    [...node.childNodes].forEach((child) => {
+      if (child.nodeType === Node.TEXT_NODE) {
+        const frag = document.createDocumentFragment();
+        child.textContent.split(/(\s+)/).forEach((part) => {
+          if (!part) return;
+          if (/^\s+$/.test(part)) {
+            frag.appendChild(document.createTextNode(' '));
+            return;
+          }
+          const chunk = document.createElement('span');
+          chunk.className = 'lm-word-chunk';
+          for (const ch of part) {
+            const span = document.createElement('span');
+            span.className = 'lm-char';
+            span.textContent = ch;
+            chunk.appendChild(span);
+            chars.push(span);
+          }
+          frag.appendChild(chunk);
+        });
+        child.replaceWith(frag);
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
+        walk(child);
+      }
+    });
+  };
+  walk(el);
+  return chars;
 }
 
 // The mark and the name lift away while the curtain wipes up and the hero enters.

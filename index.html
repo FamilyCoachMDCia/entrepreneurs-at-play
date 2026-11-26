@@ -8,20 +8,29 @@
 <body>
 <!--@body-start-->
 
-<!-- 00 · Loader: the Arch & Sun draws itself, then the name (first visit from outside only; see loader.js) -->
+<!-- 00 · Loader: the Arch & Sun (bricks) draws itself, then the name letter by letter (first visit from outside only; see loader.js) -->
 <div class="loader" id="loader">
   <div class="loader-inner" aria-hidden="true">
-    <svg class="loader-mark" viewBox="-8 -8 216 256" focusable="false">
-      <defs><clipPath id="lm-ground"><rect x="-8" y="-8" width="216" height="248"/></clipPath></defs>
-      <g clip-path="url(#lm-ground)"><path class="lm-sun" fill="#B78B4F" d="M54 240a46 46 0 0 1 92 0z"/></g>
-      <g class="lm-rays" fill="none" stroke="#B78B4F" stroke-width="10" stroke-linecap="round">
-        <path class="lm-ray" d="M51.5 212L35.9 203"/><path class="lm-ray" d="M72 191.5L63 175.9"/><path class="lm-ray" d="M100 184L100 166"/><path class="lm-ray" d="M128 191.5L137 175.9"/><path class="lm-ray" d="M148.5 212L164.1 203"/>
+    <svg class="loader-mark" viewBox="149 119 62 62" focusable="false">
+      <defs><clipPath id="lm-sun-window"><path d="M161,180 V150 A19,19 0 0 1 199,150 V180 Z"/></clipPath></defs>
+      <g clip-path="url(#lm-sun-window)">
+        <circle class="lm-sun" fill="#B78B4F" cx="180" cy="180" r="11.4"/>
+        <g class="lm-rays" fill="#B78B4F">
+          <path class="lm-ray" d="M166.79,175.19 L156.43,171.42 A25.08,25.08 0 0 0 154.94,178.91 L165.95,179.39 A14.06,14.06 0 0 1 166.79,175.19Z"/>
+          <path class="lm-ray" d="M169.63,170.50 L161.51,163.06 A25.08,25.08 0 0 0 157.27,169.40 L167.26,174.06 A14.06,14.06 0 0 1 169.63,170.50Z"/>
+          <path class="lm-ray" d="M174.06,167.26 L169.40,157.27 A25.08,25.08 0 0 0 163.06,161.51 L170.50,169.63 A14.06,14.06 0 0 1 174.06,167.26Z"/>
+          <path class="lm-ray" d="M179.39,165.95 L178.91,154.94 A25.08,25.08 0 0 0 171.42,156.43 L175.19,166.79 A14.06,14.06 0 0 1 179.39,165.95Z"/>
+          <path class="lm-ray" d="M184.81,166.79 L188.58,156.43 A25.08,25.08 0 0 0 181.09,154.94 L180.61,165.95 A14.06,14.06 0 0 1 184.81,166.79Z"/>
+          <path class="lm-ray" d="M189.50,169.63 L196.94,161.51 A25.08,25.08 0 0 0 190.60,157.27 L185.94,167.26 A14.06,14.06 0 0 1 189.50,169.63Z"/>
+          <path class="lm-ray" d="M192.74,174.06 L202.73,169.40 A25.08,25.08 0 0 0 198.49,163.06 L190.37,170.50 A14.06,14.06 0 0 1 192.74,174.06Z"/>
+          <path class="lm-ray" d="M194.05,179.39 L205.06,178.91 A25.08,25.08 0 0 0 203.57,171.42 L193.21,175.19 A14.06,14.06 0 0 1 194.05,179.39Z"/>
+        </g>
       </g>
-      <g class="lm-strokes" fill="none" stroke="#3B5E1A" stroke-width="26">
-        <path class="lm-arch" pathLength="1" d="M13 240V100A87 87 0 0 1 100 13"/>
-        <path class="lm-arch" pathLength="1" d="M187 240V100A87 87 0 0 0 100 13"/>
+      <g class="lm-strokes" fill="none" stroke="#3B5E1A" stroke-width="11">
+        <path class="lm-arch" pathLength="1" d="M155.5,180 V150 A24.5,24.5 0 0 1 180,125.5"/>
+        <path class="lm-arch" pathLength="1" d="M204.5,180 V150 A24.5,24.5 0 0 0 180,125.5"/>
       </g>
-      <path class="lm-full" fill="#3B5E1A" d="M0 240V100a100 100 0 0 1 200 0v140h-26V100a74 74 0 0 0-148 0v140z"/>
+      <path class="lm-full" fill="#3B5E1A" d="M150,180 V150 A30,30 0 0 1 210,150 V180 H199 V150 A19,19 0 0 0 161,150 V180 Z"/>
     </svg>
     <p class="loader-word">Entrepreneurs <em>at Play</em></p>
     <p class="loader-line">A FamilyCoachMD program</p>

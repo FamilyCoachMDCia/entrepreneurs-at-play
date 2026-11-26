@@ -17,8 +17,8 @@ const use = (id) => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
 
 // Runs before the first paint: decides whether this page arrives under its
 // curtain, applies the background test (?paper=), the Summer color test
-// (?summer=yellow|brown|off) and the header mark test (?mark=arch|off) and the hero child test (?kid=1|off), and reverts to plain HTML
-// if the app script never starts. Keep it dependency-free.
+// (?summer=yellow|brown|off) and the header mark test (?mark=arch|off).
+// The home hero child is enabled by default. Keep this script dependency-free.
 const HEAD_SCRIPT = `<script>
 (function () {
   var h = document.documentElement, page = h.getAttribute('data-page');
@@ -29,6 +29,13 @@ const HEAD_SCRIPT = `<script>
   var internal = !!nav && Date.now() - nav.t < 5000 && !back;
   if (!back && (internal || page !== 'home')) h.setAttribute('data-curtain', page);
   if (internal) h.setAttribute('data-arrived', '');
+  if (page === 'home') h.setAttribute('data-kid', '1');
+  try {
+    var k = new URLSearchParams(location.search).get('kid');
+    if (k === '1' || k === 'off') sessionStorage.setItem('ep-kid', k);
+    else k = sessionStorage.getItem('ep-kid');
+  } catch (e) {}
+  if (k === 'off') h.removeAttribute('data-kid');
   try {
     var p = new URLSearchParams(location.search).get('paper');
     if (p) sessionStorage.setItem('ep-paper', p);
@@ -42,10 +49,6 @@ const HEAD_SCRIPT = `<script>
     if (m) sessionStorage.setItem('ep-mark', m);
     m = sessionStorage.getItem('ep-mark');
     if (m === 'arch') h.setAttribute('data-mark', 'arch');
-    var k = new URLSearchParams(location.search).get('kid');
-    if (k) sessionStorage.setItem('ep-kid', k);
-    k = sessionStorage.getItem('ep-kid');
-    if (k === '1') h.setAttribute('data-kid', '1');
   } catch (e) {}
   setTimeout(function () {
     if (!h.classList.contains('app-ready')) {

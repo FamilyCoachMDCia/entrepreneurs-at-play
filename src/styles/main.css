@@ -227,17 +227,12 @@ a.social-link:is(:focus-visible, :active) svg { color: var(--marigold); }
 }
 .site-head.is-scrolled .nav { border-bottom-color: var(--line); }
 .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: auto; }
-.nav-symbol { width: 120px; height: auto; }
-.nav-mark { display: none; height: 34px; width: 28.33px; flex: none; }
-/* Header mark test (?mark=arch, build/partials.js head script): the Arch & Sun replaces the FamilyCoachMD logo. */
-html[data-mark="arch"] .nav-symbol { display: none; }
-html[data-mark="arch"] .nav-mark { display: block; }
+.nav-mark { width: 38px; height: 38px; flex: none; }
 .nav-word { font-family: var(--f-display); font-weight: 600; font-size: 1.15rem; line-height: 1; letter-spacing: -.01em; }
 /* Phones: a slimmer header leaves more of the screen to the page. */
 @media (max-width: 767px) {
   :root { --nav-h: 56px; }
-  .nav-symbol { width: 92px; }
-  .nav-mark { height: 30px; width: 25px; }
+  .nav-mark { width: 32px; height: 32px; }
   .nav-word { font-size: 1rem; }
 }
 .nav-links { display: none; align-items: center; gap: clamp(14px, 1.35vw, 28px); white-space: nowrap; }
@@ -319,18 +314,15 @@ html[data-mark="arch"] .nav-mark { display: block; }
   .nav-links { display: flex; }
   .nav-cta { display: inline-flex; flex: none; white-space: nowrap; padding-inline: 18px; }
   .burger { display: none; }
-  .nav-symbol { width: clamp(92px, 7.6vw, 120px); }
   .nav-word { font-size: clamp(1.1rem, 1.4vw, 1.3rem); }
 }
 @media (max-width: 420px) {
   .nav-word { font-size: 1rem; }
-  .nav-symbol { width: 86px; }
 }
 /* Small phones: the wordmark stays on one line beside the logo and burger. */
 @media (max-width: 360px) {
   .nav { gap: 8px; }
   .nav-brand { gap: 8px; min-width: 0; }
-  .nav-symbol { width: 74px; }
   .nav-word { font-size: .9rem; white-space: nowrap; }
 }
 
@@ -380,7 +372,13 @@ html[data-mark="arch"] .nav-mark { display: block; }
   pointer-events: none; opacity: 0; translate: -50% calc(-100% - 18px);
 }
 .toy-tip strong { display: block; font-family: var(--f-display); font-size: 1.05rem; }
-/* "hehe!" over the hero child (test: ?kid=1, see src/hero-kid.js). */
+/* A projected hit area lets visitors tickle the character by touch or keyboard. */
+.kid-touch {
+  position: absolute; z-index: 2; transform: translate(-50%, -50%);
+  border: 0; border-radius: 50%; padding: 0; background: transparent; cursor: pointer;
+  touch-action: pan-y;
+}
+.kid-touch:focus-visible { outline: 3px solid var(--forest); outline-offset: 3px; }
 .kid-bubble {
   position: absolute; z-index: 3; left: 0; top: 0; padding: 2px 14px 4px; border-radius: 18px; white-space: nowrap;
   background: var(--paper); box-shadow: 0 8px 22px rgba(31, 42, 23, .16); color: var(--clay);
@@ -393,6 +391,7 @@ html[data-mark="arch"] .nav-mark { display: block; }
   transform: translateX(-50%) rotate(45deg); border-radius: 0 0 4px 0;
 }
 .kid-bubble.on { opacity: 1; transform: scale(1); }
+.hero-toyslot .kid-bubble { font-size: 1rem; padding: 2px 8px; }
 
 .scroll-cue { display: none; }
 
@@ -416,7 +415,8 @@ html[data-mark="arch"] .nav-mark { display: block; }
 @media (min-width: 1024px) {
   .hero { padding-top: calc(var(--head-h) + 40px); }
   .hero-copy { padding-left: max(0px, calc((100vw - var(--maxw)) / 2 - var(--gutter))); }
-  .hero-stage { position: absolute; inset: var(--head-h) 0 28px 38%; height: auto; margin: 0; }
+  .hero-stage { --toy-area-left: 38%; position: absolute; inset: var(--head-h) 0 28px; height: auto; margin: 0; }
+  .hero-stage .hero-fallback { left: var(--toy-area-left); }
   .scroll-cue {
     display: flex; align-items: center; gap: 8px; position: relative; justify-self: center; z-index: 3;
     font-family: var(--f-hand); font-size: 1.2rem; color: var(--olive); text-decoration: none;
@@ -1395,7 +1395,7 @@ details[open] summary::after { transform: rotate(45deg); background: var(--marig
 /* ---------- Footer ---------- */
 .foot { padding: 64px 0 28px; }
 .foot-grid { display: grid; gap: 36px; }
-.foot-brand img { width: 220px; margin-bottom: 18px; }
+.foot-brand .foot-mark { width: 60px; height: 60px; margin-bottom: 12px; }
 .foot-word { font-family: var(--f-display); font-weight: 600; font-size: 1.6rem; line-height: 1.1; margin-bottom: 6px; }
 .foot-brand p:last-child, .foot-contact { color: var(--ink-soft); }
 .foot-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }

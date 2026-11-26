@@ -26,6 +26,7 @@ const SHOULDER = { x: 0.31, y: 1.08 };
 const TORSO_HEIGHT = 0.40;
 const HEIGHT = 2.2; // feet to top of the afro
 const FACE = { x: 0.46, y: 0.49, z: 0.46 };
+const POKE_MS = 950;
 const Z_FRONT = 1.4; // the child stands in front of every toy
 const CAM_Z = 10;
 const PERSPECTIVE = (CAM_Z - Z_FRONT) / CAM_Z; // keeps plane units equal to the toys' units
@@ -203,8 +204,8 @@ function buildKid() {
   return { root, body, torso, head, legs, arms, eyes, smile, open };
 }
 
-// Returns { layout, update, dispose }.
-export function createKid({ scene, stage, toys, compact, reduced }) {
+// Coordinates the character’s walk, toy interactions and belly tickle.
+export function createKid({ scene, stage, toys, camera, compact, reduced, repaint }) {
   const parts = buildKid();
   const group = new THREE.Group();
   group.add(parts.root);
@@ -220,25 +221,42 @@ export function createKid({ scene, stage, toys, compact, reduced }) {
   } catch { /* no URL access */ }
   if (!pose && reduced) pose = 'front';
 
-  // "hehe!" bubble (not in the tiny phone slot, where it would sit over the title).
-  let bubble = null;
-  if (!compact) {
-    bubble = document.createElement('div');
-    bubble.className = 'kid-bubble';
-    bubble.setAttribute('aria-hidden', 'true');
-    bubble.textContent = 'hehe!';
-    stage.appendChild(bubble);
-  }
+  const bubble = document.createElement('div');
+  bubble.className = 'kid-bubble';
+  bubble.setAttribute('aria-hidden', 'true');
+  bubble.textContent = 'hehe!';
+  const touch = document.createElement('button');
+  touch.className = 'kid-touch';
+  touch.type = 'button';
+  touch.setAttribute('aria-label', 'Tickle the little explorer');
+  touch.hidden = true;
+  stage.append(bubble, touch);
 
-  const G = { halfW: 1, halfH: 1, toyScale: 1, s: 1 };
+  const G = { halfW: 1, halfH: 1, playCenter: 0, playHalfW: 1, toyScale: 1, s: 1 };
   const S = {
     x: 0, y: 0, face: 0, gait: 0, walk: 0, lift: 0, reachAmt: 0, reachTheta: 1.6, reachDir: 1,
     laugh: 0, blink: 0, nextBlink: 2, clock: 0, bubbleT: 0, scroll: 0,
   };
   let tour = [];
-  let step = { mode: 'idle', i: 0, t: 0, dur: 1, from: { x: 0, y: 0 }, to: { x: 0, y: 0 }, fired: false, toy: null, held: 0 };
+  let step = { mode: 'idle', i: 0, t: 0, dur: 1, from: { x: 0, y: 0 }, to: { x: 0, y: 0 }, fired: false, toy: null };
   const kicks = new Map(); // toy -> { t, dir }
   const shoulder = new THREE.Vector3();
+  const projected = new THREE.Vector3();
+  let pokeStart = null;
+  let pokeTimer;
+
+  function poke() {
+    if (touch.hidden) return false;
+    pokeStart = performance.now();
+    clearTimeout(pokeTimer);
+    pokeTimer = setTimeout(() => {
+      pokeStart = null;
+      repaint();
+    }, POKE_MS);
+    repaint();
+    return true;
+  }
+  touch.addEventListener('click', poke);
 
   const visibleToys = () => toys.filter((t) => t.visible);
 
@@ -246,20 +264,20 @@ export function createKid({ scene, stage, toys, compact, reduced }) {
   function standFor(toy, side) {
     const s = G.s;
     const home = toy.userData.home;
-    const dir = side ?? (home.x > 0 ? 1 : -1); // direction from child to toy
+    const dir = side ?? (home.x > G.playCenter ? 1 : -1);
     const toyR = 0.55 * G.toyScale;
     const gap = toyR + (ARM_LEN * 0.82 + SHOULDER.x) * s;
     let x = home.x - dir * gap;
-    const maxX = G.halfW - 0.6 * s;
-    x = compact ? 0 : clamp(x, -maxX, maxX); // phone: always between the two toys
+    const edge = Math.max(0, G.playHalfW - 0.6 * s);
+    x = compact ? 0 : clamp(x, G.playCenter - edge, G.playCenter + edge);
     let y;
     if (compact) y = -G.halfH * 0.93;
     else y = clamp(home.y - (SHOULDER.y + 0.3) * s, -G.halfH * 0.93, G.halfH * 0.97 - HEIGHT * s);
     return { x, y, dir: home.x > x ? 1 : -1 };
   }
 
-  function layout({ halfW, halfH, toyScale, compact: c }) {
-    G.halfW = halfW; G.halfH = halfH; G.toyScale = toyScale;
+  function layout({ halfW, halfH, playCenter, playHalfW, toyScale, compact: c }) {
+    Object.assign(G, { halfW, halfH, playCenter, playHalfW, toyScale });
     G.s = toyScale * (c ? 0.68 : 0.88);
     parts.root.scale.setScalar(G.s);
     // Visit the toys in a loop around the ring (sorted by angle around their centre).
@@ -279,17 +297,16 @@ export function createKid({ scene, stage, toys, compact, reduced }) {
     if (pose) { placePoseSpot(); return; }
     const first = tour[0];
     const spot = standFor(first);
-    // Start inside the stage so the child is visible before the first walk.
-    const enterFrom = compact ? spot.x : spot.x * 0.35;
+    const enterFrom = -G.halfW - 0.8 * G.s;
     S.x = enterFrom; S.y = spot.y;
-    S.face = Math.sign(spot.x - enterFrom) * 1.0;
-    step = { mode: compact ? 'reach' : 'walk', i: 0, t: compact ? -0.8 : -0.5, dur: 2.3, from: { x: enterFrom, y: spot.y }, to: spot, fired: false, toy: first, held: 0 };
-    if (compact) { S.x = spot.x; S.y = spot.y; }
+    S.face = 1;
+    step = { mode: 'walk', i: 0, t: 0, dur: compact ? 0.95 : 2.65, from: { x: enterFrom, y: spot.y }, to: spot, fired: false, toy: first };
   }
 
   function placePoseSpot() {
     // Beside the toy nearest the middle of the stage.
-    const toy = tour.slice().sort((a, b) => Math.hypot(a.userData.home.x, a.userData.home.y) - Math.hypot(b.userData.home.x, b.userData.home.y))[0] || tour[0];
+    const centerDistance = ({ userData: { home } }) => Math.hypot(home.x - G.playCenter, home.y);
+    const toy = tour.slice().sort((a, b) => centerDistance(a) - centerDistance(b))[0];
     const spot = standFor(toy);
     S.x = spot.x; S.y = spot.y; S.reachDir = spot.dir;
     step.toy = toy;
@@ -318,7 +335,7 @@ export function createKid({ scene, stage, toys, compact, reduced }) {
     const dist = Math.hypot(spot.x - S.x, spot.y - S.y);
     step = {
       mode: 'walk', i: step.i, t: 0, dur: clamp(dist / 1.9, 1.4, 2.8),
-      from: { x: S.x, y: S.y }, to: spot, fired: false, toy, held: 0,
+      from: { x: S.x, y: S.y }, to: spot, fired: false, toy,
     };
   }
 
@@ -335,7 +352,7 @@ export function createKid({ scene, stage, toys, compact, reduced }) {
       if (Math.abs(dx) > 0.05 && step.t < step.dur * 0.92) S.face = damp(S.face, Math.sign(dx) * 1.0, 7, dt);
       S.reachAmt = damp(S.reachAmt, 0, 8, dt);
       if (step.t >= step.dur) {
-        step = { mode: 'reach', i: step.i, t: 0, dur: 1.9, from: step.to, to: step.to, fired: false, toy, held: 0 };
+        step = { mode: 'reach', i: step.i, t: 0, dur: 1.9, from: step.to, to: step.to, fired: false, toy };
       }
     } else if (step.mode === 'reach') {
       step.t += dt;
@@ -369,7 +386,7 @@ export function createKid({ scene, stage, toys, compact, reduced }) {
     }
   }
 
-  function animate(dt) {
+  function animate(dt, pokeProgress = 1) {
     const s = G.s;
     const idle = pose ? 0 : 1;
     S.clock += dt;
@@ -379,17 +396,20 @@ export function createKid({ scene, stage, toys, compact, reduced }) {
     // Scroll scatter, like the toys: rises as the hero leaves.
     const rise = S.scroll * G.halfH * 1.4 * 0.7;
     const bounceY = Math.abs(sw) * 0.07 * S.walk;
-    const laughHop = S.laugh > 0 ? Math.abs(Math.sin(S.clock * 16)) * 0.05 * Math.min(1, S.laugh) : 0;
+    const tickled = pokeProgress < 1;
+    const squish = reduced ? 0 : 1 - smooth(pokeProgress / 0.44);
+    const laugh = tickled ? 1 : Math.min(1, S.laugh);
+    const laughHop = dt > 0 ? Math.abs(Math.sin(S.clock * 16)) * 0.05 * laugh * (1 - squish) : 0;
     // Positions are in the toys' plane units; the group's scale undoes the
     // perspective of standing nearer the camera than the toys.
     parts.root.position.set(S.x, S.y + (bounceY + laughHop) * s + rise, 0);
 
-    parts.root.rotation.y = S.face;
+    parts.root.rotation.y = THREE.MathUtils.lerp(S.face, 0, 0.9 * squish);
     parts.body.rotation.z = sw * 0.11 * S.walk + Math.sin(S.clock * 1.7) * 0.012 * idle;
     parts.body.position.x = sw * 0.03 * S.walk;
-    parts.torso.scale.y = TORSO_HEIGHT + Math.sin(S.clock * 2.1) * 0.008 * idle;
-    parts.head.rotation.z = -sw * 0.07 * S.walk + (S.laugh > 0 ? Math.sin(S.clock * 17) * 0.06 * Math.min(1, S.laugh) : Math.sin(S.clock * 1.3) * 0.03 * idle);
-    parts.head.rotation.x = S.laugh > 0 ? -0.08 : 0;
+    parts.torso.scale.set(0.34 * (1 + 0.16 * squish), TORSO_HEIGHT * (1 - 0.24 * squish) + Math.sin(S.clock * 2.1) * 0.008 * idle, 0.29 * (1 - 0.2 * squish));
+    parts.head.rotation.z = -sw * 0.07 * S.walk + (laugh ? Math.sin(S.clock * 17) * 0.06 * laugh : Math.sin(S.clock * 1.3) * 0.03 * idle);
+    parts.head.rotation.x = 0.16 * squish - 0.08 * laugh;
 
     const swing = 0.55 * S.walk;
     parts.legs[0].rotation.x = sw * swing;
@@ -421,10 +441,9 @@ export function createKid({ scene, stage, toys, compact, reduced }) {
     S.blink = Math.max(0, S.blink - dt);
     const eyeY = S.blink > 0 ? 0.15 : 1;
     parts.eyes.forEach((e) => { e.scale.y = eyeY; });
-    const lau = S.laugh > 0 ? Math.min(1, S.laugh) : 0;
-    parts.open.visible = lau > 0.05;
+    parts.open.visible = laugh > 0.05;
     parts.smile.visible = !parts.open.visible;
-    parts.open.scale.setScalar(0.72 + 0.28 * lau);
+    parts.open.scale.setScalar(0.72 + 0.28 * laugh);
     if (S.laugh > 0) S.laugh = Math.max(0, S.laugh - dt);
 
     // Reactions on the toys: one spin and a gentle shove.
@@ -438,14 +457,11 @@ export function createKid({ scene, stage, toys, compact, reduced }) {
     });
   }
 
-  function placeBubble(dt) {
-    if (!bubble) return;
-    if (S.bubbleT > 0) {
-      S.bubbleT -= dt;
-      if (S.bubbleT <= 0 && !pose) bubble.classList.remove('on');
-    }
-    if (pose === 'reach') bubble.classList.add('on');
-    if (S.bubbleT <= 0 && pose !== 'reach') return;
+  function placeBubble(dt, tickled = false) {
+    S.bubbleT = Math.max(0, S.bubbleT - dt);
+    const show = tickled || (!compact && (S.bubbleT > 0 || pose === 'reach'));
+    bubble.classList.toggle('on', show);
+    if (!show) return;
     // Above the child's head, in stage pixels (plane units -> pixels).
     const w = stage.clientWidth;
     const h = stage.clientHeight;
@@ -453,19 +469,32 @@ export function createKid({ scene, stage, toys, compact, reduced }) {
     const px = (S.x / G.halfW / 2 + 0.5) * w;
     const py = (0.5 - headY / G.halfH / 2) * h;
     bubble.style.left = `${clamp(px + S.face * 22, 44, w - 44)}px`;
-    bubble.style.top = `${Math.max(34, py)}px`;
+    bubble.style.top = `${compact ? 6 : Math.max(34, py)}px`;
   }
 
-  function update(dt, t, scrollP) {
+  function update(dt, scrollP) {
     S.scroll = scrollP;
     if (!tour.length) return;
-    if (pose) applyPose(); else advance(dt);
-    animate(dt);
-    placeBubble(dt);
+    const progress = pokeStart === null ? 1 : clamp((performance.now() - pokeStart) / POKE_MS, 0, 1);
+    if (pose) applyPose(); else if (progress === 1) advance(dt);
+    animate(dt, progress);
+    placeBubble(dt, progress < 1);
+    parts.torso.getWorldPosition(projected).project(camera);
+    const w = stage.clientWidth;
+    const h = stage.clientHeight;
+    const x = (projected.x + 1) * w / 2;
+    const y = (1 - projected.y) * h / 2;
+    touch.hidden = x < 0 || x > w || y < 0 || y > h;
+    touch.style.left = `${x}px`;
+    touch.style.top = `${y}px`;
+    touch.style.width = `${Math.max(44, G.s * 0.8 * w / (2 * G.halfW))}px`;
+    touch.style.height = `${Math.max(44, G.s * 0.9 * h / (2 * G.halfH))}px`;
   }
 
   function dispose() {
-    bubble?.remove();
+    clearTimeout(pokeTimer);
+    bubble.remove();
+    touch.remove();
     scene.remove(group);
     const resources = new Set();
     group.traverse((object) => {
@@ -477,5 +506,5 @@ export function createKid({ scene, stage, toys, compact, reduced }) {
     resources.forEach((resource) => resource.dispose());
   }
 
-  return { layout, update, dispose };
+  return { layout, update, dispose, hit: (raycaster) => raycaster.intersectObject(parts.root, true)[0], poke };
 }

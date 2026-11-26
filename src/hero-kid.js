@@ -279,7 +279,8 @@ export function createKid({ scene, stage, toys, compact, reduced }) {
     if (pose) { placePoseSpot(); return; }
     const first = tour[0];
     const spot = standFor(first);
-    const enterFrom = compact ? spot.x : (spot.x > 0 ? G.halfW + 1.4 * G.s : -G.halfW - 1.4 * G.s);
+    // Start inside the stage so the child is visible before the first walk.
+    const enterFrom = compact ? spot.x : spot.x * 0.35;
     S.x = enterFrom; S.y = spot.y;
     S.face = Math.sign(spot.x - enterFrom) * 1.0;
     step = { mode: compact ? 'reach' : 'walk', i: 0, t: compact ? -0.8 : -0.5, dur: 2.3, from: { x: enterFrom, y: spot.y }, to: spot, fired: false, toy: first, held: 0 };

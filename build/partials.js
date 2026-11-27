@@ -18,7 +18,7 @@ const use = (id) => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
 // Runs before the first paint: decides whether this page arrives under its
 // curtain, applies the background test (?paper=), the Summer color test
 // (?summer=yellow|brown|off).
-// The home hero child is enabled by default. Keep the head script dependency-free.
+// The home hero child is off (Dr. Che did not want it); ?kid=1 previews it. Keep the head script dependency-free.
 const HEAD_SCRIPT = `<script>
 (function () {
   var h = document.documentElement, page = h.getAttribute('data-page');
@@ -29,13 +29,12 @@ const HEAD_SCRIPT = `<script>
   var internal = !!nav && Date.now() - nav.t < 5000 && !back;
   if (!back && (internal || page !== 'home')) h.setAttribute('data-curtain', page);
   if (internal) h.setAttribute('data-arrived', '');
-  if (page === 'home') h.setAttribute('data-kid', '1');
   try {
     var k = new URLSearchParams(location.search).get('kid');
     if (k === '1' || k === 'off') sessionStorage.setItem('ep-kid', k);
     else k = sessionStorage.getItem('ep-kid');
   } catch (e) {}
-  if (k === 'off') h.removeAttribute('data-kid');
+  if (k === '1' && page === 'home') h.setAttribute('data-kid', '1');
   try {
     var p = new URLSearchParams(location.search).get('paper');
     if (p) sessionStorage.setItem('ep-paper', p);

@@ -28,7 +28,7 @@ export function runCurtainIn({ gsap, reduce }) {
     html.removeAttribute('data-arrived');
     store.del(NAV_KEY);
   };
-  if (!html.hasAttribute('data-curtain') || !curtain) { done(); return Promise.resolve(); }
+  if (location.hash || !html.hasAttribute('data-curtain') || !curtain) { done(); return Promise.resolve(); }
   if (import.meta.env.DEV && new URLSearchParams(location.search).has('shot')) { done(); return Promise.resolve(); }
 
   const started = performance.now();
@@ -36,7 +36,7 @@ export function runCurtainIn({ gsap, reduce }) {
   const lead = document.querySelector('main img[fetchpriority="high"]');
   const ready = Promise.race([
     Promise.all([document.fonts.ready, lead?.decode?.().catch(() => {})]),
-    wait(1200),
+    wait(450),
   ]);
   return ready.then(() => wait(Math.max(0, 260 - (performance.now() - started)))).then(() => {
     curtain.style.animation = 'none'; // the CSS failsafe is no longer needed

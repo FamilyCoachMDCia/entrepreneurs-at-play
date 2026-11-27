@@ -1,15 +1,15 @@
 {
   "tagline": "The world is our canvas, Play is our guide.",
   "ticker": {
-    "golf": "Golf starts January 5 · Sign up now",
+    "golf": "Golf starts January 5 · Request a spot",
     "afterSchool": "After-school enrichment in Omaha",
     "microschool": "Microschool waitlist · Fall 2027"
   },
   "headerCta": {
-    "home": "Golf sign-up",
-    "enrichment": "Golf sign-up",
+    "home": "Request a golf spot",
+    "enrichment": "Request a golf spot",
     "summer": "Get summer updates",
-    "microschool": "Join the waitlist",
+    "microschool": "Request a waitlist place",
     "about": "Contact us"
   },
   "footerLine": "Inspiring thinkers, crafting nation builders.",

@@ -580,3 +580,28 @@ html[data-paper] body, html[data-bg] body { background-color: var(--paper); }
 .door-inside strong { font: italic 600 clamp(1.4rem,3vw,2.7rem)/1 var(--f-display); color: var(--paper); }
 .book-mark { width: 100%; height: 100%; padding: 22%; color: var(--forest); }
 .learner-img { max-height: 160px; padding: 18px; color: var(--forest); }
+
+.hero-tag, .about-line { color: #80592f; }
+.name-eq { overflow-x: clip; }
+.about-shortcuts, .schedule-summary { margin-block: 1rem; }
+.schedule-summary summary { cursor: pointer; font-weight: 700; color: var(--forest); }
+.schedule-summary li { padding-block: .3rem; }
+.day-strip a small { display: block; font-size: .75rem; }
+.social-pending { border-style: dashed; opacity: .8; }
+.copy-request { justify-self: start; cursor: pointer; }
+.request-fallback { min-height: 8em; width: 100%; }
+@media (max-width: 767px) {
+  .program-pick { grid-template-columns: minmax(0, 1fr); }
+  .pick-row, .pick-more-body { grid-template-columns: repeat(auto-fit, minmax(min(100%, 138px), 1fr)); }
+  .week-overview .week-rhythm li { grid-template-columns: 20px minmax(54px, .65fr) minmax(0, 1.3fr) 8px; gap: 6px; padding-inline: 8px; }
+  .week-overview .week-rhythm li > :is(span, a) { white-space: normal; min-width: 0; }
+  .week-overview .day-ring { max-width: 80%; }
+  .subnav-list { scrollbar-width: thin; scrollbar-color: var(--olive) var(--paper); }
+  .subnav-list::-webkit-scrollbar { display: block; height: 3px; }
+  .subnav-list li:last-child { position: sticky; right: 0; background: var(--paper); box-shadow: -5px 0 8px var(--paper); border-radius: 99px; }
+  html.has-subnav #visit { scroll-margin-top: calc(var(--nav-h) + 90px); }
+  .sticky-cta { left: auto; }
+  .sticky-cta .btn { min-height: 44px; }
+}
+
+.field-age[hidden], .request-fallback[hidden] { display: none; }

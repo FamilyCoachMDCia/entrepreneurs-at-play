@@ -107,13 +107,13 @@ function heroRotator({ gsap, reduce }) {
   }, 2200);
 }
 
-/* ---------- Programs: 01 Enrichment → 02 Summer → 03 Microschool ---------- */
+/* ---------- Programs: 01 Enrichment â†’ 02 Summer â†’ 03 Microschool ---------- */
 // Elements with a CSS hover transform (day cards) get explicit end values +
 // clearProps, so an inline GSAP transform never fights the hover lift.
 const CLEAR = 'transform,translate,rotate,scale,opacity';
 const token = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
-/* ---------- Home · the three doors ---------- */
+/* ---------- Home Â· the three doors ---------- */
 // Each program is a door. A mouse over it (or keyboard focus) leaves it ajar
 // (CSS) and plays its little drawing; a click opens it all the way into its
 // page (transitions.js). On touch screens each door breathes open once as it
@@ -198,7 +198,7 @@ function artTimeline(gsap, art) {
   return tl;
 }
 
-/* ---------- Who we are · What's in a name ---------- */
+/* ---------- Who we are Â· What's in a name ---------- */
 // The two words slide together, the + and = draw themselves, and the
 // result writes in line by line (data-split).
 function nameEquation({ gsap, reduce }) {
@@ -343,7 +343,7 @@ function microschoolCard({ gsap, reduce }) {
     .fromTo(card.querySelectorAll('.micro-paths svg'), { scale: 0.2, y: 6 }, { scale: 1, y: 0, duration: 1, stagger: 0.15, ease: 'elastic.out(1, 0.5)', clearProps: 'transform' }, 0.8);
 }
 
-/* ---------- 07b · A week in the microschool ---------- */
+/* ---------- 07b Â· A week in the microschool ---------- */
 function weekPlanner({ gsap, reduce }) {
   const list = document.querySelector('.week-rhythm');
   if (!list) return;
@@ -389,7 +389,7 @@ function weekPlanner({ gsap, reduce }) {
     .to(ring, { clipPath: 'inset(-12px -12px -12px -12px)', duration: 1, ease: 'power2.inOut', clearProps: 'clipPath' }, 0.8);
 }
 
-/* ---------- 13b · The practical part ---------- */
+/* ---------- 13b Â· The practical part ---------- */
 function practical({ gsap, reduce }) {
   const card = document.querySelector('.index-card');
   if (!card || reduce) return;
@@ -400,14 +400,14 @@ function practical({ gsap, reduce }) {
     .fromTo(card.querySelector('.facts-cta'), { y: 16, opacity: 0, scale: 0.97 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.6)', clearProps: CLEAR }, 0.7);
 }
 
-/* ---------- 04 · What kind of learner ---------- */
+/* ---------- 04 Â· What kind of learner ---------- */
 const LEARNERS = {
   builder: { title: 'The builder', text: 'Real products, real customers. Engage and Engineer, CrunchLabs builds and hackathons, and a weekly stock market game.' },
   talker: { title: 'The talker', text: 'Their own podcast, one-on-one speech coaching from experts, and a mini United Nations.' },
   explorer: { title: 'The explorer', text: 'Afternoons out in Omaha: farms, college campuses, flight decks and nature, rain or shine.' },
   artist: { title: 'The artist', text: 'Music, choir, theater and art with local studios, plus world cuisines in the kitchen.' },
   thinker: { title: 'The deep thinker', text: 'Socratic reading groups, advanced academics at their own pace, and MAP Growth testing to prove it.' },
-  littlest: { title: 'The littlest one', text: 'The Hatch, for ages 2–6, is coming soon: free play, sign language, gentle routines, and big kids from The Studio who mentor them. Join the list and we’ll share the details first.' },
+  littlest: { title: 'The littlest one', text: 'The Hatch, for ages 2â€“6, is coming soon: free play, sign language, gentle routines, and big kids from The Studio who mentor them. Join the list and weâ€™ll share the details first.' },
 };
 
 function learner({ gsap, reduce, ScrollTrigger }) {
@@ -484,7 +484,7 @@ function learner({ gsap, reduce, ScrollTrigger }) {
   }));
 }
 
-/* ---------- 05 · Eight things carousel ---------- */
+/* ---------- 05 Â· Eight things carousel ---------- */
 function carousel({ gsap, reduce }) {
   const scroller = document.querySelector('.carousel');
   if (!scroller) return;
@@ -579,7 +579,7 @@ function carousel({ gsap, reduce }) {
     cam?.addEventListener('click', () => {
       const on = card.classList.toggle('is-story');
       cam.setAttribute('aria-expanded', String(on));
-      cam.setAttribute('aria-label', on ? 'Show the photo' : 'Show the story behind this photo');
+      cam.setAttribute('aria-label', (on ? 'Show photo: ' : 'Read story: ') + card.querySelector('h3').textContent);
       use.setAttribute('href', on ? '#d-close' : '#d-camera');
       back.setAttribute('aria-hidden', String(!on));
       back.inert = !on;
@@ -616,11 +616,11 @@ function carousel({ gsap, reduce }) {
   }
 }
 
-/* ---------- 06 · A day at EP: the sun-dial ---------- */
+/* ---------- 06 Â· A day at EP: the sun-dial ---------- */
 // Pinned only where the whole step fits on screen (wide and tall enough);
 // phones, short laptops and landscape phones get the plain chronological list.
 // gsap.matchMedia reverts the pin and the DOM changes when the size changes.
-const PIN_QUERY = '(min-width: 768px) and (min-height: 720px)';
+const PIN_QUERY = '(min-width: 768px) and (min-height: 820px)';
 
 function sundial({ gsap, reduce }) {
   const section = document.querySelector('.day');
@@ -695,7 +695,7 @@ function sundial({ gsap, reduce }) {
   }
 }
 
-/* ---------- 07 · Morning / afternoon compare ---------- */
+/* ---------- 07 Â· Morning / afternoon compare ---------- */
 function compare({ gsap, reduce }) {
   const box = document.querySelector('.compare');
   if (!box) return;
@@ -723,7 +723,7 @@ function compare({ gsap, reduce }) {
   });
 }
 
-/* ---------- 09 · Seed packets ---------- */
+/* ---------- 09 Â· Seed packets ---------- */
 function packets({ gsap, reduce }) {
   // One state per packet, driven only by its button (hover just lifts it).
   gsap.utils.toArray('.packet').forEach((p) => {
@@ -757,7 +757,7 @@ function packets({ gsap, reduce }) {
     .from('.ages-photo', { y: 40, opacity: 0, duration: 0.8, stagger: 0.12, ease: 'power3.out' }, 0.2);
 }
 
-/* ---------- 10 · Count-up numbers ---------- */
+/* ---------- 10 Â· Count-up numbers ---------- */
 function counters({ gsap, reduce }) {
   gsap.utils.toArray('[data-count]').forEach((el) => {
     const target = parseFloat(el.dataset.count);
@@ -775,7 +775,7 @@ function counters({ gsap, reduce }) {
   });
 }
 
-/* ---------- 12 · Founder ---------- */
+/* ---------- 12 Â· Founder ---------- */
 function founder({ gsap, SplitText, reduce }) {
   if (reduce || !document.querySelector('.founder')) return;
   gsap.timeline({ scrollTrigger: { trigger: '.founder', start: 'top 70%', once: true } })
@@ -794,7 +794,7 @@ function founder({ gsap, SplitText, reduce }) {
   }
 }
 
-/* ---------- 14 · FAQ ---------- */
+/* ---------- 14 Â· FAQ ---------- */
 function faq({ gsap, reduce, ScrollTrigger }) {
   // Animated accordion on top of native <details>.
   document.querySelectorAll('.faq-list details').forEach((d) => {
@@ -828,10 +828,9 @@ function faq({ gsap, reduce, ScrollTrigger }) {
     .to(typed, { n: full.length, duration: full.length * 0.028, ease: 'none', onUpdate: () => { a.textContent = full.slice(0, Math.round(typed.n)); } });
 }
 
-/* ---------- 15 · Visit ---------- */
+/* ---------- 15 Â· Visit ---------- */
 function visit({ gsap, reduce }) {
   if (reduce) return;
-  gsap.from('.visit', { y: 80, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: '.visit', start: 'top 95%', once: true } });
   // The form card rises with a slight tilt, then its program chips pop in.
   gsap.timeline({ scrollTrigger: { trigger: '.visit-form', start: 'top 90%', once: true } })
     .fromTo('.visit-form', { y: 50, rotation: 1.5, opacity: 0 }, { y: 0, rotation: 0, opacity: 1, duration: 0.9, ease: 'power3.out', clearProps: CLEAR })

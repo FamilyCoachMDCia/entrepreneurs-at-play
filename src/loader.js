@@ -8,7 +8,7 @@ export function runLoader({ gsap, reduce }) {
   const loader = document.getElementById('loader');
   if (!loader) return Promise.resolve();
   const params = import.meta.env.DEV ? new URLSearchParams(location.search) : null;
-  if (params?.has('shot')) {
+  if (location.hash || params?.has('shot')) {
     loader.remove(); // headless section screenshots skip the intro
     return Promise.resolve();
   }
@@ -87,7 +87,7 @@ export function runLoader({ gsap, reduce }) {
     }
   }
 
-  if (seen) tl.timeScale(2.5);
+  tl.timeScale(seen ? 3 : 1.6);
   onSkip = () => tl.progress(1);
 
   return tl.then(() => ready).then(() => {

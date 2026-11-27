@@ -193,7 +193,7 @@ const SUBNAV = {
   about: [['#name', 'Our name'], ['#believe', 'What we believe'], ['#create', 'CREATE'], ['#apart', 'Nine things'], ['#founder', 'Founder'], ['#familycoachmd', 'FamilyCoachMD'], ['#partners', 'Partners'], ['#visit', 'Contact']],
   // Enrichment's top already lists each afternoon (day strip), so its row
   // stays one level up; the phone menu still lists the afternoons.
-  enrichment: [['#enrichment', 'Afternoons'], ['#how', 'How it works'], ['#faq', 'FAQ'], ['#visit', 'Sign up']],
+  enrichment: [['#enrichment', 'Afternoons'], ['#faq', 'FAQ'], ['#visit', 'Request a spot']],
   summer: [['#summer', 'Summer camp'], ['#summer-favorites', 'Favorites'], ['#visit', 'Get updates']],
 };
 
@@ -202,7 +202,7 @@ function onThisPage(key) {
   if (key === 'enrichment') {
     return [
       ...openDays().map((d) => [`#${d.anchor}`, d.chip || d.name]),
-      ['#faq', 'FAQ'], ['#visit', 'Sign up'],
+      ['#faq', 'FAQ'], ['#visit', 'Request a spot'],
     ];
   }
   if (key === 'summer') return [['#summer-favorites', 'All-day favorites'], ['#visit', 'Get updates']];
@@ -372,8 +372,8 @@ const short = (weekday) => weekday.slice(0, 3);
 
 function dayStrip() {
   return `<ol class="day-strip" aria-label="Enrichment by day">
-        ${openDays().map((d) => `<li><a href="#${d.anchor}" data-day-pill><b>${short(d.weekday)}</b><span>${esc(d.strip || d.name)}</span></a></li>`).join('\n        ')}
-        <li class="strip-signup"><a href="#visit" data-program-cta="golf"><b aria-hidden="true">${use('d-chev').replace('<svg', '<svg class="strip-go"')}</b><span>Sign up for an afternoon</span></a></li>
+        ${openDays().map((d) => `<li><a href="#${d.anchor}" data-day-pill><b>${short(d.weekday)}</b><span>${esc(d.strip || d.name)}${d.soon ? '<small>Coming soon</small>' : ''}</span></a></li>`).join('\n        ')}
+        <li class="strip-signup"><a href="#visit" data-program-cta="golf"><b aria-hidden="true">${use('d-chev').replace('<svg', '<svg class="strip-go"')}</b><span>Request a golf spot</span></a></li>
       </ol>`;
 }
 
@@ -476,7 +476,7 @@ const VISIT = {
     show: ['enrichment', 'summer', 'microschool', 'other'], def: '',
   },
   enrichment: {
-    title: 'Save a spot <em>after school.</em>',
+    title: 'Request a spot <em>after school.</em>',
     intro: 'Request a golf spot or ask about another afternoon. We’ll reply by email with availability and next steps.',
     show: ['enrichment'], def: 'golf',
   },
@@ -542,9 +542,9 @@ function contact(key) {
   <div class="wrap visit-grid">
     <div class="visit-copy">
       <h2 class="h2" id="visit-title">${v.title}</h2>
-      <p class="request-intro">${v.intro}</p>
+      <p class="request-intro">${v.intro} Prepare your request here, then send it from your email app.</p>
       <svg class="visit-arrow" viewBox="0 0 160 90" aria-hidden="true"><path class="va-line" d="M8 14 C 40 70, 100 82, 146 52" fill="none"/><path class="va-head" d="M126 44 L 148 51 L 134 70" fill="none"/></svg>
-      <p class="visit-mail">Prefer email? <a class="visit-email" href="mailto:{{email}}">{{email}}</a> <button class="copy" type="button" data-copy="{{email}}">Copy</button> <span class="copy-status" role="status"></span></p>
+      <p class="visit-mail">Email us directly: <a class="visit-email" href="mailto:{{email}}">{{email}}</a> <button class="copy" type="button" data-copy="{{email}}">Copy</button> <span class="copy-status" role="status"></span></p>
       <!--social-links-->
     </div>
     <form class="visit-form" id="visit-form" data-default-program="${v.def}" hidden>
@@ -579,6 +579,8 @@ function contact(key) {
         <button class="btn btn-primary btn-submit" type="submit"><span>Prepare my email</span><i class="btn-dot"></i></button>
       </div>
       <p class="form-note">This opens your email app with the request filled in. Press Send there to contact us. We’ll reply by email.</p>
+      <button type="button" class="link copy-request">Copy request for webmail</button>
+      <textarea class="request-fallback" aria-label="Request to copy" readonly hidden></textarea>
       <p class="form-status" role="status"></p>
     </form>
   </div>
@@ -780,7 +782,7 @@ function nineThings() {
     const back = c.story
       ? `
           <div class="card-back" id="story-${n}" aria-hidden="true" inert><p>${esc(c.story)}</p><span class="doodle-note">${esc(c.storyNote || '')}</span></div>
-          <button class="cam" type="button" aria-expanded="false" aria-controls="story-${n}" aria-label="Read the story behind this card"><svg aria-hidden="true"><use href="#d-camera"/></svg></button>`
+          <button class="cam" type="button" aria-expanded="false" aria-controls="story-${n}" aria-label="Read the story about ${esc(c.title)}"><svg aria-hidden="true"><use href="#d-camera"/></svg></button>`
       : '';
     const sticker = NINE_STICKERS[i] ? ` data-sticker="${NINE_STICKERS[i]}"` : '';
     return `<li class="card"${sticker}>
@@ -801,6 +803,7 @@ const PARTIALS = {
   'summer-favorites': summerFavorites, 'faq-enrichment': faqEnrichment,
   'golf-chips': golfChips, 'golf-sessions': golfSessions,
   'path-words': pathWords, 'hatch-stamp': hatchStamp, 'hatch-soon-note': hatchSoonNote,
+  'day-summary': () => microschool.sampleDay.map(s => `<li><strong>${esc(s.time)}</strong> ${esc(s.title)}</li>`).join(''),
   'sample-day-steps': sampleDaySteps, subjects,
   beliefs, 'create-packets': createPackets, 'rot-words': rotWords, 'rot-sr': rotSr, 'nine-things': nineThings,
 };

@@ -186,11 +186,11 @@ function magnetic({ gsap }) {
   });
 }
 
-// Program requests are sent from the visitor’s email app. Each page's form
+// Program requests are sent from the visitorâ€™s email app. Each page's form
 // opens on that page's own program; a program button clicked on another page
 // wins (transitions.js carries it over).
-const NO_CHILD = ['general', 'partner'];
-// Programs with their own age range (the microschool takes 2–12).
+const NO_CHILD = ['general', 'partner', 'summer'];
+// Programs with their own age range (the microschool takes 2â€“12).
 const AGES = { golf: [8, 12], hatch: [2, 6] };
 const samePage = (a) => new URL(a.href, location.href).pathname.replace(/index\.html$/, '') === location.pathname.replace(/index\.html$/, '');
 
@@ -238,7 +238,7 @@ function form() {
     });
     if (age.selectedOptions[0]?.disabled) age.value = '';
     ageNote.hidden = !restricted;
-    ageNote.textContent = restricted ? `This program is for ages ${min}–${max}.` : '';
+    ageNote.textContent = restricted ? `This program is for ages ${min}â€“${max}.` : '';
     age.dispatchEvent(new Event('change'));
   };
 
@@ -251,8 +251,7 @@ function form() {
     });
   });
 
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
+  const requestText = () => {
     const data = Object.fromEntries(new FormData(form));
     const choice = program.selectedOptions[0].textContent;
     const childless = NO_CHILD.includes(program.value);
@@ -260,11 +259,34 @@ function form() {
       `Request: ${choice}`,
       `${childless ? 'Name' : 'Parent or guardian'}: ${data.name}`,
       `Email: ${data.email}`,
-      ...(childless ? [] : [`Child’s age: ${age.selectedOptions[0].textContent}`]),
+      ...(childless ? [] : [`Childâ€™s age: ${age.selectedOptions[0].textContent}`]),
       ...(data.program === 'microschool' ? [`Pathway: ${currentPathway()}`] : []),
       '',
       data.message,
     ].join('\n');
+    return { choice, body };
+  };
+
+  form.querySelector('.copy-request').addEventListener('click', async () => {
+    if (!form.reportValidity()) return;
+    const { body } = requestText();
+    const draft = `To: ${SITE.email}\n\n${body}`;
+    try {
+      await navigator.clipboard.writeText(draft);
+      status.textContent = 'Request copied. Paste it into your email app and send it to ' + SITE.email;
+    } catch {
+      const fallback = form.querySelector('.request-fallback');
+      fallback.hidden = false;
+      fallback.value = draft;
+      fallback.focus();
+      fallback.select();
+      status.textContent = 'Copy the selected request into your email app.';
+    }
+  });
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const { choice, body } = requestText();
     window.location.href = `mailto:${SITE.email}?subject=${encodeURIComponent(`Entrepreneurs at Play: ${choice}`)}&body=${encodeURIComponent(body)}`;
     status.textContent = `If your email app opened, press Send there. You can also write to ${SITE.email}.`;
   });
@@ -356,7 +378,7 @@ function copy() {
           sel.removeAllRanges();
           sel.addRange(range);
         }
-        say(isTouch ? 'Couldn’t copy automatically. Press and hold the address to copy it.' : 'Couldn’t copy automatically. The address is selected: copy it with your keyboard or right-click.');
+        say(isTouch ? 'Couldnâ€™t copy automatically. Press and hold the address to copy it.' : 'Couldnâ€™t copy automatically. The address is selected: copy it with your keyboard or right-click.');
       }
     });
   });
